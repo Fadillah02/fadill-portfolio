@@ -41,18 +41,6 @@ Portfolio website pribadi — menampilkan project, eksperimen, dan penelitian di
 ### Opsi 1 — Lokal
 Buka file `index.html` langsung di browser (double-click).
 
-### Opsi 2 — GitHub Pages (Rekomendasi)
-1. Upload semua file ke repo GitHub
-2. Buka **Settings → Pages**
-3. Pilih branch `main`, folder `/ (root)`
-4. Klik Save
-5. Tunggu 1-2 menit, buka `https://<username>.github.io/<nama-repo>/`
-
-### Opsi 3 — Custom Domain
-Buat file `CNAME` berisi domain kamu, contoh:
-```
-fadill.my.id
-```
 
 ---
 
