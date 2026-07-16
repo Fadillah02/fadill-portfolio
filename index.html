@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FADILL — Fadillah's Digital Laboratory</title>
+    <meta name="description" content="A digital workshop where code meets curiosity. Experiments, prototypes, and open-source artifacts by Fadillah.">
+    <meta name="keywords" content="Front End Developer, UI/UX, Web Development, Cybersecurity, JavaScript, HTML, CSS">
+    <meta name="author" content="Fadillah">
+    <meta property="og:title" content="FADILL — Fadillah's Digital Laboratory">
+    <meta property="og:description" content="A digital workshop where code meets curiosity. Experiments, prototypes, and open-source artifacts.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════════════
+           DESIGN SYSTEM — FADILL
+           ═══════════════════════════════════════════════════ */
+        :root {
+            --bg-primary: #06080d;
+            --bg-secondary: #0c1017;
+            --bg-card: rgba(12, 18, 28, 0.6);
+            --bg-card-hover: rgba(18, 28, 42, 0.8);
+
+            --text-primary: #e8ecf4;
+            --text-secondary: #8892a4;
+            --text-muted: #505a6e;
+
+            --accent-cyan: #22d3ee;
+            --accent-cyan-dim: rgba(34, 211, 238, 0.15);
+            --accent-cyan-glow: rgba(34, 211, 238, 0.08);
+            --accent-green: #34d399;
+            --accent-green-dim: rgba(52, 211, 153, 0.15);
+            --accent-purple: #a78bfa;
+            --accent-purple-dim: rgba(167, 139, 250, 0.15);
+            --accent-amber: #fbbf24;
+            --accent-amber-dim: rgba(251, 191, 36, 0.15);
+            --accent-rose: #fb7185;
+            --accent-rose-dim: rgba(251, 113, 133, 0.15);
+
+            --border-color: rgba(136, 146, 164, 0.12);
+            --border-hover: rgba(34, 211, 238, 0.3);
+
+            --glow: rgba(34, 211, 238, 0.06);
+            --glow-strong: rgba(34, 211, 238, 0.15);
+
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        ::selection {
+            background: rgba(34, 211, 238, 0.25);
+            color: var(--text-primary);
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ═══════════════════════════════════════════════════
+           BACKGROUND EFFECTS
+           ═══════════════════════════════════════════════════ */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(0, 0, 0, 0.02) 3px,
+                rgba(0, 0, 0, 0.02) 6px
+            );
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .cursor-glow {
+            pointer-events: none;
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 65%);
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: opacity 0.4s ease;
+            filter: blur(10px);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           LAYOUT
+           ═══════════════════════════════════════════════════ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            position: relative;
+            z-index: 10;
+            padding: 100px 0;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 550px;
+            line-height: 1.7;
+        }
+
+        .section-border {
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           GLASS CARD
+           ═══════════════════════════════════════════════════ */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+        }
+
+        .glass:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════ */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition-slow);
+            padding: 16px 0;
+        }
+
+        .header.scrolled {
+            background: rgba(6, 8, 13, 0.85);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            background: var(--accent-cyan-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .brand:hover .brand-icon {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+        }
+
+        .brand-text {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-text span {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-link {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+        }
+
+        .status-badge {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.15);
+        }
+
+        .status-dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+        }
+
+        .status-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+
+        @keyframes ping {
+            75%, 100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .mobile-toggle {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .mobile-toggle:hover { background: var(--accent-cyan-dim); }
+
+        .mobile-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 1px;
+            transition: var(--transition);
+        }
+
+        .mobile-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .mobile-toggle.open span:nth-child(2) { opacity: 0; transform: translateX(8px); }
+        .mobile-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 68px;
+            left: 0;
+            right: 0;
+            background: rgba(6, 8, 13, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px 24px;
+            z-index: 999;
+        }
+
+        .mobile-menu.show { display: block; }
+
+        .mobile-menu .nav-link {
+            display: block;
+            padding: 14px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           HERO SECTION
+           ═══════════════════════════════════════════════════ */
+        .hero {
+            position: relative;
+            z-index: 10;
+            padding: 140px 0 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-content { max-width: 600px; }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards 0.1s;
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards 0.2s;
+        }
+
+        .hero-typing {
+            display: block;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .typing-cursor::after {
+            content: '▋';
+            animation: blink 1s step-end infinite;
+            -webkit-text-fill-color: var(--accent-cyan);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 36px;
+            max-width: 520px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards 0.3s;
+        }
+
+        .hero-desc strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards 0.4s;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            border: 1px solid var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-2px);
+        }
+
+        /* Terminal Card */
+        .hero-terminal {
+            opacity: 0;
+            animation: scaleIn 0.6s ease forwards 0.5s;
+        }
+
+        .terminal-card {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 28px 32px;
+            position: relative;
+            transition: var(--transition-slow);
+        }
+
+        .terminal-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 60px -12px rgba(0,0,0,0.5);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .terminal-dot:nth-child(1) { background: rgba(251,113,133,0.5); }
+        .terminal-dot:nth-child(2) { background: rgba(251,191,36,0.5); }
+        .terminal-dot:nth-child(3) { background: rgba(52,211,153,0.5); }
+
+        .terminal-card:hover .terminal-dot:nth-child(1) { background: #fb7185; }
+        .terminal-card:hover .terminal-dot:nth-child(2) { background: #fbbf24; }
+        .terminal-card:hover .terminal-dot:nth-child(3) { background: #34d399; }
+
+        .terminal-title {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.3);
+            padding: 4px 14px;
+            border-radius: 6px;
+        }
+
+        .terminal-ascii {
+            font-family: var(--font-mono);
+            font-size: clamp(0.5rem, 1.2vw, 0.8rem);
+            line-height: 1.4;
+            color: rgba(34, 211, 238, 0.7);
+            white-space: pre;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .terminal-float-tag {
+            position: absolute;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .tag-version {
+            right: -16px;
+            top: -16px;
+            border-color: rgba(34, 211, 238, 0.35);
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .tag-date {
+            left: -16px;
+            bottom: -16px;
+            border-color: var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            animation-delay: 1s;
+        }
+
+        .tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(34,211,238,0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .hero-scroll {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 1s;
+        }
+
+        .hero-scroll span {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .hero-scroll-line {
+            width: 1px;
+            height: 48px;
+            background: linear-gradient(to bottom, rgba(34,211,238,0.4), transparent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           SVG PROFILE
+           ═══════════════════════════════════════════════════ */
+        .profile-svg-wrap {
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards 0.35s;
+            margin-bottom: 20px;
+        }
+
+        .profile-svg-container {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            padding: 4px;
+            background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(52,211,153,0.1));
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .profile-svg-container:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 40px rgba(34,211,238,0.2);
+            transform: scale(1.05);
+        }
+
+        .profile-svg-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           PROJECTS GRID
+           ═══════════════════════════════════════════════════ */
+        .projects-header {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+
+        .projects-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            border-color: rgba(255,255,255,0.2);
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .filter-btn.active {
+            border-color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 28px;
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px -8px rgba(0,0,0,0.4);
+        }
+
+        .project-card.featured {
+            border-color: rgba(34, 211, 238, 0.2);
+            background: linear-gradient(135deg, rgba(34,211,238,0.04), var(--bg-card), rgba(34,211,238,0.04));
+        }
+
+        .project-featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(34,211,238,0.3);
+            background: var(--accent-cyan-dim);
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-cyan);
+            margin-bottom: 16px;
+            animation: pulseGlow 2.5s ease-in-out infinite;
+        }
+
+        .project-status {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .project-status-dot.active { background: var(--accent-green); box-shadow: 0 0 8px rgba(52,211,153,0.5); }
+        .project-status-dot.progress { background: var(--accent-amber); animation: pulse 2s ease-in-out infinite; }
+        .project-status-dot.archived { background: var(--text-muted); }
+
+        .project-status span {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .project-year {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-title {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 18px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .project-tag {
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-tag {
+            border-color: rgba(34,211,238,0.2);
+            background: var(--accent-cyan-dim);
+        }
+
+        .project-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .project-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .project-link:hover { color: var(--accent-cyan); }
+        .project-link.live { color: var(--accent-cyan); }
+        .project-link.live:hover { color: var(--text-primary); }
+
+        .project-bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background: linear-gradient(to right, var(--accent-cyan), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .project-card:hover .project-bottom-bar { width: 100%; }
+
+        /* ═══════════════════════════════════════════════════
+           LAB NOTES
+           ═══════════════════════════════════════════════════ */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-top: 48px;
+        }
+
+        .note-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 28px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .note-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px -8px rgba(0,0,0,0.4);
+        }
+
+        .note-gradient {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: var(--transition-slow);
+        }
+
+        .note-card:hover .note-gradient { opacity: 1; }
+
+        .note-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-category {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .note-card:hover .note-category {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .note-date {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .note-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-card:hover .note-title {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .note-excerpt {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-read {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            margin-top: 18px;
+            opacity: 1;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background: linear-gradient(to right, var(--accent-cyan), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .note-card:hover .note-bottom-bar { width: 100%; }
+
+        /* ═══════════════════════════════════════════════════
+           WORKBENCH
+           ═══════════════════════════════════════════════════ */
+        .workbench-card {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            overflow: hidden;
+            margin-top: 48px;
+            transition: var(--transition);
+        }
+
+        .workbench-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px -8px rgba(0,0,0,0.4);
+        }
+
+        .workbench-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .workbench-path {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: 16px;
+        }
+
+        .workbench-live {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .workbench-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .wip-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(136, 146, 164, 0.06);
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .wip-item:hover { background: rgba(255,255,255,0.02); }
+        .wip-item:last-child { border-bottom: none; }
+
+        .wip-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wip-dollar {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            transition: var(--transition);
+        }
+
+        .wip-item:hover .wip-dollar { transform: translateX(4px); }
+
+        .wip-name h4 {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .wip-item:hover .wip-name h4 {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wip-desc {
+            padding-left: 28px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .wip-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-left: 28px;
+        }
+
+        .wip-progress {
+            flex: 1;
+            max-width: 120px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.06);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .wip-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.7s ease;
+        }
+
+        .wip-progress-bar.high { background: var(--accent-cyan); }
+        .wip-progress-bar.mid { background: var(--accent-amber); }
+        .wip-progress-bar.low { background: var(--accent-rose); }
+
+        .wip-percent {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            min-width: 36px;
+        }
+
+        .wip-date {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .workbench-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .workbench-footer .prompt { color: var(--accent-cyan); }
+
+        .workbench-footer .hint {
+            margin-left: auto;
+            color: rgba(34,211,238,0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════ */
+        .footer {
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 48px;
+        }
+
+        .footer-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .footer-title span {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+        }
+
+        .footer-link-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-link-left svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .footer-link:hover .footer-link-left svg { color: var(--accent-cyan); }
+
+        .footer-link-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover .footer-link-name {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-link-handle {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding-top: 32px;
+            margin-top: 64px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-made {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-copyright {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0.1); }
+            50% { box-shadow: 0 0 16px 4px rgba(34,211,238,0.15); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════ */
+        @media (min-width: 480px) {
+            .hero-grid { gap: 32px; }
+            .terminal-ascii { font-size: 0.65rem; }
+        }
+
+        @media (min-width: 640px) {
+            .projects-grid { grid-template-columns: repeat(2, 1fr); }
+            .notes-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-bottom { flex-direction: row; justify-content: space-between; }
+            .wip-item { flex-direction: row; align-items: center; justify-content: space-between; }
+            .wip-meta { padding-left: 0; }
+            .profile-svg-container { width: 180px; height: 180px; }
+        }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+            .status-badge { display: flex; }
+            .mobile-toggle { display: none; }
+            .hero-grid { grid-template-columns: 1fr 1fr; }
+            .hero-scroll { display: flex; }
+            .profile-svg-wrap { justify-content: flex-start; }
+            .projects-header { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+            .section { padding: 120px 0; }
+        }
+
+        @media (min-width: 1024px) {
+            .projects-grid { grid-template-columns: repeat(3, 1fr); }
+            .project-card.featured { grid-column: span 2; }
+            .container { max-width: 1100px; }
+        }
+
+        @media (max-width: 479px) {
+            .hero { padding: 120px 0 60px; min-height: auto; }
+            .hero-title { font-size: 1.8rem; }
+            .hero-desc { font-size: 0.95rem; }
+            .btn { padding: 12px 20px; font-size: 0.75rem; }
+            .section { padding: 60px 0; }
+            .section-title { font-size: 1.5rem; }
+            .project-card, .note-card { padding: 20px; }
+            .footer-title { font-size: 1.5rem; }
+            .profile-svg-container { width: 140px; height: 140px; }
+            .terminal-float-tag { display: none; }
+            .digital-clock { font-size: 0.7rem; padding: 6px 10px; top: 70px; left: 12px; }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           DIGITAL CLOCK
+           ═══════════════════════════════════════════════════ */
+        .digital-clock {
+            position: fixed;
+            top: 76px;
+            left: 16px;
+            z-index: 9999;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            background: rgba(6, 8, 13, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+        }
+
+        .digital-clock:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+
+        .clock-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .clock-time {
+            font-weight: 600;
+        }
+
+        .clock-separator {
+            animation: blink 1s step-end infinite;
+        }
+
+        .clock-date {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Effects -->
+    <canvas id="matrix-canvas"></canvas>
+    <div class="scanlines"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Digital Clock -->
+    <div class="digital-clock" id="digitalClock">
+        <div class="clock-dot"></div>
+        <span class="clock-time" id="clockTime">00:00:00</span>
+        <span class="clock-date" id="clockDate"></span>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="brand">
+                    <div class="brand-icon">⚡</div>
+                    <div class="brand-text">FADILL</div>
+                </a>
+
+                <nav class="nav-links">
+                    <a href="#" class="nav-link active">Home</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#notes" class="nav-link">Notes</a>
+                    <a href="#workbench" class="nav-link">Workbench</a>
+                </nav>
+
+                <div class="header-right">
+                    <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                    </a>
+
+                    <div class="status-badge">
+                        <div class="status-dot"></div>
+                        <span>status: building</span>
+                    </div>
+
+                    <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" class="nav-link" onclick="closeMobile()">Home</a>
+        <a href="#projects" class="nav-link" onclick="closeMobile()">Projects</a>
+        <a href="#notes" class="nav-link" onclick="closeMobile()">Notes</a>
+        <a href="#workbench" class="nav-link" onclick="closeMobile()">Workbench</a>
+        <a href="#connect" class="nav-link" onclick="closeMobile()">Connect</a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <!-- Left: Text -->
+                <div class="hero-content">
+                    <div class="profile-svg-wrap">
+                        <div class="profile-svg-container">
+                            <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                                <source src="profile.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+
+                    <p class="hero-label">Fadill — Where Code Meets Curiosity</p>
+
+                    <h1 class="hero-title">
+                        Forging digital<br>
+                        <span class="hero-typing typing-cursor" id="typingText"></span>
+                    </h1>
+
+                    <p class="hero-desc">
+                        Welcome to my digital workshop — a space for experiments, prototypes, and open-source artifacts. Currently building at <strong>UNUSA</strong>. Here, ideas are forged, tested, and refined. Not a portfolio. A laboratory.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn btn-primary">
+                            explore artifacts
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                            github
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Terminal -->
+                <div class="hero-terminal">
+                    <div class="terminal-card" style="position:relative">
+                        <div class="terminal-dots">
+                            <div class="terminal-dot"></div>
+                            <div class="terminal-dot"></div>
+                            <div class="terminal-dot"></div>
+                        </div>
+                        <div class="terminal-title">terminal://fadill</div>
+
+                        <div class="terminal-ascii" aria-hidden="true">
+<span class="hide-mobile">┌─────────────────────────────────────┐
+│                                     │
+│  ███████╗ █████╗ ██████╗ ██╗██╗     │
+│  ██╔════╝██╔══██╗██╔══██╗██║██║     │
+│  █████╗  ███████║██║  ██║██║██║     │
+│  ██╔══╝  ██╔══██║██║  ██║██║██║     │
+│  ██║     ██║  ██║██████╔╝██║███████╗│
+│  ╚═╝     ╚═╝  ╚═╝╚═════╝ ╚═╝╚══════╝│
+│           Code                      │
+│                                     │
+│   > experiments loaded: 21          │
+│   > status: forging                 │
+│   > last spark: today               │
+│                                     │
+└─────────────────────────────────────┘</span><span class="show-mobile">┌───────────────────────┐
+│ ███████╗██████╗       │
+│ ██╔════╝██╔═══╝       │
+│ █████╗  ██║           │
+│ ██╔══╝  ██║           │
+│ ██║     ██████╗       │
+│ ╚═╝     ╚═════╝       │
+│                       │
+│  > experiments: 21    │
+│  > status: forging    │
+└───────────────────────┘</span></div>
+
+                        <div class="terminal-float-tag tag-version">
+                            <div class="tag-dot"></div>
+                            v1.0.0
+                        </div>
+                        <div class="terminal-float-tag tag-date">Jul. 2026</div>
+
+                        <div class="hero-glow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-scroll">
+            <span>scroll</span>
+            <div class="hero-scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects" class="section section-border">
+        <div class="container">
+            <div class="projects-header animate-on-scroll">
+                <div>
+                    <p class="section-label">Artifacts</p>
+                    <h2 class="section-title">Open Source Projects</h2>
+                    <p class="section-desc">Projects fetched automatically from GitHub repositories.</p>
+                </div>
+                <div class="projects-filters">
+                    <button class="filter-btn active" data-filter="all">all</button>
+                    <button class="filter-btn" data-filter="shipped">shipped</button>
+                    <button class="filter-btn" data-filter="in-progress">in-progress</button>
+                    <button class="filter-btn" data-filter="security">security</button>
+                </div>
+            </div>
+
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Cards will be rendered by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- LAB NOTES -->
+    <section id="notes" class="section section-border">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <p class="section-label">Field Notes</p>
+                <h2 class="section-title">Lab Notes</h2>
+                <p class="section-desc">Brief observations, technical findings, and thoughts from the workbench.</p>
+            </div>
+
+            <div class="notes-grid" id="notesGrid">
+                <!-- Cards will be rendered by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- WORKBENCH -->
+    <section id="workbench" class="section section-border">
+        <div class="container">
+            <div class="animate-on-scroll">
+                <p class="section-label">Work in Progress</p>
+                <h2 class="section-title">Workbench</h2>
+                <p class="section-desc">Active experiments and prototypes. Things that are being built, broken, and rebuilt.</p>
+            </div>
+
+            <div class="workbench-card animate-on-scroll">
+                <div class="workbench-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot"></div>
+                        <div class="terminal-dot"></div>
+                        <div class="terminal-dot"></div>
+                    </div>
+                    <span class="workbench-path">~/fadillah02/active</span>
+                    <div class="workbench-live">
+                        <div class="workbench-live-dot"></div>
+                        <span>live</span>
+                    </div>
+                </div>
+
+                <div id="wipItems">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <div class="workbench-footer">
+                    <span class="prompt">❯</span>
+                    <span class="typing-cursor">git status --all</span>
+                    <span class="hint">press enter to run</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="connect" class="footer section section-border">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Left -->
+                <div class="animate-on-scroll">
+                    <p class="section-label">Connect</p>
+                    <h2 class="footer-title">
+                        Let's build something <span>together</span>
+                    </h2>
+                    <p class="section-desc" style="margin-bottom: 28px;">
+                        Always interested in collaborations, interesting problems, and conversations about code, design, and cybersecurity.
+                    </p>
+                    <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        check my github
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Right -->
+                <div class="animate-on-scroll">
+                    <p class="section-label" style="color: var(--text-muted)">Find me elsewhere</p>
+                    <div class="footer-links">
+                        <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="footer-link">
+                            <div class="footer-link-left">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                                <span class="footer-link-name">GitHub</span>
+                            </div>
+                            <span class="footer-link-handle">@Fadillah02</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-made">
+                    <div class="status-dot"></div>
+                    <span>Forged with</span>
+                    <span style="color:#fb7185">♥</span>
+                    <span>& code</span>
+                </div>
+                <p class="footer-copyright">© 2026 FADILL — All experiments reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Responsive show/hide for terminal ASCII -->
+    <style>
+        .show-mobile { display: inline; }
+        .hide-mobile { display: none; }
+        @media (min-width: 640px) {
+            .show-mobile { display: none; }
+            .hide-mobile { display: inline; }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 479px) {
+            .container { padding: 0 16px; }
+            .header-inner { padding: 0; }
+            .mobile-menu { padding: 12px 16px 20px; }
+            .mobile-menu .nav-link { padding: 12px 0; }
+            .terminal-card { padding: 20px; }
+            .terminal-ascii { font-size: 0.45rem; line-height: 1.3; }
+            .hero-actions { flex-direction: column; }
+            .hero-actions .btn { width: 100%; justify-content: center; }
+            .projects-filters { gap: 6px; }
+            .filter-btn { padding: 8px 14px; font-size: 0.65rem; }
+            .project-tags { gap: 4px; }
+            .project-tag { padding: 4px 8px; font-size: 0.6rem; }
+            .footer-links { gap: 4px; }
+            .footer-link { padding: 12px 14px; }
+            .footer-link-handle { font-size: 0.65rem; }
+        }
+        
+        @media (min-width: 480px) and (max-width: 767px) {
+            .hero-grid { gap: 40px; }
+            .terminal-ascii { font-size: 0.55rem; }
+        }
+    </style>
+
+    <script>
+    // ═══════════════════════════════════════════════════
+    // CONFIG
+    // ═══════════════════════════════════════════════════
+    const GITHUB_USER = 'Fadillah02';
+    let projects = [];
+    let cachedProjects = null;
+    try {
+        cachedProjects = localStorage.getItem('fadill_projects');
+        // Force refresh if old cache format (no _repo field)
+        if (cachedProjects) {
+            const old = JSON.parse(cachedProjects);
+            if (old.data && old.data.length && !old.data[0]._repo) {
+                localStorage.removeItem('fadill_projects');
+                cachedProjects = null;
+            }
+        }
+    } catch(e) {}
+
+    // ═══════════════════════════════════════════════════
+    // GITHUB API — FETCH REPOS + README PREVIEW
+    // ═══════════════════════════════════════════════════
+    async function fetchReadmePreview(owner, repo) {
+        const branches = ['main', 'master'];
+        for (const branch of branches) {
+            try {
+                const res = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/README.md`);
+                if (!res.ok) continue;
+                const text = await res.text();
+                const lines = text.split('\n')
+                    .map(l => l.trim())
+                    .filter(l => {
+                        if (!l || l.length < 15) return false;
+                        if (/^#/.test(l)) return false;
+                        if (/^```/.test(l)) return false;
+                        if (/^!\[/.test(l)) return false;
+                        if (/^\[![^\]]+\]/.test(l)) return false;
+                        if (/^<[^>]+>/.test(l)) return false;
+                        return true;
+                    })
+                    .map(l => l.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_~`]/g, '').trim())
+                    .filter(l => l.length > 15);
+                return lines[0] ? lines[0].slice(0, 200) : null;
+            } catch {
+                continue;
+            }
+        }
+        return null;
+    }
+
+    async function fetchGitHubRepos() {
+        if (cachedProjects) {
+            try {
+                const parsed = JSON.parse(cachedProjects);
+                if (Date.now() - parsed.timestamp < 1800000) {
+                    projects = parsed.data;
+                    renderProjects();
+                    renderWIP();
+                    return;
+                }
+            } catch(e) {}
+        }
+
+        const grid = document.getElementById('projectsGrid');
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted)"><span style="font-family:var(--font-mono);font-size:0.85rem">⟳ loading repos...</span></div>';
+
+        try {
+            const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=50`);
+            if (!res.ok) throw new Error('GitHub API error');
+            const repos = await res.json();
+
+            const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+
+            projects = repos
+                .filter(r => !r.fork && !r.archived)
+                .map(r => {
+                    const topics = r.topics || [];
+                    const lang = r.language ? [r.language] : [];
+                    const tags = [...new Set([...lang, ...topics])];
+                    const pushedAt = new Date(r.pushed_at).getTime();
+                    const isRecent = pushedAt > thirtyDaysAgo;
+                    const isSecurity = topics.some(t => ['security', 'forensics', 'pentest', 'exploit', 'networking', 'social'].includes(t.toLowerCase())) || (r.description && /security|forensik|exploit|pentest|wireless|jaringan/i.test(r.description));
+
+                    return {
+                        title: r.name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+                        desc: r.description || null,
+                        tags: tags.length ? tags : ['Misc'],
+                        status: isRecent ? 'in-progress' : 'shipped',
+                        category: isSecurity ? 'security' : (isRecent ? 'in-progress' : 'shipped'),
+                        year: new Date(r.created_at).getFullYear().toString(),
+                        url: r.html_url,
+                        highlight: r.stargazers_count > 0 || isSecurity,
+                        _repo: r.name
+                    };
+                });
+
+            // Fetch README preview for repos with short/no description (max 8)
+            const needReadme = projects.filter(p => !p.desc || p.desc.length < 50).slice(0, 8);
+            if (needReadme.length) {
+                const previews = await Promise.allSettled(
+                    needReadme.map(p => fetchReadmePreview(GITHUB_USER, p._repo))
+                );
+                needReadme.forEach((p, i) => {
+                    const preview = previews[i].value;
+                    p.desc = preview || 'Open source project — check the README on GitHub';
+                });
+            }
+
+            // Fallback for remaining repos without desc
+            projects.forEach(p => {
+                if (!p.desc) p.desc = 'Open source project — check the README on GitHub';
+            });
+
+            try { localStorage.setItem('fadill_projects', JSON.stringify({ timestamp: Date.now(), data: projects })); } catch(e) {}
+        } catch (e) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted)"><span style="font-family:var(--font-mono);font-size:0.85rem">⚠ Gagal memuat repositori. Coba refresh.</span></div>';
+            projects = [];
+        }
+
+        renderProjects();
+        renderWIP();
+    }
+
+    const notes = [
+        {
+            title: "Digital Forensics dengan PowerShell",
+            excerpt: "Menggunakan PowerShell untuk menganalisis artefak digital, mengumpulkan bukti dari sistem yang terkompromi, dan membuat laporan forensik.",
+            date: "Jul 2026",
+            category: "security",
+            gradient: "linear-gradient(135deg, rgba(251,113,133,0.08), rgba(167,139,250,0.08))"
+        },
+        {
+            title: "Wireless Network Security Testing",
+            excerpt: "Metodologi pengujian keamanan jaringan wireless — dari scanning dan enumeration hingga exploit dan hardening.",
+            date: "Jul 2026",
+            category: "security",
+            gradient: "linear-gradient(135deg, rgba(167,139,250,0.08), rgba(34,211,238,0.08))"
+        },
+        {
+            title: "Building an Inventory Management System",
+            excerpt: "Membangun sistem inventori berbasis web dengan Google Apps Script dan Google Sheets sebagai database.",
+            date: "2024",
+            category: "development",
+            gradient: "linear-gradient(135deg, rgba(34,211,238,0.08), rgba(52,211,153,0.08))"
+        },
+        {
+            title: "3D Animation dengan Three.js & WebGL",
+            excerpt: "Eksplorasi pembuatan animasi 3D interaktif untuk landing page menggunakan Three.js dan WebGL API.",
+            date: "2024",
+            category: "frontend",
+            gradient: "linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,113,133,0.08))"
+        }
+    ];
+
+    // ═══════════════════════════════════════════════════
+    // RENDER FUNCTIONS
+    // ═══════════════════════════════════════════════════
+    function renderProjects(filter = 'all') {
+        const grid = document.getElementById('projectsGrid');
+        const filtered = filter === 'all' ? projects :
+                        filter === 'security' ? projects.filter(p => p.category === 'security') :
+                        projects.filter(p => p.status === filter);
+
+        grid.innerHTML = filtered.map((p, i) => `
+            <article class="project-card ${p.highlight ? 'featured' : ''}" style="animation: fadeInUp 0.5s ease forwards ${i * 0.08 + 0.1}s; opacity: 0;">
+                ${p.highlight ? `<div class="project-featured-badge"><span>✦</span> Featured</div>` : ''}
+                <div class="project-status">
+                    <div class="project-status-dot ${p.status === 'shipped' ? 'active' : p.status === 'in-progress' ? 'progress' : 'archived'}"></div>
+                    <span>${p.status}</span>
+                </div>
+                <div class="project-year">${p.year}</div>
+                <h3 class="project-title">${p.title}</h3>
+                <p class="project-desc">${p.desc}</p>
+                <div class="project-tags">
+                    ${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}
+                </div>
+                <div class="project-links">
+                    <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="project-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                        source
+                    </a>
+                </div>
+                <div class="project-bottom-bar"></div>
+            </article>
+        `).join('');
+    }
+
+    function renderNotes() {
+        const grid = document.getElementById('notesGrid');
+        grid.innerHTML = notes.map((n, i) => `
+            <article class="note-card animate-on-scroll" style="animation-delay: ${i * 0.1}s">
+                <div class="note-gradient" style="background: ${n.gradient}"></div>
+                <div class="note-meta">
+                    <span class="note-category">${n.category}</span>
+                    <span class="note-date">${n.date}</span>
+                </div>
+                <h3 class="note-title">${n.title}</h3>
+                <p class="note-excerpt">${n.excerpt}</p>
+                <div class="note-read">
+                    <span>read more</span>
+                    <span>→</span>
+                </div>
+                <div class="note-bottom-bar"></div>
+            </article>
+        `).join('');
+    }
+
+    function renderWIP() {
+        const container = document.getElementById('wipItems');
+        const wip = projects.filter(p => p.status === 'in-progress').slice(0, 5);
+        container.innerHTML = wip.length ? wip.map((item, i) => `
+            <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="wip-item" style="animation: fadeIn 0.4s ease forwards ${i * 0.1 + 0.3}s; opacity: 0;">
+                <div class="wip-name">
+                    <span class="wip-dollar">$</span>
+                    <h4>${item.title}</h4>
+                </div>
+                <p class="wip-desc">${item.desc}</p>
+                <div class="wip-meta">
+                    <div class="wip-progress">
+                        <div class="wip-progress-bar mid" style="width: 60%"></div>
+                    </div>
+                    <span class="wip-percent">in dev</span>
+                    <span class="wip-date">${item.year}</span>
+                </div>
+            </a>
+        `).join('') : '<div style="padding:24px;text-align:center;color:var(--text-muted);font-family:var(--font-mono);font-size:0.8rem">No active projects</div>';
+    }
+
+    function filterProjects(filter) {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+        renderProjects(filter);
+    }
+
+    // ═══════════════════════════════════════════════════
+    // TYPEWRITER EFFECT
+    // ═══════════════════════════════════════════════════
+    const roles = ["building interfaces", "securing networks", "exploring systems", "hacking ethically", "crafting code"];
+    let roleIndex = 0, charIndex = 0, isDeleting = false;
+
+    function typeWriter() {
+        const el = document.getElementById('typingText');
+        const current = roles[roleIndex];
+
+        if (!isDeleting) {
+            el.textContent = current.slice(0, charIndex + 1);
+            charIndex++;
+            if (charIndex === current.length) {
+                setTimeout(() => { isDeleting = true; typeWriter(); }, 2000);
+                return;
+            }
+        } else {
+            el.textContent = current.slice(0, charIndex - 1);
+            charIndex--;
+            if (charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+            }
+        }
+        setTimeout(typeWriter, isDeleting ? 40 : 80);
+    }
+
+    // ═══════════════════════════════════════════════════
+    // MATRIX RAIN
+    // ═══════════════════════════════════════════════════
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const chars = 'アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+    const fontSize = 14;
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
+
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(6, 8, 13, 0.12)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.25)';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+            const char = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // CURSOR GLOW
+    // ═══════════════════════════════════════════════════
+    const cursorGlow = document.getElementById('cursorGlow');
+    let mouseX = -500, mouseY = -500;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function updateCursorGlow() {
+        cursorGlow.style.left = mouseX + 'px';
+        cursorGlow.style.top = mouseY + 'px';
+        requestAnimationFrame(updateCursorGlow);
+    }
+
+    // ═══════════════════════════════════════════════════
+    // HEADER SCROLL
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('header');
+        header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ═══════════════════════════════════════════════════
+    // MOBILE MENU
+    // ═══════════════════════════════════════════════════
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    mobileToggle.addEventListener('click', () => {
+        mobileToggle.classList.toggle('open');
+        mobileMenu.classList.toggle('show');
+    });
+
+    function closeMobile() {
+        mobileToggle.classList.remove('open');
+        mobileMenu.classList.remove('show');
+    }
+
+    // ═══════════════════════════════════════════════════
+    // SCROLL ANIMATION
+    // ═══════════════════════════════════════════════════
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // ═══════════════════════════════════════════════════
+    // DIGITAL CLOCK
+    // ═══════════════════════════════════════════════════
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const day = days[now.getDay()];
+        const date = now.getDate();
+        const month = months[now.getMonth()];
+        
+        document.getElementById('clockTime').innerHTML = 
+            `${hours}<span class="clock-separator">:</span>${minutes}<span class="clock-separator">:</span>${seconds}`;
+        document.getElementById('clockDate').textContent = `${day}, ${date} ${month}`;
+    }
+
+    // ═══════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', () => {
+        fetchGitHubRepos();
+        renderNotes();
+        typeWriter();
+        setInterval(drawMatrix, 50);
+        updateCursorGlow();
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => filterProjects(btn.dataset.filter));
+        });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    });
+
+    // Resize matrix on window resize
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        columns = Math.floor(canvas.width / fontSize);
+        drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
+    });
+    </script>
+</body>
+</html>
