@@ -1519,6 +1519,301 @@
         }
 
         /* ═══════════════════════════════════════════════════
+           VINYL MUSIC PLAYER
+           ═══════════════════════════════════════════════════ */
+        .music-fab {
+            position: fixed;
+            bottom: 30px; left: 30px;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f43f5e, #ec4899);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(244,63,94,0.4);
+            z-index: 10000;
+            transition: all 0.3s;
+        }
+        .music-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(244,63,94,0.6);
+        }
+        .music-fab.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 4px 20px rgba(99,102,241,0.5);
+        }
+
+        .vinyl-player {
+            position: fixed;
+            bottom: 96px; left: 30px;
+            width: 400px;
+            background: rgba(10,12,20,0.96);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 18px;
+            padding: 24px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .vinyl-player.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0) scale(1);
+        }
+        .vp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .vp-header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.06em;
+        }
+        .vp-close {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .vp-close:hover {
+            background: rgba(244,63,94,0.2);
+            border-color: rgba(244,63,94,0.4);
+            color: #f43f5e;
+        }
+
+        /* Vinyl Layout */
+        .vp-vinyl-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .vp-album {
+            width: 170px; height: 170px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+        .vp-album img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        .vp-album-info {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 12px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+        .vp-album-artist {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .vp-album-title {
+            font-size: 11px;
+            color: var(--accent-cyan);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .vp-vinyl {
+            width: 170px; height: 170px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%,
+                #0d0d0d 0%, #0d0d0d 17%,
+                #161616 17.5%, #0d0d0d 18%,
+                #161616 27%, #0d0d0d 27.5%,
+                #161616 28%, #0d0d0d 37%,
+                #161616 37.5%, #0d0d0d 38%,
+                #161616 47%, #0d0d0d 47.5%,
+                #161616 48%, #0d0d0d 100%
+            );
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.7);
+            margin-left: -40px;
+            z-index: 1;
+            transition: transform 0.1s linear;
+        }
+        .vp-vinyl.spinning {
+            animation: vspin 1.8s linear infinite;
+        }
+        @keyframes vspin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .vp-vinyl::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: repeating-radial-gradient(
+                circle at center,
+                transparent 0px, transparent 2px,
+                rgba(50,50,50,0.12) 2px, rgba(50,50,50,0.12) 3px
+            );
+            z-index: 2;
+        }
+        .vp-vinyl::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1a1a1a 0%, #0d0d0d 70%);
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+            z-index: 4;
+        }
+        .vp-vinyl-shine {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.02) 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+        .vp-vinyl-label {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 3;
+            border: 1.5px solid rgba(255,255,255,0.08);
+        }
+        .vp-vinyl-label img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        .vp-vinyl-hole {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            z-index: 6;
+        }
+
+        /* Progress */
+        .vp-progress {
+            margin-bottom: 14px;
+        }
+        .vp-progress-track {
+            width: 100%; height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .vp-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .vp-times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 5px;
+        }
+
+        /* Controls */
+        .vp-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        .vp-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .vp-btn:hover {
+            background: rgba(99,102,241,0.15);
+            border-color: rgba(99,102,241,0.3);
+            color: var(--accent-purple);
+        }
+        .vp-btn.play {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            color: #fff;
+        }
+        .vp-btn.play:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 24px rgba(34,211,238,0.35);
+        }
+        .vp-btn.play svg { width: 20px; height: 20px; }
+
+        .vp-volume {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        .vp-volume svg { width: 14px; height: 14px; color: var(--text-muted); }
+        .vp-volume input[type="range"] {
+            -webkit-appearance: none;
+            width: 70px; height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            outline: none;
+        }
+        .vp-volume input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+        }
+
+        @media (max-width: 640px) {
+            .music-fab { bottom: 20px; left: 20px; width: 44px; height: 44px; }
+            .vinyl-player { width: calc(100vw - 40px); left: 20px; bottom: 80px; padding: 16px; }
+            .vp-album { width: 120px; height: 120px; }
+            .vp-vinyl { width: 120px; height: 120px; margin-left: -30px; }
+            .vp-vinyl-label { width: 32px; height: 32px; }
+            .vp-vinyl::after { width: 36px; height: 36px; }
+        }
+
+        /* ═══════════════════════════════════════════════════
            DIGITAL CLOCK
            ═══════════════════════════════════════════════════ */
         .digital-clock {
@@ -1609,6 +1904,62 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
     </div>
+
+    <!-- Music Vinyl Player -->
+    <button class="music-fab" id="musicFab" title="Music">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+    <div class="vinyl-player" id="vinylPlayer">
+        <div class="vp-header">
+            <h3>NOW PLAYING</h3>
+            <button class="vp-close" id="vpClose">✕</button>
+        </div>
+        <div class="vp-vinyl-wrap">
+            <div class="vp-album">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Album" id="vpAlbumArt">
+                <div class="vp-album-info">
+                    <div class="vp-album-artist" id="vpArtist">Good_B_Music</div>
+                    <div class="vp-album-title" id="vpTitle">My Life (Main)</div>
+                </div>
+            </div>
+            <div class="vp-vinyl" id="vpVinyl">
+                <div class="vp-vinyl-shine"></div>
+                <div class="vp-vinyl-label">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&h=100&fit=crop" alt="Label" id="vpLabelArt">
+                </div>
+                <div class="vp-vinyl-hole"></div>
+            </div>
+        </div>
+        <div class="vp-progress">
+            <div class="vp-progress-track" id="vpProgressTrack">
+                <div class="vp-progress-fill" id="vpProgressFill"></div>
+            </div>
+            <div class="vp-times">
+                <span id="vpCurrentTime">0:00</span>
+                <span id="vpTotalTime">0:00</span>
+            </div>
+        </div>
+        <div class="vp-controls">
+            <button class="vp-btn" id="vpPrev">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <button class="vp-btn play" id="vpPlay">
+                <svg viewBox="0 0 24 24" fill="currentColor" id="vpPlayIcon"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="vp-btn" id="vpNext">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
+        </div>
+        <div class="vp-volume">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+            <input type="range" id="vpVolume" min="0" max="1" step="0.01" value="0.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </div>
+    </div>
+
+    <audio id="vpAudio" preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- Digital Clock -->
     <div class="digital-clock" id="digitalClock">
@@ -2276,6 +2627,98 @@
             `${hours}<span class="clock-separator">:</span>${minutes}<span class="clock-separator">:</span>${seconds}`;
         document.getElementById('clockDate').textContent = `${day}, ${date} ${month}`;
     }
+
+    // ═══════════════════════════════════════════════════
+    // VINYL MUSIC PLAYER
+    // ═══════════════════════════════════════════════════
+    const vpAudio = document.getElementById('vpAudio');
+    const vpVinyl = document.getElementById('vpVinyl');
+    const vpPlay = document.getElementById('vpPlay');
+    const vpPlayIcon = document.getElementById('vpPlayIcon');
+    const vpProgressFill = document.getElementById('vpProgressFill');
+    const vpProgressTrack = document.getElementById('vpProgressTrack');
+    const vpCurrentTime = document.getElementById('vpCurrentTime');
+    const vpTotalTime = document.getElementById('vpTotalTime');
+    const vpVolume = document.getElementById('vpVolume');
+    const musicFab = document.getElementById('musicFab');
+    const vinylPlayer = document.getElementById('vinylPlayer');
+    const vpClose = document.getElementById('vpClose');
+    let vpPlaying = false;
+
+    const vpPlaylist = [
+        { src:'music.mp3', artist:'Good_B_Music', title:'My Life (Main)', art:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop' },
+    ];
+    let vpTrack = 0;
+
+    function vpFormatTime(s) {
+        const m = Math.floor(s/60);
+        const sec = Math.floor(s%60);
+        return m + ':' + String(sec).padStart(2,'0');
+    }
+
+    function vpLoadTrack(i) {
+        const t = vpPlaylist[i];
+        vpAudio.src = t.src;
+        document.getElementById('vpArtist').textContent = t.artist;
+        document.getElementById('vpTitle').textContent = t.title;
+        document.getElementById('vpAlbumArt').src = t.art;
+        document.getElementById('vpLabelArt').src = t.art;
+        vpAudio.load();
+    }
+
+    musicFab.addEventListener('click', () => {
+        const isOpen = vinylPlayer.classList.toggle('active');
+        musicFab.classList.toggle('active');
+    });
+    vpClose.addEventListener('click', () => {
+        vinylPlayer.classList.remove('active');
+        musicFab.classList.remove('active');
+    });
+
+    vpPlay.addEventListener('click', () => {
+        if (vpPlaying) {
+            vpAudio.pause();
+            vpVinyl.classList.remove('spinning');
+            vpPlayIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+        } else {
+            vpAudio.play().catch(()=>{});
+            vpVinyl.classList.add('spinning');
+            vpPlayIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        }
+        vpPlaying = !vpPlaying;
+    });
+
+    vpAudio.addEventListener('timeupdate', () => {
+        if (vpAudio.duration) {
+            vpProgressFill.style.width = (vpAudio.currentTime / vpAudio.duration * 100) + '%';
+            vpCurrentTime.textContent = vpFormatTime(vpAudio.currentTime);
+            vpTotalTime.textContent = vpFormatTime(vpAudio.duration);
+        }
+    });
+    vpAudio.addEventListener('ended', () => {
+        vpPlaying = false;
+        vpVinyl.classList.remove('spinning');
+        vpPlayIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+        vpProgressFill.style.width = '0%';
+    });
+    vpProgressTrack.addEventListener('click', (e) => {
+        if (vpAudio.duration) {
+            const r = vpProgressTrack.getBoundingClientRect();
+            vpAudio.currentTime = ((e.clientX - r.left) / r.width) * vpAudio.duration;
+        }
+    });
+    vpVolume.addEventListener('input', (e) => { vpAudio.volume = e.target.value; });
+
+    document.getElementById('vpPrev').addEventListener('click', () => {
+        vpTrack = (vpTrack - 1 + vpPlaylist.length) % vpPlaylist.length;
+        vpLoadTrack(vpTrack);
+        if (vpPlaying) vpAudio.play().catch(()=>{});
+    });
+    document.getElementById('vpNext').addEventListener('click', () => {
+        vpTrack = (vpTrack + 1) % vpPlaylist.length;
+        vpLoadTrack(vpTrack);
+        if (vpPlaying) vpAudio.play().catch(()=>{});
+    });
 
     // ═══════════════════════════════════════════════════
     // INIT
