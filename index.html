@@ -1412,6 +1412,104 @@
         }
 
         /* ═══════════════════════════════════════════════════
+           FLOATING ACTION BUTTON
+           ═══════════════════════════════════════════════════ */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 12px;
+        }
+        .fab-main {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.5);
+            transition: all 0.3s ease;
+        }
+        .fab-main:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(99,102,241,0.7);
+        }
+        .fab-main.active svg {
+            transform: rotate(45deg);
+        }
+        .fab-menu {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .fab-menu.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .fab-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: flex-end;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+        .fab-item svg {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            padding: 10px;
+            border-radius: 50%;
+            background: rgba(15,15,30,0.9);
+            border: 1px solid rgba(99,102,241,0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .fab-item:hover svg {
+            background: rgba(99,102,241,0.3);
+            border-color: #6366f1;
+            transform: scale(1.1);
+        }
+        .fab-label {
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: rgba(15,15,30,0.95);
+            border: 1px solid rgba(99,102,241,0.3);
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .fab-item:hover .fab-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        @media (max-width: 640px) {
+            .fab-container { bottom: 20px; right: 20px; }
+            .fab-main { width: 48px; height: 48px; }
+            .fab-item svg { width: 40px; height: 40px; min-width: 40px; }
+        }
+
+        /* ═══════════════════════════════════════════════════
            DIGITAL CLOCK
            ═══════════════════════════════════════════════════ */
         .digital-clock {
@@ -1469,6 +1567,31 @@
     <canvas id="matrix-canvas"></canvas>
     <div class="scanlines"></div>
     <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container" id="fabContainer">
+        <div class="fab-menu" id="fabMenu">
+            <a href="Poster-fitur.html" target="_blank" class="fab-item" title="AI Poster">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                <span class="fab-label">Poster AI</span>
+            </a>
+            <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="fab-item" title="GitHub">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                <span class="fab-label">GitHub</span>
+            </a>
+            <a href="mailto:fadillah@example.com" class="fab-item" title="Email">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <span class="fab-label">Email</span>
+            </a>
+            <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fab-item" title="Top">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+                <span class="fab-label">Top</span>
+            </button>
+        </div>
+        <button class="fab-main" id="fabMain" onclick="toggleFab()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+    </div>
 
     <!-- Digital Clock -->
     <div class="digital-clock" id="digitalClock">
@@ -1747,6 +1870,21 @@
     </style>
 
     <script>
+    // ═══════════════════════════════════════════════════
+    // FLOATING ACTION BUTTON
+    // ═══════════════════════════════════════════════════
+    function toggleFab() {
+        document.getElementById('fabMain').classList.toggle('active');
+        document.getElementById('fabMenu').classList.toggle('active');
+    }
+    document.addEventListener('click', function(e) {
+        const fab = document.getElementById('fabContainer');
+        if (!fab.contains(e.target)) {
+            document.getElementById('fabMain').classList.remove('active');
+            document.getElementById('fabMenu').classList.remove('active');
+        }
+    });
+
     // ═══════════════════════════════════════════════════
     // CONFIG
     // ═══════════════════════════════════════════════════
