@@ -1521,9 +1521,15 @@
         /* ═══════════════════════════════════════════════════
            VINYL MUSIC PLAYER
            ═══════════════════════════════════════════════════ */
-        .music-fab {
+        .music-widget {
             position: fixed;
             bottom: 30px; left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10000;
+        }
+        .music-fab {
             width: 52px; height: 52px;
             border-radius: 50%;
             background: linear-gradient(135deg, #f43f5e, #ec4899);
@@ -1534,16 +1540,62 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 20px rgba(244,63,94,0.4);
-            z-index: 10000;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         .music-fab:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 30px rgba(244,63,94,0.6);
         }
-        .music-fab.active {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            box-shadow: 0 4px 20px rgba(99,102,241,0.5);
+        .music-fab.playing {
+            animation: fab-pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes fab-pulse {
+            0%,100% { box-shadow: 0 4px 20px rgba(244,63,94,0.4); }
+            50% { box-shadow: 0 4px 30px rgba(244,63,94,0.7); }
+        }
+        .fab-vinyl-icon {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1a1a1a 30%, #111 32%, #1a1a1a 34%, #111 100%);
+            position: relative;
+            transition: transform 0.3s;
+        }
+        .fab-vinyl-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f43f5e, #ec4899);
+        }
+        .fab-vinyl-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #111;
+        }
+        .music-fab.playing .fab-vinyl-icon {
+            animation: vinyl-spin 1.5s linear infinite;
+        }
+        @keyframes vinyl-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Audio Visualizer */
+        .viz-canvas {
+            height: 40px;
+            width: 60px;
+            border-radius: 8px;
+            background: rgba(14,16,24,0.8);
+            border: 1px solid rgba(244,63,94,0.2);
+            backdrop-filter: blur(8px);
         }
 
         .vinyl-player {
@@ -1902,9 +1954,12 @@
     </div>
 
     <!-- Music Vinyl Player -->
-    <button class="music-fab" id="musicFab" title="Music">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-    </button>
+    <div class="music-widget">
+        <canvas class="viz-canvas" id="vizCanvas" width="120" height="80"></canvas>
+        <button class="music-fab" id="musicFab" title="Music">
+            <div class="fab-vinyl-icon"></div>
+        </button>
+    </div>
     <div class="vinyl-player" id="vinylPlayer">
         <div class="vp-header">
             <h3>NOW PLAYING</h3>
@@ -2639,10 +2694,47 @@
     const musicFab = document.getElementById('musicFab');
     const vinylPlayer = document.getElementById('vinylPlayer');
     const vpClose = document.getElementById('vpClose');
+    const vizCanvas = document.getElementById('vizCanvas');
+    const vizCtx = vizCanvas.getContext('2d');
     let vpPlaying = false;
 
+    // Web Audio API for visualizer
+    let audioCtx, analyser, dataArray, source;
+    function initAudio() {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        source = audioCtx.createMediaElementSource(vpAudio);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    function drawViz() {
+        requestAnimationFrame(drawViz);
+        if (!analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+        const bars = 12;
+        const barW = vizCanvas.width / bars - 2;
+        for (let i = 0; i < bars; i++) {
+            const val = dataArray[i * 2] || 0;
+            const h = (val / 255) * vizCanvas.height * 0.85;
+            const x = i * (barW + 2);
+            const y = vizCanvas.height - h;
+            const grad = vizCtx.createLinearGradient(x, y, x, vizCanvas.height);
+            grad.addColorStop(0, '#f43f5e');
+            grad.addColorStop(1, '#ec4899');
+            vizCtx.fillStyle = grad;
+            vizCtx.beginPath();
+            vizCtx.roundRect(x, y, barW, h, 2);
+            vizCtx.fill();
+        }
+    }
+    drawViz();
+
     const vpPlaylist = [
-        { src:'music.mp3', artist:'Good_B_Music', title:'My Life (Main)', art:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop' },
+        { src:'music.mp3', artist:'Lofi Room', title:'Guitar Lofi Cafe', art:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop' },
     ];
     let vpTrack = 0;
 
@@ -2671,17 +2763,25 @@
         musicFab.classList.remove('active');
     });
 
+    function vpPlayFn() {
+        if (!audioCtx) initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        vpAudio.play().catch(()=>{});
+        vpVinyl.classList.add('spinning');
+        musicFab.classList.add('playing');
+        vpPlayIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        vpPlaying = true;
+    }
+    function vpPauseFn() {
+        vpAudio.pause();
+        vpVinyl.classList.remove('spinning');
+        musicFab.classList.remove('playing');
+        vpPlayIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+        vpPlaying = false;
+    }
+
     vpPlay.addEventListener('click', () => {
-        if (vpPlaying) {
-            vpAudio.pause();
-            vpVinyl.classList.remove('spinning');
-            vpPlayIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-        } else {
-            vpAudio.play().catch(()=>{});
-            vpVinyl.classList.add('spinning');
-            vpPlayIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-        }
-        vpPlaying = !vpPlaying;
+        if (vpPlaying) vpPauseFn(); else vpPlayFn();
     });
 
     vpAudio.addEventListener('timeupdate', () => {
@@ -2692,10 +2792,8 @@
         }
     });
     vpAudio.addEventListener('ended', () => {
-        vpPlaying = false;
-        vpVinyl.classList.remove('spinning');
-        vpPlayIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-        vpProgressFill.style.width = '0%';
+        vpAudio.currentTime = 0;
+        vpAudio.play().catch(()=>{});
     });
     vpProgressTrack.addEventListener('click', (e) => {
         if (vpAudio.duration) {
@@ -2714,6 +2812,13 @@
         vpTrack = (vpTrack + 1) % vpPlaylist.length;
         vpLoadTrack(vpTrack);
         if (vpPlaying) vpAudio.play().catch(()=>{});
+    });
+
+    // Auto-play on load
+    vpAudio.volume = 0.5;
+    vpAudio.addEventListener('canplay', function autoPlay() {
+        vpAudio.removeEventListener('canplay', autoPlay);
+        vpPlayFn();
     });
 
     // ═══════════════════════════════════════════════════
