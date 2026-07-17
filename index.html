@@ -2814,12 +2814,20 @@
         if (vpPlaying) vpAudio.play().catch(()=>{});
     });
 
-    // Auto-play on load
+    // Auto-play on first user interaction (browser blocks auto-play)
     vpAudio.volume = 0.5;
-    vpAudio.addEventListener('canplay', function autoPlay() {
-        vpAudio.removeEventListener('canplay', autoPlay);
+    let autoPlayed = false;
+    function firstInteraction() {
+        if (autoPlayed) return;
+        autoPlayed = true;
+        document.removeEventListener('click', firstInteraction);
+        document.removeEventListener('touchstart', firstInteraction);
+        document.removeEventListener('keydown', firstInteraction);
         vpPlayFn();
-    });
+    }
+    document.addEventListener('click', firstInteraction, { once: false });
+    document.addEventListener('touchstart', firstInteraction, { once: false });
+    document.addEventListener('keydown', firstInteraction, { once: false });
 
     // ═══════════════════════════════════════════════════
     // INIT
