@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upscale AI — Fadill</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+        :root {
+            --bg-deep: #06080d;
+            --bg-surface: #0a0c14;
+            --bg-card: rgba(15,15,30,0.85);
+            --text-main: #f1f5f9;
+            --text-dim: #64748b;
+            --text-muted: #475569;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-cyan: #22d3ee;
+            --accent-green: #10b981;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+        header {
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(99,102,241,0.15);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: white;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .logo-text span { color: var(--accent-cyan); }
+        .logo-sub {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid rgba(99,102,241,0.2);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(99,102,241,0.2);
+        }
+        .hero {
+            text-align: center;
+            padding: 48px 24px 32px;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            color: var(--text-dim);
+            font-size: 1rem;
+            margin-top: 8px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.25);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            margin-bottom: 16px;
+        }
+        .embed-container {
+            max-width: 900px;
+            margin: 0 auto 48px;
+            padding: 0 16px;
+        }
+        .embed-wrapper {
+            background: var(--bg-card);
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+        .embed-wrapper iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            display: block;
+        }
+        .embed-fallback {
+            display: none;
+            text-align: center;
+            padding: 40px 24px;
+        }
+        .embed-fallback p {
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        .embed-fallback a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .embed-fallback a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+        }
+        .howto {
+            max-width: 700px;
+            margin: 0 auto 60px;
+            padding: 0 16px;
+        }
+        .howto h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--accent-cyan);
+        }
+        .howto ol {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .howto li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+        .howto li .step {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid rgba(99,102,241,0.1);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        @media (max-width: 640px) {
+            header { padding: 16px; flex-direction: column; gap: 12px; }
+            .hero h1 { font-size: 1.5rem; }
+            .hero { padding: 32px 16px 24px; }
+            .embed-wrapper iframe { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">F</div>
+            <div>
+                <div class="logo-text">FADILL<span>.</span></div>
+                <div class="logo-sub">AI Upscaler</div>
+            </div>
+        </div>
+        <a href="index.html" class="back-btn">← Kembali</a>
+    </header>
+
+    <section class="hero">
+        <div class="badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+            Real-ESRGAN × 8X
+        </div>
+        <h1>Upscale Gambar dengan AI</h1>
+        <p>Tingkatkan resolusi gambar hingga 8 kali lipat pakai AI di browser</p>
+    </section>
+
+    <div class="embed-container">
+        <div class="embed-wrapper">
+            <iframe src="https://replicate.com/xinntao/realesrgan/embed" allowfullscreen loading="lazy"></iframe>
+            <div class="embed-fallback" id="fallback">
+                <p>Embed tidak bisa dimuat. Buka langsung di Replicate:</p>
+                <a href="https://replicate.com/xinntao/realesrgan" target="_blank" rel="noopener noreferrer">
+                    Buka Real-ESRGAN →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <section class="howto">
+        <h2>Cara Pakai</h2>
+        <ol>
+            <li><span class="step">1</span>Upload gambar yang ingin di-upscale (jpg/png)</li>
+            <li><span class="step">2</span>Pilih scale factor (2x/4x/8x)</li>
+            <li><span class="step">3</span>Klik "Submit" dan tunggu proses AI selesai</li>
+            <li><span class="step">4</span>Download hasil gambar resolusi tinggi</li>
+        </ol>
+    </section>
+
+    <footer>
+        Powered by <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan);text-decoration:none;">Real-ESRGAN</a> · 
+        <a href="https://replicate.com/xinntao/realesrgan" target="_blank" rel="noopener noreferrer" style="color:var(--text-dim);text-decoration:none;">Replicate</a>
+    </footer>
+
+    <script>
+        const iframe = document.querySelector('iframe');
+        iframe.addEventListener('error', function() {
+            document.getElementById('fallback').style.display = 'block';
+            iframe.style.display = 'none';
+        });
+        setTimeout(function() {
+            try {
+                if (iframe.contentDocument.body.innerHTML.trim() === '') {
+                    document.getElementById('fallback').style.display = 'block';
+                    iframe.style.display = 'none';
+                }
+            } catch(e) {
+                // cross-origin, iframe is likely working
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
