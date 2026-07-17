@@ -60,11 +60,19 @@
             background-image: 
                 radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent),
                 radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.05), transparent);
+            background-size: 100% 100%, 200% 200%;
+            animation: ambientBg 20s ease infinite;
             color: var(--text-main);
             font-family: var(--font-family);
             line-height: 1.6;
             display: flex;
             min-height: 100vh;
+        }
+
+        @keyframes ambientBg {
+            0%, 100% { background-position: 0% 0%, 0% 50%; }
+            50% { background-position: 0% 0%, 100% 50%; }
+        }
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -219,6 +227,7 @@
             background: var(--bg-hover);
             color: var(--text-main);
             border-color: var(--border-color);
+            transform: translateX(4px);
         }
 
         .filter-btn.active {
@@ -226,6 +235,7 @@
             color: var(--text-main);
             border-color: var(--accent-primary);
             box-shadow: var(--shadow-glow);
+            transform: translateX(4px);
         }
 
         .filter-btn.active::before {
@@ -311,6 +321,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 28px;
+            transition: opacity 0.3s ease;
+        }
+        .catalog-grid.fade-transition {
+            opacity: 0;
         }
 
         .card {
@@ -338,7 +352,7 @@
         }
 
         .card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-8px) scale(1.01);
             box-shadow: var(--shadow-lg), var(--shadow-glow);
             border-color: var(--border-glow);
         }
@@ -756,6 +770,8 @@
         .catalog-grid[data-category="Photography"] { --cat-accent: #64748b; --cat-glow: rgba(100, 116, 139, 0.2); }
         .catalog-grid[data-category="Special"] { --cat-accent: #fbbf24; --cat-glow: rgba(251, 191, 36, 0.3); }
         .catalog-grid[data-category="Hyper Realistic"] { --cat-accent: #e11d48; --cat-glow: rgba(225, 29, 72, 0.3); }
+        .catalog-grid[data-category="Photo Restore"] { --cat-accent: #d97706; --cat-glow: rgba(217, 119, 6, 0.3); }
+        .catalog-grid[data-category="Family Add"] { --cat-accent: #e11d48; --cat-glow: rgba(225, 29, 72, 0.2); }
 
         .catalog-grid .card::before {
             background: linear-gradient(90deg, transparent, var(--cat-accent, var(--accent-primary)), transparent);
@@ -930,7 +946,7 @@
             <div class="filter-group">
                 <button class="filter-btn active" data-filter="all">
                     <span>All Styles</span>
-                    <span class="filter-count">469</span>
+                    <span class="filter-count">477</span>
                 </button>
                 <button class="filter-btn" data-filter="Special">
                     <span>Special Top 15</span>
@@ -989,6 +1005,14 @@
                 <button class="filter-btn" data-filter="Hyper Realistic">
                     <span>📷 Hyper Realistic</span>
                     <span class="filter-count">25</span>
+                </button>
+                <button class="filter-btn" data-filter="Photo Restore">
+                    <span>🖼️ Photo Restore</span>
+                    <span class="filter-count">5</span>
+                </button>
+                <button class="filter-btn" data-filter="Family Add">
+                    <span>👨‍👩‍👧‍👦 Family Add</span>
+                    <span class="filter-count">3</span>
                 </button>
             </div>
         </div>
@@ -10629,6 +10653,76 @@
               prompt: "Use the uploaded image as the main subject. Transform into a street portrait taken on Kodak Tri-X 400 film with Leica M6. Portrait orientation (2:3 ratio). Apply STREET FILM REALISM: authentic Tri-X grain structure, realistic B&W tonal range, natural street lighting, authentic skin texture in monochrome, realistic environmental context, genuine street atmosphere, natural candid expression, realistic clothing and personal style details. Camera: Leica M6, 35mm Summicron, Tri-X pushed to 800. Must look like a real street photograph on film. 300 DPI. No text, no logo.",
               negativePrompt: "AI generated, digital, clean, illustration,CGI, artificial, perfect, studio, modern, color",
               ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            // ==========================================================================
+            // 🖼️ PHOTO RESTORE — Restorasi Foto Keluarga Jadi Realistik
+            // ==========================================================================
+            { id: 3001, collection: "Photo Restore", title: "🖼️ Old Family Portrait Restore", badge: "Premium", difficulty: 4,
+              desc: "Restorasi foto keluarga lawas yang buram, pudar, atau rusak jadi jernih & realistik seperti diambil kamera modern.",
+              suitableFor: ["Old Photos", "Family Restoration", "Vintage"],
+              colors: ["Natural Skin", "Warm Tone", "HD Clear"],
+              prompt: "Use the uploaded image as the main subject. Restore and enhance this old family photo to look like it was taken with a modern digital camera. Portrait orientation (2:3 ratio). Apply PHOTO RESTORE: remove dust, scratches, and fading. Enhance natural skin textures, sharpen facial features authentically. Output must look like a real photograph taken with a Sony A7 IV camera with natural lighting. Do NOT change the original faces or expressions, only enhance clarity and realism. 300 DPI, photorealistic quality. No text, no watermark.",
+              negativePrompt: "AI generated, cartoon, painting, illustration, airbrushed, overprocessed, plastic skin, makeup, fake",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3002, collection: "Photo Restore", title: "🖼️ Blur to HD Realistic", badge: "", difficulty: 5,
+              desc: "Ubah foto blur/low quality jadi高清 (HD) realistik. Cocok untuk foto CCTV, foto jadul, atau screenshot buram.",
+              suitableFor: ["Blur Photo", "Low Quality", "CCTV", "Screenshot"],
+              colors: ["Sharp Detail", "Natural Color", "HD Real"],
+              prompt: "Use the uploaded image as the main subject. Upscale and enhance this blurry or low-resolution photo to ultra-realistic HD quality. Portrait orientation (2:3 ratio). Apply BLUR TO HD: remove pixelation, add realistic detail to skin, eyes, and hair. Keep the original face structure identical. Output must look like a genuine high-resolution photograph. Natural skin texture, realistic lighting. 300 DPI, 8K clarity, print-ready. No text, no watermark.",
+              negativePrompt: "painting, illustration, cartoon, anime, CGI, artificial skin, changed identity, fantasy",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3003, collection: "Photo Restore", title: "🖼️ Damaged Photo Repair", badge: "Trending", difficulty: 5,
+              desc: "Perbaiki foto sobek, kusam, atau bernoda air. Hasil akhir bersih & realistik tanpa mengubah kenangan asli.",
+              suitableFor: ["Torn Photo", "Water Damage", "Faded", "Scratched"],
+              colors: ["Restored Natural", "Warm Vintage", "Clean"],
+              prompt: "Use the uploaded image as the main subject. Professionally restore this damaged, torn, or water-stained old photograph. Portrait orientation (2:3 ratio). Apply ADVANCED REPAIR: reconstruct missing image areas, remove stains and creases, and restore original colors naturally. The final result must look like a pristine vintage photograph scanned at high resolution. Keep the original faces and memories intact. Warm, natural color grading reminiscent of old film but with modern clarity. 300 DPI, museum-grade restoration quality. No text, no watermark.",
+              negativePrompt: "cartoon, modern digital filter, heavy editing, AI artifacts, changed facial features, artificial",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3004, collection: "Photo Restore", title: "🖼️ B&W to Color Realistic", badge: "Best Seller", difficulty: 4,
+              desc: "Warnai foto hitam putih jadi natural & realistik. Setiap tone kulit, pakaian, dan background diwarnai akurat.",
+              suitableFor: ["B&W Photo", "Colorization", "Historical"],
+              colors: ["Natural Color", "Skin Tone", "Period Accurate"],
+              prompt: "Use the uploaded image as the main subject. Colorize this black and white photograph with photorealistic accuracy. Portrait orientation (2:3 ratio). Apply B&W TO COLOR: add natural, realistic colors to skin tones, clothing, and background. Each element must be colored contextually (e.g., grass is green, skin is warm). Output must look like a genuine color photograph from the era. Keep original faces identical. 300 DPI, museum-grade colorization. No text, no watermark.",
+              negativePrompt: "cartoon, oversaturated, fake colors, painting, AI artifacts, changed identity, modern filters",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3005, collection: "Photo Restore", title: "🖼️ 90s Camera Realistic", badge: "", difficulty: 3,
+              desc: "Bikin foto jadul 90-an keliatan real kayak diambil kamera modern. Pertahankan momen nostalgia tapi kualitas HD.",
+              suitableFor: ["90s Photo", "Childhood Memory", "Old Album"],
+              colors: ["Retro Tone", "Warm Memory", "HD"],
+              prompt: "Use the uploaded image as the main subject. Enhance and restore this 1990s photo to look like a modern digital photograph. Portrait orientation (2:3 ratio). Apply 90S RESTORE: preserve the nostalgic composition and mood but dramatically improve sharpness, color accuracy, and detail. Remove typical 90s camera flaws: grainy noise, discoloration, soft focus. Output must look like it was taken today with a DSLR. Natural results. 300 DPI. No text, no watermark.",
+              negativePrompt: "heavy vintage filter, painting, cartoon, artificial, plastic skin, identity change",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            // ==========================================================================
+            // 👨‍👩‍👧‍👦 FAMILY ADD — Tambah Orang ke Foto Keluarga
+            // ==========================================================================
+            { id: 4001, collection: "Family Add", title: "👨‍👩‍👧‍👦 Add Person to Family Photo", badge: "Best Seller", difficulty: 5,
+              desc: "Masukkan wajah seseorang ke dalam foto keluarga dengan pencahayaan & posisi yang natural. Hasil real kayak foto beneran.",
+              suitableFor: ["Group Photo", "Family Reunion", "Edit Photo"],
+              colors: ["Natural Blend", "Consistent Lighting", "Real Skin"],
+              prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing family group photo. Portrait orientation (2:3 ratio). Apply FAMILY ADD: perfectly match the lighting, color grading, and perspective of the target family photo. The person must appear as if they were originally present. Natural skin blending, consistent shadows, and realistic placement. Face must remain fully recognizable and consistent. Final output must be indistinguishable from a real family photograph taken with a Canon DSLR. 300 DPI. No text, no watermark.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite, glitch, color mismatch",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 4002, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wedding Family Add", badge: "Premium", difficulty: 5,
+              desc: "Tambah anggota keluarga ke foto pernikahan yang sudah ada. Cocok untuk melengkapi foto keluarga besar.",
+              suitableFor: ["Wedding Photo", "Family Addition", "Group Edit"],
+              colors: ["Elegant Tone", "Wedding Gold", "Natural Warm"],
+              prompt: "Use the uploaded image as the main subject. Add this person naturally into an existing wedding family photo. Portrait orientation (2:3 ratio). Apply WEDDING ADD: match the elegant wedding color palette (gold, ivory, soft green), lighting condition, and formal posing style. The inserted person should look like they were part of the original wedding photography session. Consistent skin tones, proper shadow angles, and realistic group positioning. Professional photo editing quality. 300 DPI. No text, no watermark.",
+              negativePrompt: "casual clothing mismatch, bad lighting, cutout, composite visible, cartoon, glitch",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 4003, collection: "Family Add", title: "👨‍👩‍👧‍👦 Missing Family Member", badge: "Trending", difficulty: 4,
+              desc: "Lengkapi foto keluarga dengan anggota yang tidak sempat hadir saat pemotretan. Wajah konsisten & realistik.",
+              suitableFor: ["Missing Person", "Family Complete", "Photo Edit"],
+              colors: ["Natural Match", "Consistent Tone", "Real"],
+              prompt: "Use the uploaded image as the main subject. Compositing a missing family member into an existing group photo naturally. Portrait orientation (2:3 ratio). Apply MISSING ADD: carefully match the pose direction, height perspective, and spatial arrangement. The person must look like they genuinely belong in the original photo. Match skin undertones, lighting direction, and depth of field precisely. Professional composite with zero visible seams. 300 DPI. No text, no watermark.",
+              negativePrompt: "bad composite, lighting mismatch, wrong scale, cartoon, visible edge, color clash",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
             }
         ];
 
@@ -10706,6 +10800,7 @@
                 return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(item.prompt) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(item.negativePrompt) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
             }).join('');
 
+            catalogGrid.classList.remove('fade-transition');
             catalogGrid.innerHTML = htmlString;
         }
 
@@ -10782,7 +10877,8 @@
             // Update orientation counts
             updateOrientationCounts(filteredData);
 
-            renderCards(filteredData);
+            catalogGrid.classList.add('fade-transition');
+            setTimeout(() => renderCards(filteredData), 150);
         }
 
         // === ORIENTATION COUNTS ===
