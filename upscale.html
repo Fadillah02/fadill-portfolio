@@ -3,298 +3,673 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upscale AI — Fadill</title>
+    <title>FADILL — AI Upscale Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
         :root {
-            --bg-deep: #06080d;
-            --bg-surface: #0a0c14;
-            --bg-card: rgba(15,15,30,0.85);
-            --text-main: #f1f5f9;
+            --bg: #0a0c14;
+            --bg-sidebar: #080a10;
+            --bg-card: rgba(14,16,24,0.85);
+            --bg-card-hover: rgba(20,24,36,0.9);
+            --border: rgba(99,102,241,0.12);
+            --border-glow: rgba(34,211,238,0.25);
+            --cyan: #22d3ee;
+            --cyan-dim: rgba(34,211,238,0.15);
+            --cyan-glow: rgba(34,211,238,0.06);
+            --green: #10b981;
+            --green-dim: rgba(16,185,129,0.15);
+            --red: #f43f5e;
+            --red-dim: rgba(244,63,94,0.15);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245,158,11,0.15);
+            --purple: #8b5cf6;
+            --text: #e2e8f0;
             --text-dim: #64748b;
             --text-muted: #475569;
-            --accent-primary: #6366f1;
-            --accent-secondary: #8b5cf6;
-            --accent-cyan: #22d3ee;
-            --accent-green: #10b981;
-            --font-sans: 'Inter', system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --radius-md: 12px;
-            --radius-lg: 16px;
+            --sidebar-w: 220px;
+            --topbar-h: 60px;
+            --font: 'Inter', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { height:100%; overflow:hidden; }
         body {
-            font-family: var(--font-sans);
-            background: var(--bg-deep);
-            color: var(--text-main);
-            min-height: 100vh;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
         }
-        header {
-            padding: 24px 32px;
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; cursor: none; border: none; background: none; color: inherit; }
+        html, body, a, button, input, select { cursor: none !important; }
+
+        /* ═══ CUSTOM CURSOR ═══ */
+        .cur { pointer-events:none; position:fixed; z-index:99999; transform:translate(-50%,-50%); font-size:26px; line-height:1; filter:drop-shadow(0 0 8px rgba(34,211,238,0.5)); transition:transform .15s; user-select:none; }
+        .cur.hover { transform:translate(-50%,-50%) scale(1.4); }
+
+        /* ═══ SIDEBAR ═══ */
+        .sidebar {
+            width: var(--sidebar-w);
+            min-width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            z-index: 100;
+        }
+        .sb-logo {
+            padding: 0 20px 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .sb-logo h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--cyan);
+        }
+        .sb-logo h1 span { color: var(--text); }
+        .sb-logo p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .sb-nav { flex: 1; padding: 8px 0; }
+        .sb-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dim);
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sb-item:hover, .sb-item.active {
+            color: var(--cyan);
+            background: var(--cyan-dim);
+            border-left-color: var(--cyan);
+        }
+        .sb-item svg { width: 18px; height: 18px; min-width: 18px; }
+        .sb-bottom {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .sb-bottom span { color: var(--cyan); }
+
+        /* ═══ MAIN ═══ */
+        .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+        /* ═══ TOPBAR ═══ */
+        .topbar {
+            height: var(--topbar-h);
+            min-height: var(--topbar-h);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(99,102,241,0.15);
+            padding: 0 28px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10,12,20,0.7);
+            backdrop-filter: blur(12px);
         }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
-            color: white;
-        }
-        .logo-text {
+        .topbar-title {
             font-size: 18px;
             font-weight: 700;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
         }
-        .logo-text span { color: var(--accent-cyan); }
-        .logo-sub {
-            font-size: 12px;
-            color: var(--text-dim);
-            font-weight: 400;
+        .topbar-title em { font-style: italic; color: var(--cyan); }
+        .topbar-stats { display: flex; gap: 32px; }
+        .topbar-stat { text-align: center; }
+        .topbar-stat .val {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: var(--mono);
+            color: var(--cyan);
         }
-        .back-btn {
+        .topbar-stat .lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+        .topbar-user {
             display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 18px;
-            border-radius: 10px;
-            background: var(--bg-card);
-            border: 1px solid rgba(99,102,241,0.2);
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .back-btn:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 20px rgba(99,102,241,0.2);
-        }
-        .hero {
-            text-align: center;
-            padding: 48px 24px 32px;
-        }
-        .hero h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f1f5f9, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            color: var(--text-dim);
-            font-size: 1rem;
-            margin-top: 8px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: rgba(99,102,241,0.15);
-            border: 1px solid rgba(99,102,241,0.25);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--accent-cyan);
-            margin-bottom: 16px;
-        }
-        .embed-container {
-            max-width: 1060px;
-            margin: 0 auto 48px;
-            padding: 0 16px;
-        }
-        .embed-wrapper {
-            background: var(--bg-card);
-            border: 1px solid rgba(99,102,241,0.15);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-        }
-        .embed-wrapper iframe {
-            width: 100%;
-            height: 750px;
-            border: none;
-            display: block;
-        }
-        .embed-fallback {
-            display: none;
-            text-align: center;
-            padding: 48px 24px;
-        }
-        .embed-fallback .fallback-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-        .embed-fallback p {
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-        .embed-fallback a {
-            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 24px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .embed-fallback a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-        }
-        .howto {
-            max-width: 700px;
-            margin: 0 auto 60px;
-            padding: 0 16px;
-        }
-        .howto h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--accent-cyan);
-        }
-        .howto ol {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .howto li {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
-            background: var(--bg-card);
-            border: 1px solid rgba(99,102,241,0.1);
-            border-radius: var(--radius-md);
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dim);
         }
-        .howto li .step {
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
+        .topbar-user .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px; color: #fff;
+        }
+
+        /* ═══ CONTENT ═══ */
+        .content { flex:1; overflow-y:auto; padding: 24px 28px; }
+        .content::-webkit-scrollbar { width: 6px; }
+        .content::-webkit-scrollbar-track { background: transparent; }
+        .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 260px;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            height: calc(100vh - var(--topbar-h) - 48px);
+        }
+
+        /* ═══ CARDS ═══ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .card:hover::before { opacity: 1; }
+        .card-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        /* ═══ GAUGE ═══ */
+        .gauge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .gauge-svg { filter: drop-shadow(0 0 20px var(--cyan-glow)); }
+        .gauge-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            text-align: center;
+        }
+        .gauge-val {
+            font-size: 42px;
+            font-weight: 800;
+            font-family: var(--mono);
+            color: var(--text);
+            line-height: 1;
+        }
+        .gauge-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .gauge-sub {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cyan);
+            letter-spacing: 0.06em;
+        }
+
+        /* ═══ SMALL GAUGE ═══ */
+        .sm-gauge-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .sm-gauge-row:last-child { border-bottom: none; }
+        .sm-gauge-svg { min-width: 52px; }
+        .sm-gauge-info { flex: 1; }
+        .sm-gauge-name { font-size: 13px; font-weight: 500; color: var(--text); }
+        .sm-gauge-val {
+            font-size: 13px;
+            font-family: var(--mono);
+            font-weight: 600;
+            margin-left: auto;
+        }
+        .sm-gauge-val.green { color: var(--green); }
+        .sm-gauge-val.red { color: var(--red); }
+        .sm-gauge-val.amber { color: var(--amber); }
+
+        /* ═══ STAT BIG ═══ */
+        .stat-big {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+        .stat-big-circle {
+            width: 100px; height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: var(--red-dim);
+            border: 3px solid var(--red);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 36px;
+            font-weight: 800;
+            font-family: var(--mono);
+            color: var(--red);
+            margin-bottom: 12px;
+            box-shadow: 0 0 30px rgba(244,63,94,0.2);
+            animation: pulse-red 2s ease-in-out infinite;
+        }
+        @keyframes pulse-red {
+            0%,100% { box-shadow: 0 0 20px rgba(244,63,94,0.15); }
+            50% { box-shadow: 0 0 40px rgba(244,63,94,0.3); }
+        }
+        .stat-big-lbl {
             font-size: 13px;
             font-weight: 700;
-            color: white;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 4px;
         }
-        footer {
-            text-align: center;
-            padding: 24px;
-            border-top: 1px solid rgba(99,102,241,0.1);
+        .stat-big-sub {
+            font-size: 11px;
             color: var(--text-muted);
+        }
+        .btn-details {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--red);
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            margin-top: 14px;
+            transition: all 0.3s;
+        }
+        .btn-details:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        /* ═══ PROGRESS BAR ═══ */
+        .progress-wrap { margin-top: 16px; }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .progress-label span:last-child { color: var(--cyan); font-weight: 600; font-family: var(--mono); }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            transition: width 1s ease;
+        }
+
+        /* ═══ TOOL PANEL (iframe) ═══ */
+        .tool-panel {
+            grid-column: 2;
+            grid-row: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .tool-panel .card { flex:1; display:flex; flex-direction:column; padding:0; overflow:hidden; }
+        .tool-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .tool-header h3 { font-size: 14px; font-weight: 600; }
+        .tool-header .tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--green-dim);
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tool-frame {
+            flex: 1;
+            border: none;
+            width: 100%;
+            min-height: 500px;
+        }
+        .tool-fallback {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 40px;
+        }
+        .tool-fallback p { color: var(--text-dim); font-size: 14px; }
+        .tool-fallback a {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            font-weight: 600;
             font-size: 13px;
-            line-height: 1.8;
+            transition: all 0.3s;
         }
-        footer a {
-            color: var(--accent-cyan);
-            text-decoration: none;
+        .tool-fallback a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.4); }
+
+        /* ═══ SCROLLBAR ═══ */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ═══ ANIM ═══ */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to { opacity:1; transform:translateY(0); }
         }
-        footer a:hover {
-            text-decoration: underline;
+        .anim { animation: fadeUp 0.6s ease both; }
+        .anim-d1 { animation-delay: 0.1s; }
+        .anim-d2 { animation-delay: 0.2s; }
+        .anim-d3 { animation-delay: 0.3s; }
+        .anim-d4 { animation-delay: 0.4s; }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 1024px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                height: auto;
+            }
+            .sidebar { display: none; }
+            .tool-panel { grid-column: 1; grid-row: auto; min-height: 600px; }
+            .topbar-stats { gap: 16px; }
+            .content { padding: 16px; overflow-y: auto; height: calc(100vh - var(--topbar-h)); }
         }
         @media (max-width: 640px) {
-            header { padding: 16px; flex-direction: column; gap: 12px; }
-            .hero h1 { font-size: 1.5rem; }
-            .hero { padding: 32px 16px 24px; }
-            .embed-wrapper iframe { height: 500px; }
+            .topbar-title { font-size: 14px; }
+            .topbar-stats { display: none; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <div class="logo-icon">F</div>
-            <div>
-                <div class="logo-text">FADILL<span>.</span></div>
-                <div class="logo-sub">AI Upscaler</div>
+    <!-- CURSOR -->
+    <div class="cur" id="cur">💜</div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sb-logo">
+            <h1>FADILL<span>.</span></h1>
+            <p>AI Upscale Dashboard</p>
+        </div>
+        <nav class="sb-nav">
+            <a href="#tool" class="sb-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                Upscale Tool
+            </a>
+            <a href="https://waifu2x.pro/" target="_blank" class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><circle cx="11" cy="11" r="2"/><path d="m21 3-5.5 5.5"/><path d="M21 3h-6"/><path d="M21 3v6"/></svg>
+                AI Engine
+            </a>
+            <a href="https://github.com/nagadomi/waifu2x" target="_blank" class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                Source Code
+            </a>
+            <a href="index.html" class="sb-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+                Portfolio
+            </a>
+        </nav>
+        <div class="sb-bottom">
+            Built by <span>Fadillah</span><br>
+            © 2026
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-title"><em>AI</em> Upscale Status</div>
+            <div class="topbar-stats">
+                <div class="topbar-stat">
+                    <div class="val" id="animScore">0</div>
+                    <div class="lbl">Model Score</div>
+                </div>
+                <div class="topbar-stat">
+                    <div class="val" id="animQuality">0%</div>
+                    <div class="lbl">Output Quality</div>
+                </div>
+                <div class="topbar-stat">
+                    <div class="val" id="animSpeed">0</div>
+                    <div class="lbl">Scale Factor</div>
+                </div>
+            </div>
+            <div class="topbar-user">
+                <div class="avatar">F</div>
+                Fadillah
             </div>
         </div>
-        <a href="index.html" class="back-btn">← Kembali</a>
-    </header>
 
-    <section class="hero">
-        <div class="badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><circle cx="11" cy="11" r="2"/><path d="m21 3-5.5 5.5"/><path d="M21 3h-6"/><path d="M21 3v6"/></svg>
-            waifu2x × 10X
-        </div>
-        <h1>Upscale Gambar dengan AI</h1>
-        <p>Tingkatkan resolusi dan kualitas gambar otomatis pakai AI</p>
-    </section>
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="dash-grid">
 
-    <div class="embed-container">
-        <div class="embed-wrapper">
-            <iframe src="https://waifu2x.pro/" allowfullscreen loading="lazy"></iframe>
-            <div class="embed-fallback" id="fallback">
-                <div class="fallback-icon">🖼️</div>
-                <p>Halaman tidak bisa ditampilkan langsung. Klik tombol di bawah untuk membuka:</p>
-                <a href="https://waifu2x.pro/" target="_blank" rel="noopener noreferrer">
-                    Buka waifu2x.pro →
-                </a>
+                <!-- LEFT: GAUGES -->
+                <div style="display:flex;flex-direction:column;gap:20px;" class="anim anim-d1">
+                    <!-- Main Gauge -->
+                    <div class="card gauge-wrap" style="padding:24px;">
+                        <svg class="gauge-svg" width="200" height="130" viewBox="0 0 200 130">
+                            <!-- bg arc -->
+                            <path d="M 20 120 A 80 80 0 0 1 180 120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round"/>
+                            <!-- value arc -->
+                            <path d="M 20 120 A 80 80 0 0 1 180 120" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="70" id="mainGaugeArc"/>
+                            <!-- tick marks -->
+                            <g stroke="rgba(255,255,255,0.1)" stroke-width="1">
+                                <line x1="20" y1="120" x2="26" y2="116"/>
+                                <line x1="35" y1="85" x2="41" y2="88"/>
+                                <line x1="60" y1="55" x2="64" y2="60"/>
+                                <line x1="90" y1="40" x2="90" y2="47"/>
+                                <line x1="120" y1="55" x2="116" y2="60"/>
+                                <line x1="145" y1="85" x2="139" y2="88"/>
+                                <line x1="175" y1="116" x2="180" y2="120"/>
+                            </g>
+                            <!-- dots on arc -->
+                            <circle cx="100" cy="42" r="3" fill="var(--cyan)" opacity="0.4"/>
+                            <circle cx="100" cy="42" r="6" fill="var(--cyan)" opacity="0.1"/>
+                            <defs>
+                                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="var(--cyan)"/>
+                                    <stop offset="100%" stop-color="var(--green)"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div style="text-align:center;margin-top:-10px;">
+                            <div class="gauge-val" id="gaugeScore">73</div>
+                            <div class="gauge-sub">TOTAL QUALITY</div>
+                        </div>
+                        <div class="progress-wrap" style="width:100%;">
+                            <div class="progress-label"><span>Output Quality</span><span>73%</span></div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:73%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Small Gauge -->
+                    <div class="card" style="padding:16px 20px;">
+                        <div style="display:flex;align-items:center;gap:14px;">
+                            <svg width="52" height="52" viewBox="0 0 52 52" class="sm-gauge-svg">
+                                <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                                <circle cx="26" cy="26" r="22" fill="none" stroke="var(--cyan)" stroke-width="4" stroke-dasharray="138" stroke-dashoffset="46" stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                                <text x="26" y="30" text-anchor="middle" fill="var(--text)" font-family="var(--mono)" font-size="14" font-weight="700">67</text>
+                            </svg>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;">Tools Score</div>
+                                <div style="font-size:11px;color:var(--text-muted);">Waifu2x Engine</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER: TOOL -->
+                <div class="tool-panel anim anim-d2">
+                    <div class="card" id="tool">
+                        <div class="tool-header">
+                            <h3>Upscale Tool</h3>
+                            <span class="tag">ONLINE</span>
+                        </div>
+                        <iframe class="tool-frame" src="https://waifu2x.pro/" allowfullscreen loading="lazy" id="toolIframe"></iframe>
+                        <div class="tool-fallback" id="toolFallback">
+                            <p>Embed tidak bisa dimuat</p>
+                            <a href="https://waifu2x.pro/" target="_blank" rel="noopener noreferrer">Buka waifu2x.pro →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: STATS -->
+                <div style="display:flex;flex-direction:column;gap:20px;" class="anim anim-d3">
+                    <!-- List Scores -->
+                    <div class="card" style="padding:16px 20px;">
+                        <div class="card-title">AI Metrics</div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="42" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--green)" font-family="var(--mono)" font-size="10" font-weight="700">56</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Noise Reduction</div>
+                            </div>
+                            <span class="sm-gauge-val green">5</span>
+                        </div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="31" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--green)" font-family="var(--mono)" font-size="10" font-weight="700">67</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Upscale Speed</div>
+                            </div>
+                            <span class="sm-gauge-val green">6</span>
+                        </div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--red)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="48" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--red)" font-family="var(--mono)" font-size="10" font-weight="700">49</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Texture Fidelity</div>
+                            </div>
+                            <span class="sm-gauge-val red">15</span>
+                        </div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--cyan)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="25" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--cyan)" font-family="var(--mono)" font-size="10" font-weight="700">73</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Color Accuracy</div>
+                            </div>
+                            <span class="sm-gauge-val green">7</span>
+                        </div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--amber)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="50" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--amber)" font-family="var(--mono)" font-size="10" font-weight="700">47</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Edge Sharpening</div>
+                            </div>
+                            <span class="sm-gauge-val amber">12</span>
+                        </div>
+                        <div class="sm-gauge-row">
+                            <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--green)" stroke-width="3" stroke-dasharray="94" stroke-dashoffset="43" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="22" text-anchor="middle" fill="var(--green)" font-family="var(--mono)" font-size="10" font-weight="700">55</text></svg>
+                            <div class="sm-gauge-info">
+                                <div class="sm-gauge-name">Detail Recovery</div>
+                            </div>
+                            <span class="sm-gauge-val green">9</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Processed -->
+                    <div class="card stat-big">
+                        <div class="stat-big-circle" id="processCount">0</div>
+                        <div class="stat-big-lbl">TOTAL PROCESSED</div>
+                        <div class="stat-big-sub">images this session</div>
+                        <a href="https://waifu2x.pro/" target="_blank" class="btn-details">START UPSCALE →</a>
+                    </div>
+
+                    <!-- Coverage -->
+                    <div class="card" style="padding:16px 20px;">
+                        <div class="card-title">Supported Formats</div>
+                        <div class="progress-wrap" style="margin-top:0;">
+                            <div class="progress-label"><span>PNG / JPG / WEBP</span><span>92%</span></div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+                        </div>
+                        <div class="progress-wrap">
+                            <div class="progress-label"><span>BMP / TIFF</span><span>78%</span></div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+                        </div>
+                        <div class="progress-wrap">
+                            <div class="progress-label"><span>Max Scale</span><span>10x</span></div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <section class="howto">
-        <h2>Cara Pakai</h2>
-        <ol>
-            <li><span class="step">1</span>Upload gambar yang ingin ditingkatkan kualitasnya</li>
-            <li><span class="step">2</span>Pilih noise reduction & scale level</li>
-            <li><span class="step">3</span>Klik "Convert" dan tunggu proses selesai</li>
-            <li><span class="step">4</span>Download hasil gambar resolusi tinggi</li>
-        </ol>
-    </section>
-
-    <footer>
-        © 2026 <a href="https://waifu2x.pro/">waifu2x.pro</a> — Hak cipta milik pemilik masing-masing.<br>
-        waifu2x.pro is not affiliated with this site. Powered by <a href="https://github.com/nagadomi/waifu2x" target="_blank" rel="noopener noreferrer">waifu2x</a> (nagadomi).
-    </footer>
-
     <script>
-        const iframe = document.querySelector('iframe');
-        iframe.addEventListener('error', function() {
-            document.getElementById('fallback').style.display = 'block';
-            iframe.style.display = 'none';
+        // ═══ CURSOR ═══
+        const cur = document.getElementById('cur');
+        let mx = -100, my = -100;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        (function animCur() {
+            cur.style.left = mx + 'px';
+            cur.style.top = my + 'px';
+            requestAnimationFrame(animCur);
+        })();
+        document.querySelectorAll('a, button, .sb-item').forEach(el => {
+            el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
         });
-        setTimeout(function() {
-            try {
-                if (iframe.contentDocument.body.innerHTML.trim() === '') {
-                    document.getElementById('fallback').style.display = 'block';
-                    iframe.style.display = 'none';
-                }
-            } catch(e) {}
-        }, 5000);
+
+        // ═══ COUNTER ANIMATIONS ═══
+        function animateCounter(el, target, suffix='', duration=1200) {
+            const start = performance.now();
+            const from = 0;
+            function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - p, 3);
+                const val = Math.round(from + (target - from) * ease);
+                el.textContent = val + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // ═══ INIT ═══
+        window.addEventListener('DOMContentLoaded', () => {
+            animateCounter(document.getElementById('animScore'), 73);
+            animateCounter(document.getElementById('animQuality'), 96, '%');
+            animateCounter(document.getElementById('animSpeed'), 10, 'x');
+            animateCounter(document.getElementById('processCount'), 27);
+
+            // iframe fallback
+            const iframe = document.getElementById('toolIframe');
+            const fb = document.getElementById('toolFallback');
+            iframe.addEventListener('error', () => { fb.style.display='flex'; iframe.style.display='none'; });
+            setTimeout(() => {
+                try { if(iframe.contentDocument.body.innerHTML.trim()===''){fb.style.display='flex';iframe.style.display='none';} } catch(e){}
+            }, 6000);
+        });
     </script>
 </body>
 </html>
