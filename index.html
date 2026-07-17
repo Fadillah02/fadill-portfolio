@@ -104,7 +104,8 @@
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: 0;
-            opacity: 0.4;
+            opacity: 0.35;
+            filter: blur(0.3px);
         }
 
         .scanlines {
@@ -121,17 +122,25 @@
             z-index: 9998;
         }
 
-        .cursor-glow {
+        .custom-cursor {
             pointer-events: none;
             position: fixed;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--glow) 0%, transparent 65%);
+            z-index: 99999;
             transform: translate(-50%, -50%);
-            z-index: 1;
-            transition: opacity 0.4s ease;
-            filter: blur(10px);
+            font-size: 28px;
+            line-height: 1;
+            transition: transform 0.15s ease, opacity 0.3s ease;
+            filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5));
+            user-select: none;
+        }
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.4);
+        }
+        html, body {
+            cursor: none !important;
+        }
+        a, button, input, textarea, select, .filter-btn, .fab-item, .fab-main {
+            cursor: none !important;
         }
 
         /* ═══════════════════════════════════════════════════
@@ -1566,7 +1575,7 @@
     <!-- Background Effects -->
     <canvas id="matrix-canvas"></canvas>
     <div class="scanlines"></div>
-    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="custom-cursor" id="customCursor">💜</div>
 
     <!-- Floating Action Button -->
     <div class="fab-container" id="fabContainer">
@@ -2165,16 +2174,16 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    const chars = 'アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-    const fontSize = 14;
+    const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ天龍風火水土雷電光暗剣魂夢幻空月日星夜零壱弐参肆伍陸漆捌玖拾闇輝裂';
+    const fontSize = 15;
     let columns = Math.floor(canvas.width / fontSize);
     let drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
 
     function drawMatrix() {
         ctx.fillStyle = 'rgba(6, 8, 13, 0.12)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(34, 211, 238, 0.25)';
-        ctx.font = fontSize + 'px monospace';
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.2)';
+        ctx.font = fontSize + 'px "Noto Sans Mono CJK JP", "MS Gothic", "Courier New", monospace';
 
         for (let i = 0; i < drops.length; i++) {
             const char = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -2187,9 +2196,9 @@
     }
 
     // ═══════════════════════════════════════════════════
-    // CURSOR GLOW
+    // CUSTOM CURSOR
     // ═══════════════════════════════════════════════════
-    const cursorGlow = document.getElementById('cursorGlow');
+    const customCursor = document.getElementById('customCursor');
     let mouseX = -500, mouseY = -500;
 
     document.addEventListener('mousemove', (e) => {
@@ -2197,11 +2206,16 @@
         mouseY = e.clientY;
     });
 
-    function updateCursorGlow() {
-        cursorGlow.style.left = mouseX + 'px';
-        cursorGlow.style.top = mouseY + 'px';
-        requestAnimationFrame(updateCursorGlow);
+    function updateCursor() {
+        customCursor.style.left = mouseX + 'px';
+        customCursor.style.top = mouseY + 'px';
+        requestAnimationFrame(updateCursor);
     }
+
+    document.querySelectorAll('a, button, input, textarea, select, .filter-btn, .fab-item, .fab-main').forEach(el => {
+        el.addEventListener('mouseenter', () => customCursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => customCursor.classList.remove('hover'));
+    });
 
     // ═══════════════════════════════════════════════════
     // HEADER SCROLL
@@ -2266,8 +2280,8 @@
         fetchGitHubRepos();
         renderNotes();
         typeWriter();
-        setInterval(drawMatrix, 50);
-        updateCursorGlow();
+        setInterval(drawMatrix, 45);
+        updateCursor();
         updateClock();
         setInterval(updateClock, 1000);
 
