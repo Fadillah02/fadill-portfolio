@@ -936,7 +936,7 @@
             <div class="filter-group">
                 <button class="filter-btn active" data-filter="all">
                     <span>All Styles</span>
-                    <span class="filter-count">477</span>
+                    <span class="filter-count">487</span>
                 </button>
                 <button class="filter-btn" data-filter="Special">
                     <span>Special Top 15</span>
@@ -998,11 +998,11 @@
                 </button>
                 <button class="filter-btn" data-filter="Photo Restore">
                     <span>🖼️ Photo Restore</span>
-                    <span class="filter-count">5</span>
+                    <span class="filter-count">10</span>
                 </button>
                 <button class="filter-btn" data-filter="Family Add">
                     <span>👨‍👩‍👧‍👦 Family Add</span>
-                    <span class="filter-count">3</span>
+                    <span class="filter-count">8</span>
                 </button>
             </div>
         </div>
@@ -1035,7 +1035,7 @@
 
 <div id="catalogGrid" class="catalog-grid vertical">
             <div class="loading-state">
-                <img src="200w.gif" alt="Loading..." class="loading-gif">
+<img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif">
                 <p>Memuat style...</p>
             </div>
         </div>
@@ -10714,6 +10714,92 @@
               prompt: "Use the uploaded image as the main subject. Compositing a missing family member into an existing group photo naturally. Portrait orientation (2:3 ratio). Apply MISSING ADD: carefully match the pose direction, height perspective, and spatial arrangement. The person must look like they genuinely belong in the original photo. Match skin undertones, lighting direction, and depth of field precisely. Professional composite with zero visible seams. 300 DPI. No text, no watermark.",
               negativePrompt: "bad composite, lighting mismatch, wrong scale, cartoon, visible edge, color clash",
               ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            // ==========================================================================
+            // 🖼️ PHOTO RESTORE — Landscape (3:2) orientations
+            // ==========================================================================
+            { id: 3006, collection: "Photo Restore", title: "🖼️ Panorama Old Photo Restore", badge: "Premium", difficulty: 5,
+              desc: "Restorasi foto panorama/landscape lama jadi HD. Cocok untuk pemandangan, foto grup lebar, kenangan liburan.",
+              suitableFor: ["Panorama", "Landscape", "Wide Group", "Vacation"],
+              colors: ["Wide Natural", "Panoramic Tone", "HD Clear"],
+              prompt: "Use the uploaded image as the main subject. Restore this old panoramic/landscape photo to ultra-realistic HD quality. Landscape orientation (3:2 ratio). Apply PANORAMA RESTORE: remove dust, scratches, fading across wide frame. Enhance natural textures across entire scene — sky, foliage, water, architecture. Keep original composition intact. Output must look like a modern wide-angle photograph (Sony A7R IV, 24mm). Natural lighting, authentic colors. 300 DPI, print-ready panoramic. No text, no watermark.",
+              negativePrompt: "portrait orientation, cropped, AI artifacts, painting, illustration, oversharpened, fake HDR",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3007, collection: "Photo Restore", title: "🖼️ Wide Group Photo Repair", badge: "Best Seller", difficulty: 5,
+              desc: "Perbaiki foto grup lebar yang blur/rusak. Setiap wajah dijernihkan, pencahayaan disamakan.",
+              suitableFor: ["Wide Group", "Family Reunion", "Class Photo", "Team"],
+              colors: ["Group Natural", "Balanced Light", "HD Faces"],
+              prompt: "Use the uploaded image as the main subject. Restore and enhance this wide group photo to photorealistic clarity. Landscape orientation (3:2 ratio). Apply WIDE GROUP RESTORE: sharpen every face individually, balance exposure across frame, remove artifacts. Each person must look naturally lit and sharp as if photographed with modern camera. Preserve original expressions and positions. 300 DPI, professional group photo quality. No text, no watermark.",
+              negativePrompt: "portrait crop, blurry faces, uneven lighting, cartoon, painting, AI distortion, identity change",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3008, collection: "Photo Restore", title: "🖼️ Vintage Landscape Colorize", badge: "Trending", difficulty: 4,
+              desc: "Warnai foto B&W landscape/pemandangan vintage jadi natural. Pohon, langit, air — semua akurat.",
+              suitableFor: ["Vintage Landscape", "B&W Nature", "Historical"],
+              colors: ["Nature Accurate", "Period Tone", "Vibrant Real"],
+              prompt: "Use the uploaded image as the main subject. Colorize this black and white vintage landscape photograph with photorealistic accuracy. Landscape orientation (3:2 ratio). Apply VINTAGE COLORIZE: natural foliage greens, sky blues, water tones, earth colors. Each element colored contextually to its era and geography. Output must look like a genuine color photograph from that time period. 300 DPI, museum-grade colorization. No text, no watermark.",
+              negativePrompt: "cartoon, oversaturated, fake colors, painting, modern filters, AI artifacts, wrong era colors",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3009, collection: "Photo Restore", title: "🖼️ Cinematic Wide Restore", badge: "Premium", difficulty: 5,
+              desc: "Restore foto lebar cinematic (21:9 crop) jadi realistik. Aspect ratio lebar, detail tepi tajam.",
+              suitableFor: ["Cinematic", "Wide Screen", "Letterbox", "Epic"],
+              colors: ["Cinematic Grade", "Letterbox Real", "Epic Detail"],
+              prompt: "Use the uploaded image as the main subject. Restore this ultra-wide cinematic photograph to stunning realism. Landscape orientation (3:2 ratio, letterbox composition). Apply CINEMATIC RESTORE: enhance dynamic range, recover highlight/shadow detail, add film-like texture but digital sharpness. Anamorphic lens character preserved. Color grading: teal-orange cinematic or natural. 300 DPI, cinema print quality. No text, no watermark.",
+              negativePrompt: "standard 4:3, cropped, video screenshot, low quality, digital artifacts, oversharpened",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3010, collection: "Photo Restore", title: "🖼️ Architecture Wide Restore", badge: "", difficulty: 4,
+              desc: "Restorasi foto arsitektur/bangunan lebar. Garis lurus, perspektif akurat, tekstur bata/beton real.",
+              suitableFor: ["Architecture", "Building", "Cityscape", "Real Estate"],
+              colors: ["Structural Real", "Perspective True", "Material HD"],
+              prompt: "Use the uploaded image as the main subject. Restore this architectural wide photograph to technical perfection. Landscape orientation (3:2 ratio). Apply ARCHITECTURE RESTORE: correct perspective distortion, sharpen structural lines, enhance material textures (brick, concrete, glass, steel). Balanced interior/exterior exposure. Output indistinguishable from modern architectural photography. 300 DPI. No text, no watermark.",
+              negativePrompt: "perspective distortion, warped lines, blurry textures, painting, illustration, fisheye",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            // ==========================================================================
+            // 👨‍👩‍👧‍👦 FAMILY ADD — Landscape (3:2) orientations
+            // ==========================================================================
+            { id: 4004, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wide Family Reunion Add", badge: "Best Seller", difficulty: 5,
+              desc: "Tambah orang ke foto reuni keluarga lebar. Posisi alami, pencahayaan konsisten di frame panoramik.",
+              suitableFor: ["Family Reunion", "Wide Group", "Panorama", "Generations"],
+              colors: ["Reunion Warm", "Group Natural", "Panoramic Real"],
+              prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing wide family reunion photo. Landscape orientation (3:2 ratio). Apply WIDE REUNION ADD: match the panoramic perspective, consistent lighting across wide frame, natural positioning in group. The added person must belong in the scene — correct scale, shadows, color temperature. Professional group composite quality. 300 DPI. No text, no watermark.",
+              negativePrompt: "portrait crop, mismatched lighting, wrong scale, obvious composite, cartoon, floating",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4005, collection: "Family Add", title: "👨‍👩‍👧‍👦 Vacation Panorama Add", badge: "Premium", difficulty: 5,
+              desc: "Masukkan orang ke foto liburan panorama (pantai, gunung, kota). Background epic, pencahayaan matahari match.",
+              suitableFor: ["Vacation", "Travel", "Beach", "Mountain", "Cityscape"],
+              colors: ["Sunlit Natural", "Scenic Real", "Golden Hour"],
+              prompt: "Use the uploaded image as the main subject. Composite this person into an existing vacation panorama photo. Landscape orientation (3:2 ratio). Apply VACATION ADD: match dramatic landscape lighting (sunrise/sunset/golden hour), environmental shadows, atmospheric perspective. Person interacts naturally with scenic background — correct scale against mountains/ocean/cityscape. Photorealistic travel photo result. 300 DPI. No text, no watermark.",
+              negativePrompt: "studio lighting, green screen look, wrong perspective, floating, cartoon, mismatched shadows",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4006, collection: "Family Add", title: "👨‍👩‍👧‍👦 Generations Wide Portrait", badge: "Trending", difficulty: 4,
+              desc: "Foto 3-4 generasi lebar. Tambah kakek/nenek/cucu yg tdk hadir. Wajah konsisten, pose natural.",
+              suitableFor: ["Generations", "Legacy", "Heritage", "Family Tree"],
+              colors: ["Timeless Tone", "Generational Real", "Warm Legacy"],
+              prompt: "Use the uploaded image as the main subject. Add a missing family member to a multi-generation wide family portrait. Landscape orientation (3:2 ratio). Apply GENERATIONS ADD: seamless integration into formal or candid generational lineup. Match aging skin textures, posture, eye direction. Consistent lighting across generations. Emotional authenticity — looks like a real family moment captured on Hasselblad. 300 DPI. No text, no watermark.",
+              negativePrompt: "mismatched aging, stiff pose, lighting mismatch, cartoon, obvious edit, identity loss",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4007, collection: "Family Add", title: "👨‍👩‍👧‍👦 Holiday Dinner Wide Add", badge: "Premium", difficulty: 5,
+              desc: "Tambah orang ke foto makan malam natal/lebaran lebar. Meja panjang, cerah hangat, interaksi natural.",
+              suitableFor: ["Holiday Dinner", "Christmas", "Eid", "Thanksgiving", "Feast"],
+              colors: ["Festive Warm", "Candlelit Real", "Cozy Natural"],
+              prompt: "Use the uploaded image as the main subject. Composite a person into an existing wide holiday dinner table scene. Landscape orientation (3:2 ratio). Apply HOLIDAY DINNER ADD: warm ambient lighting (candles, string lights, fireplace), table perspective, natural interaction with others (holding plate, laughing, pouring drink). Match cozy indoor color temperature. Feels like genuine family moment. 300 DPI. No text, no watermark.",
+              negativePrompt: "flash lighting, flat lighting, wrong table perspective, floating, cartoon, stiff pose",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4008, collection: "Family Add", title: "👨‍👩‍👧‍👦 Outdoor Picnic Wide Add", badge: "Best Seller", difficulty: 4,
+              desc: "Masukkan orang ke foto picnic outdoor lebar. Rumput, langit, bayangan matahari — semuanya match.",
+              suitableFor: ["Picnic", "Park", "Outdoor", "Casual", "Weekend"],
+              colors: ["Sunlit Green", "Sky Blue", "Casual Real"],
+              prompt: "Use the uploaded image as the main subject. Add a person naturally into an existing wide outdoor family picnic photo. Landscape orientation (3:2 ratio). Apply PICNIC ADD: dappled sunlight through trees, grass texture, casual sitting/standing poses. Match outdoor color temperature, environmental shadows. Person grounded on grass, interacting with picnic elements. Authentic weekend family photo. 300 DPI. No text, no watermark.",
+              negativePrompt: "indoor lighting, studio backdrop, wrong grass perspective, floating, cartoon, green screen",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
             }
         ];
 
@@ -10760,9 +10846,9 @@
         }
 
         // === EMPTY STATE & LOADING ===
-        const emptyStateHTML = '<div class="empty-state"><img src="200w.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+        const emptyStateHTML = '<div class="empty-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
 
-        const loadingHTML = '<div class="loading-state"><img src="200w.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
+        const loadingHTML = '<div class="loading-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
 
         // === RENDER CARDS (Optimized + Sanitized) ===
         function renderCards(data) {
