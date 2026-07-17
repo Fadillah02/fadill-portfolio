@@ -2280,7 +2280,7 @@
         fetchGitHubRepos();
         renderNotes();
         typeWriter();
-        setInterval(drawMatrix, 45);
+        document.fonts.ready.then(() => setInterval(drawMatrix, 45));
         updateCursor();
         updateClock();
         setInterval(updateClock, 1000);
