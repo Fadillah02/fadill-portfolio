@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="no-referrer">
@@ -829,16 +829,13 @@
             text-align: center;
         }
 
-        .loading-gif {
-            width: 80px;
+        .loading-gif,
+        .empty-gif {
+            width: 150px;
             height: auto;
             border-radius: var(--radius-lg);
             margin-bottom: 20px;
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
         }
 
         .loading-state p,
@@ -1132,7 +1129,7 @@
 
 <div id="catalogGrid" class="catalog-grid vertical">
             <div class="loading-state">
-<img src="loading.gif" alt="Loading..." class="loading-gif">
+<img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif">
                 <p>Memuat lyric style...</p>
             </div>
         </div>
@@ -1714,20 +1711,19 @@
         }
 
         // === EMPTY STATE & LOADING ===
-        const emptyStateHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+        const emptyStateHTML = '<div class="empty-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
 
-        const loadingHTML = '<div class="loading-state"><img src="loading.gif" alt="Loading..." class="loading-gif"><p>Memuat lyric style...</p></div>';
+        const loadingHTML = '<div class="loading-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif"><p>Memuat lyric style...</p></div>';
 
         // === RENDER CARDS (Optimized + Sanitized) ===
         function renderCards(data) {
-            const countSpan = statsCount.querySelector('span:last-child');
             if (!data || data.length === 0) {
                 catalogGrid.innerHTML = emptyStateHTML;
-                if (countSpan) countSpan.textContent = '0 Lyrics';
+                statsCount.textContent = '0 Lyrics';
                 return;
             }
 
-            if (countSpan) countSpan.textContent = data.length + ' Lyrics';
+            statsCount.textContent = data.length + ' Lyrics';
 
             const htmlString = data.map(item => {
                 let badgeHTML = '';
@@ -1806,13 +1802,12 @@
         // Event Listener untuk Tombol Kategori
         filterBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const targetBtn = e.currentTarget;
                 // Update UI tombol aktif
                 filterBtns.forEach(b => b.classList.remove('active'));
-                targetBtn.classList.add('active');
+                e.target.classList.add('active');
 
-                currentFilter = targetBtn.getAttribute('data-filter');
-                const filterName = targetBtn.querySelector('span') ? targetBtn.querySelector('span').textContent : targetBtn.textContent;
+                currentFilter = e.target.getAttribute('data-filter');
+                const filterName = e.target.querySelector('span') ? e.target.querySelector('span').textContent : e.target.textContent;
                 categoryTitle.textContent = currentFilter === 'all' ? 'All Lyric Styles' : filterName;
                 setCategoryTheme(currentFilter);
 
@@ -1833,7 +1828,7 @@
         orientationBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 orientationBtns.forEach(b => b.classList.remove('active'));
-                e.currentTarget.classList.add('active');
+                e.target.classList.add('active');
                 currentOrientation = e.currentTarget.getAttribute('data-orientation');
                 applyFilters();
             });
@@ -1873,9 +1868,7 @@
 
         // === KEAMANAN: Fungsi Copy Modern (Clipboard API + Fallback) ===
         window.copyText = async function(elementId, btnElement) {
-            const el = document.getElementById(elementId);
-            if (!el) { btnElement.textContent = '❌ Element not found'; return; }
-            const textToCopy = el.innerText.trim();
+            const textToCopy = document.getElementById(elementId).innerText.trim();
             const originalText = btnElement.innerHTML;
             
             try {
@@ -1921,8 +1914,7 @@
 
         // === INISIALISASI ===
         document.addEventListener('DOMContentLoaded', () => {
-            applyFilters();
-            orientationBar.classList.add('show');
+            renderCards(lyricData);
         });
 
         // === TOOLS DROPDOWN CLICK ===
