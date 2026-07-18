@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="no-referrer">
@@ -822,13 +822,16 @@
             text-align: center;
         }
 
-        .loading-gif,
-        .empty-gif {
-            width: 150px;
+        .loading-gif {
+            width: 80px;
             height: auto;
             border-radius: var(--radius-lg);
             margin-bottom: 20px;
-            box-shadow: var(--shadow-md);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
         }
 
         .loading-state p,
@@ -1081,7 +1084,7 @@
             <div class="filter-group">
                 <button class="filter-btn active" data-filter="all">
                     <span>All Styles</span>
-                    <span class="filter-count">469</span>
+                    <span class="filter-count">961</span>
                 </button>
                 <button class="filter-btn" data-filter="Special">
                     <span>Special Top 15</span>
@@ -1139,7 +1142,7 @@
                 </button>
                 <button class="filter-btn" data-filter="Hyper Realistic">
                     <span>📷 Hyper Realistic</span>
-                    <span class="filter-count">25</span>
+                    <span class="filter-count">50</span>
                 </button>
                 <button class="filter-btn" data-filter="Photo Restore">
                     <span>🖼️ Photo Restore</span>
@@ -1166,7 +1169,7 @@
                     <button class="layout-btn" data-layout="horizontal" title="List View">☰</button>
                     <div class="stats-badge" id="statsCount">
                         <span class="stats-dot"></span>
-                        <span>889 Styles</span>
+                        <span>Memuat...</span>
                     </div>
                 </div>
             </div>
@@ -1180,7 +1183,7 @@
 
         <div id="catalogGrid" class="catalog-grid vertical">
             <div class="loading-state">
-                <img src="download.gif" alt="Loading..." class="loading-gif">
+<img src="loading.gif" alt="Loading..." class="loading-gif">
                 <p>Memuat 914 style...</p>
             </div>
         </div>
@@ -10791,10 +10794,215 @@
             },
 
             // ==========================================================================
+            // 📷 HYPER REALISTIC — DJ/Club/MC Concert Photography
+            // ==========================================================================
+            { id: 2026, collection: "Hyper Realistic", title: "🎧 DJ Turntable Close-Up", badge: "Premium", difficulty: 5,
+              desc: "DJ memegang turntable, close-up penuh detail kulit tangan, pori-pori kelihatan. Cahaya klub neon ungu-biru.",
+              suitableFor: ["DJ Close-Up", "Club Photography", "Turntable", "Nightlife"],
+              colors: ["Neon Purple", "Laser Blue", "Skin Pores"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-realistic close-up photograph of a DJ's hands on turntables at a club. Shot on Sony A7S III with 50mm f/1.2 GM, ISO 12800, 1/125s. Skin pores must be clearly visible, sweat droplets on skin, authentic club lighting with purple and blue neon. Extreme detail in every skin texture, realistic sweat, and atmospheric club haze. Output must look like a real photograph taken at Berghain Berlin. 300 DPI, hyper-realistic, skin pores visible, natural skin texture. No text, no logo.",
+              negativePrompt: "AI generated, cartoon, painting, smooth skin, airbrushed, plastic, fake, illustration, anime, makeup, blurry",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2027, collection: "Hyper Realistic", title: "🎤 MC Crowd Energy", badge: "Best Seller", difficulty: 5,
+              desc: "MC teriak ke crowd, urat leher kelihatan, keringat jelas, muka real dengan pori-pori.",
+              suitableFor: ["MC Performance", "Concert", "Crowd Interaction", "Stage"],
+              colors: ["Stage Red", "Spotlight White", "Sweat Glow"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-realistic concert photograph of an MC hyping the crowd. Canon EOS R3, 24mm f/1.4, ISO 6400, 1/250s. Every pore on the face must be clearly visible, sweat dripping, veins on neck visible. Stage lighting hitting the face creates dramatic shadows. Authentic live concert atmosphere with crowd blur in background. Must look like a real concert photo from Coachella main stage. 300 DPI, hyper-realistic skin texture, visible pores, natural sweat. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, perfect skin",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2028, collection: "Hyper Realistic", title: "🎧 DJ Headphones Portrait", badge: "Premium", difficulty: 5,
+              desc: "Potret DJ pake headphones, sorot lampu klub di wajah, pori-pori dan tekstur kulit nyata.",
+              suitableFor: ["DJ Portrait", "Headphones", "Club Lighting", "Night Portrait"],
+              colors: ["Neon Cyan", "Deep Purple", "Warm Skin"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-realistic portrait of a DJ wearing headphones in a nightclub. Fujifilm GFX 100 II, 110mm f/2, ISO 3200. Extreme skin detail with visible pores, sweat beads, and authentic club lighting on face. Neon cyan and purple rim lights. Background has bokeh club lights. Must be indistinguishable from a real high-end camera portrait. 300 DPI, hyper-realistic, visible skin texture, natural lighting. No text, no watermark.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, beauty mode",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2029, collection: "Hyper Realistic", title: "🎚️ DJ Mixer Hands", badge: "Trending", difficulty: 5,
+              desc: "Tangan DJ di atas mixer, detail jari, kuku, pori-pori tangan, lampu RGB mixer.",
+              suitableFor: ["Mixer Close-Up", "DJ Hands", "Studio Gear", "Equipment"],
+              colors: ["RGB Mixer", "Neon Green", "Skin Detail"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-realistic close-up of a DJ's hands working a Pioneer DJ mixer. Nikon Z9, 105mm f/2.8 macro, ISO 6400. Extreme macro detail showing skin pores on fingers, fingerprints visible, authentic hand texture, RGB buttons glowing. Shallow depth of field with mixer controls out of focus. Must look like a real product/event photograph. 300 DPI, hyper-realistic, visible hand pores, natural skin. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2030, collection: "Hyper Realistic", title: "🎤 MC Close-Up Sweat", badge: "Best Seller", difficulty: 5,
+              desc: "Close-up extreme muka MC berkeringat, pori-pori membesar, kilau cahaya panggung di kulit.",
+              suitableFor: ["MC Close-Up", "Extreme Detail", "Sweat", "Performance"],
+              colors: ["Stage Gold", "Sweat Glow", "Skin Pores"],
+              prompt: "Use the uploaded image as the main subject. Transform into an extreme close-up of an MC's face sweating under stage lights. Sony A1, 135mm f/1.8 GM, ISO 12800. Every single pore must be hyper-visible, sweat droplets refracting stage light, skin texture authentic with minor imperfections. Veins and stubble visible. Must look like a real concert photograph taken inches from the performer. 300 DPI, extreme hyper-realism with visible pores. No retouching, no smoothing.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, perfect skin, beauty mode, illustration",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2031, collection: "Hyper Realistic", title: "🎧 DJ Backstage Portrait", badge: "Premium", difficulty: 4,
+              desc: "DJ backstage sebelum naik panggung, natural light, pori-pori muka kelihatan real.",
+              suitableFor: ["Backstage", "DJ Portrait", "Natural Light", "Candid"],
+              colors: ["Natural Skin", "Backstage Warm", "Casual Tone"],
+              prompt: "Use the uploaded image as the main subject. Transform into a realistic backstage portrait of a DJ before a show. Leica M11, 50mm f/1.4, natural available light. Authentic skin texture with visible pores, natural blemishes, and casual expression. Warm backstage atmosphere with gear visible in background. Must look like a real backstage photograph. 300 DPI, hyper-realistic, natural skin texture. No text.",
+              negativePrompt: "AI generated, cartoon, painting, airbrushed, plastic, fake, illustration, beauty mode, studio light",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2032, collection: "Hyper Realistic", title: "🎧 DJ Booth Wide Shot", badge: "Trending", difficulty: 4,
+              desc: "DJ booth dari depan, lighting klub keren, wajah DJ real dengan ekspresi fokus.",
+              suitableFor: ["DJ Booth", "Club Wide", "Performance Shot", "Nightlife"],
+              colors: ["Laser Red", "Club Smoke", "Neon Blue"],
+              prompt: "Use the uploaded image as the main subject. Transform into a wide-angle photograph of a DJ booth in a packed nightclub. Sony A7S III, 16-35mm at 16mm f/2.8, ISO 12800. Club atmosphere with haze, laser lights, and crowd silhouettes. DJ's face must show real skin texture with visible pores despite low light. Authentic club photography style with grain and atmosphere. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, clean",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2033, collection: "Hyper Realistic", title: "🎤 MC Stage Wide Dynamic", badge: "Premium", difficulty: 5,
+              desc: "MC di panggung lebar, lampu panggung dramatis, kerumunan di depan, detail kulit jelas.",
+              suitableFor: ["Stage Performance", "MC Wide", "Concert Shot", "Crowd"],
+              colors: ["Stage White", "Crowd Dark", "Dramatic Red"],
+              prompt: "Use the uploaded image as the main subject. Transform into a dynamic stage photograph of an MC performing. Canon R3, 14mm f/1.8, ISO 6400. Wide dynamic shot capturing the MC with crowd below. Stage lighting must reveal real skin texture on the MC's face with visible pores. Dramatic shadows and highlights. Authentic concert photography style with atmospheric haze. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration",
+              ratio: "3:2", size: "23.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2034, collection: "Hyper Realistic", title: "🎧 Vinyl DJ Hands", badge: "Best Seller", difficulty: 5,
+              desc: "Tangan DJ megang vinyl di atas turntable. Detail pori-pori tangan, tekstur vinyl, cahaya klub remang.",
+              suitableFor: ["Vinyl", "Turntable", "DJ Hands", "Detail Shot"],
+              colors: ["Vinyl Black", "Warm Gold", "Skin Texture"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-detailed close-up of a DJ's hands on vinyl records. Hasselblad X2D 100C, 120mm f/4 macro, ISO 1600. Extreme detail: skin pores, fingerprints, vinyl grooves, dust particles on record. Warm ambient club lighting. Must look like a real product/portrait photograph from a high-end camera. 300 DPI, extreme hyper-realism. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, digital art",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2035, collection: "Hyper Realistic", title: "🎤 MC Crowd Surfing", badge: "Trending", difficulty: 5,
+              desc: "MC crowd surfing, muka real dari bawah, keringat, pori-pori, ekspresi intense.",
+              suitableFor: ["Crowd Surfing", "MC Action", "Concert", "Live Show"],
+              colors: ["Stage Blue", "Crowd Hands", "Action Blur"],
+              prompt: "Use the uploaded image as the main subject. Transform into a concert photograph of an MC crowd surfing. Nikon Z8, 24mm f/1.8, ISO 12800. Shot from below, crowd hands supporting. MC's face must show real skin texture with visible pores, sweat, and authentic expression. Motion blur in background crowd adds authenticity. Must look like a real concert photo. 300 DPI, hyper-realistic skin detail. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, beauty mode",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2036, collection: "Hyper Realistic", title: "🎧 DJ Glasses Reflection", badge: "Premium", difficulty: 5,
+              desc: "DJ pake kacamata hitam, refleksi lampu klub di lensa, detail kulit muka dan pori-pori.",
+              suitableFor: ["DJ Portrait", "Glasses", "Club Fashion", "Reflection"],
+              colors: ["Lens Reflection", "Neon Rainbow", "Skin Detail"],
+              prompt: "Use the uploaded image as the main subject. Transform into a hyper-realistic portrait of a DJ wearing sunglasses in a club. Sony A7R V, 85mm f/1.4 GM, ISO 6400. Sunglasses reflect the club lights. Skin must show extreme detail with visible pores, slight oiliness, and authentic texture. Neon lighting creates colorful rim light. Must look like a real nightlife photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, perfect skin",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2037, collection: "Hyper Realistic", title: "🎤 MC Backlit Silhouette", badge: "Premium", difficulty: 4,
+              desc: "MC silhouette dengan lampu dari belakang, detail tepi wajah, rambut, dan pori kulit kena cahaya.",
+              suitableFor: ["Silhouette", "Backlight", "Dramatic", "Stage Lighting"],
+              colors: ["Backlight Gold", "Silhouette Dark", "Edge Light"],
+              prompt: "Use the uploaded image as the main subject. Transform into a dramatic backlit photograph of an MC on stage. Fujifilm GFX 50S II, 50mm f/3.5, ISO 3200. Strong backlight creates rim lighting on the MC's silhouette. Edge of face and hair illuminated, showing real skin texture with visible pores on the lit edges. Atmospheric haze catches the light beam. Must look like a real concert photo. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, flat lighting, illustration",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2038, collection: "Hyper Realistic", title: "🎧 DJ Controller Fingers", badge: "Trending", difficulty: 4,
+              desc: "Close-up jari DJ di atas controller, detail sidik jari, kuku, dan lampu RGB pad.",
+              suitableFor: ["Controller", "Finger Detail", "DJ Equipment", "Macro"],
+              colors: ["RGB Pads", "Finger Skin", "Neon Blue"],
+              prompt: "Use the uploaded image as the main subject. Transform into a macro photograph of a DJ's fingers on a controller pad. Canon R5, 100mm f/2.8L macro, ISO 6400. Extreme detail: fingerprints visible, nail texture, skin pores on fingers. RGB pads glowing under fingers. Shallow depth of field. Must look like a real macro product photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, digital art",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2039, collection: "Hyper Realistic", title: "🎤 MC Rain Show", badge: "Best Seller", difficulty: 5,
+              desc: "MC di atas panggung kehujanan buatan, air di wajah, pori-pori basah, ekspresi intense.",
+              suitableFor: ["MC Rain", "Water Effect", "Concert Drama", "Epic Shot"],
+              colors: ["Rain Blue", "Water Drops", "Skin Wet"],
+              prompt: "Use the uploaded image as the main subject. Transform into a concert photograph of an MC performing in artificial rain. Sony A1, 35mm f/1.4 GM, ISO 6400. Water droplets on face must be hyper-realistic with each drop visible. Skin pores visible through water film. Stage lighting creates dramatic effect on wet skin. Must look like a real concert photograph from a major festival. 300 DPI, extreme hyper-realism. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, dry skin",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2040, collection: "Hyper Realistic", title: "🎧 DJ Studio Portrait", badge: "Premium", difficulty: 4,
+              desc: "Potret DJ di studio dengan lighting studio softbox, detail kulit sangat jelas dan natural.",
+              suitableFor: ["Studio Portrait", "DJ Professional", "Clean Shot", "Headshot"],
+              colors: ["Studio White", "Soft Skin", "Natural Tone"],
+              prompt: "Use the uploaded image as the main subject. Transform into a studio portrait photograph of a DJ. Hasselblad H6D, 80mm f/2.8, ISO 100 with studio strobes. Flawless studio lighting reveals every pore and skin texture. Natural retouching without removing skin details. Must look like a real high-end studio portrait for a music magazine cover. 300 DPI, hyper-realistic studio quality. No text.",
+              negativePrompt: "AI generated, cartoon, painting, airbrushed, plastic, fake, over-retouched, beauty mode, illustration",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2041, collection: "Hyper Realistic", title: "🎤 MC Fist Pump", badge: "Trending", difficulty: 4,
+              desc: "MC fist pump ke udara, otot lengan, detail kulit, keringat, lighting panggung dramatis.",
+              suitableFor: ["MC Action", "Fist Pump", "Energy Shot", "Concert"],
+              colors: ["Action Red", "Skin Tone", "Stage Warm"],
+              prompt: "Use the uploaded image as the main subject. Transform into a concert photograph of an MC pumping fist in the air. Nikon Z6 III, 50mm f/1.8 S, ISO 6400. Arm muscles visible with real skin texture, sweat droplets, and visible pores. Dynamic pose with dramatic stage lighting. Must look like a real live concert photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration, still pose",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2042, collection: "Hyper Realistic", title: "🎧 DJ Night Club Candid", badge: "Premium", difficulty: 4,
+              desc: "Candid DJ di club malam, natural moment, lighting club asli, kulit real dengan grain.",
+              suitableFor: ["Candid", "Night Club", "Natural Moment", "DJ Lifestyle"],
+              colors: ["Club Amber", "Shadow Blue", "Natural Grain"],
+              prompt: "Use the uploaded image as the main subject. Transform into a candid photograph of a DJ at a nightclub. Leica Q3, 28mm f/1.7, ISO 12500. Natural candid moment captured in authentic club lighting. Film-like grain adds realism. Skin texture must be visible with natural pores. Must look like a real candid shot from a night out. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, posed, illustration",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2043, collection: "Hyper Realistic", title: "🎤 MC Smoke Machine", badge: "Best Seller", difficulty: 5,
+              desc: "MC di tengah asap panggung, kabut tebal, lampu tembus, detail kulit samar tapi real.",
+              suitableFor: ["Smoke Effect", "MC Atmosphere", "Mysterious", "Stage Fog"],
+              colors: ["Fog White", "Laser Green", "Mysterious Dark"],
+              prompt: "Use the uploaded image as the main subject. Transform into a concert photograph of an MC engulfed in stage smoke. Canon R1, 35mm f/1.4, ISO 12800. Thick fog machine smoke with colored lasers piercing through. MC's face partially visible through smoke but still showing real skin texture and pores where light hits. Authentic concert atmosphere. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, clear, illustration",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2044, collection: "Hyper Realistic", title: "🎧 DJ Monitor Speaker", badge: "Premium", difficulty: 4,
+              desc: "DJ di belakang monitor speaker, detail speaker dan wajah DJ dengan lighting merah.",
+              suitableFor: ["Monitor Speaker", "DJ Shot", "Club Audio", "Gear Shot"],
+              colors: ["Speaker Black", "Red Light", "Skin Highlight"],
+              prompt: "Use the uploaded image as the main subject. Transform into a photograph of a DJ behind monitor speakers. Sony A7 IV, 24-70mm at 35mm, f/2.8, ISO 6400. DJ's face visible between speakers with red stage lighting. Skin texture and pores visible on illuminated areas. Authentic club audio gear detail. Must look like a real concert photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, illustration",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2045, collection: "Hyper Realistic", title: "🎤 MC Confetti Burst", badge: "Trending", difficulty: 5,
+              desc: "MC terkena confetti, confetti di wajah, pori-pori jelas, momen euphoria real.",
+              suitableFor: ["Confetti", "Celebration", "MC Happy", "Festival Moment"],
+              colors: ["Confetti Rainbow", "Happy Skin", "Gold Foil"],
+              prompt: "Use the uploaded image as the main subject. Transform into a concert photograph of an MC with confetti exploding around. Nikon Z8, 50mm f/1.2, ISO 3200. Confetti pieces on the MC's face must be sharp with real skin visible beneath. Euphoric expression with real skin texture, pores, and sweat. Must look like a real festival closure photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, still, illustration",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2046, collection: "Hyper Realistic", title: "🎧 DJ Cable Management", badge: "Premium", difficulty: 3,
+              desc: "Detail kabel DJ setup yang rapi, lighting RGB, tangan DJ di antara kabel.",
+              suitableFor: ["Cable Detail", "DJ Setup", "Behind The Scenes", "Gear Porn"],
+              colors: ["Cable Black", "RGB Glow", "Silver Connector"],
+              prompt: "Use the uploaded image as the main subject. Transform into a detail shot of DJ cable management setup. Sony A7R V, 50mm f/2.8 macro, ISO 3200. Professional cable organization with RGB lighting reflections on cables. DJ's hands visible adjusting connections. Skin pores and fingerprints visible on hands. Must look like a real gear photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, fake, illustration, messy",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2047, collection: "Hyper Realistic", title: "🎤 MC Aerial Stage View", badge: "Premium", difficulty: 4,
+              desc: "MC dari atas panggung (drone shot), lighting spektakuler, detail atas kepala dan rambut.",
+              suitableFor: ["Aerial", "Drone Shot", "Stage Top View", "Festival"],
+              colors: ["Stage Layout", "Crowd Lights", "Epic Wide"],
+              prompt: "Use the uploaded image as the main subject. Transform into an aerial/drone photograph of an MC on stage from above. DJI Inspire 3, 18mm f/2.8, ISO 3200. MC visible from above with stage lighting creating a spectacular pattern. Top of head and shoulders show real hair texture and skin detail where visible. Must look like a real festival aerial photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, fake, illustration, CGI",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2048, collection: "Hyper Realistic", title: "🎧 DJ Vape Smoke Portrait", badge: "Trending", difficulty: 5,
+              desc: "DJ tiup asap vape, asap tebal di depan muka, detail kulit di balik asap tetap kelihatan.",
+              suitableFor: ["Vape Smoke", "Atmosphere", "DJ Cool Shot", "Moody"],
+              colors: ["Vape White", "Neon Pink", "Mysterious Smoke"],
+              prompt: "Use the uploaded image as the main subject. Transform into a moody portrait of a DJ blowing vape smoke. Fujifilm X-T5, 56mm f/1.2, ISO 6400. Thick vape smoke swirls in front of face with neon pink backlight. Skin detail visible through the smoke with real pores and texture. Mysterious and atmospheric club vibe. Must look like a real nightlife photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, clear face, illustration",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 2049, collection: "Hyper Realistic", title: "🎤 MC Crowd Wall", badge: "Best Seller", difficulty: 5,
+              desc: "MC menghadapi crowd wall, dari belakang panggung, crowd ramai, lighting epic, detail real.",
+              suitableFor: ["Crowd Wall", "MC Back View", "Festival Wide", "Epic Atmosphere"],
+              colors: ["Crowd Silhouette", "Festival Lights", "Epic Wide"],
+              prompt: "Use the uploaded image as the main subject. Transform into a photograph from behind the MC facing a massive crowd wall. Canon R3, 15mm f/2.8 fisheye, ISO 6400. MC's back and shoulders in foreground with real skin texture. Massive crowd with phone lights creating a wall of light. Authentic festival atmosphere. Must look like a real festival headliner photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, fake, illustration, CGI, small crowd",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 2050, collection: "Hyper Realistic", title: "🎧 DJ After Hours", badge: "Premium", difficulty: 4,
+              desc: "DJ setelah show, capek tapi puas, lighting remang, detail kulit natural, pori-pori kelihatan.",
+              suitableFor: ["After Hours", "DJ Relax", "Behind The Stage", "Candid Portrait"],
+              colors: ["Dim Warm", "Natural Skin", "Tired Beauty"],
+              prompt: "Use the uploaded image as the main subject. Transform into an after-show candid portrait of a DJ backstage. Leica SL2-S, 50mm f/1.4, ISO 10000. Dim warm lighting, tired but satisfied expression. Real skin texture with visible pores, sweat residue, and natural imperfections. Very authentic and human moment captured. Must look like a real backstage photograph. 300 DPI. No text.",
+              negativePrompt: "AI generated, cartoon, painting, smooth, airbrushed, plastic, fake, perfect, illustration, studio lighting",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+
+            // ==========================================================================
             // 🖼️ PHOTO RESTORE — Restorasi Foto Keluarga Jadi Realistik
             // ==========================================================================
             { id: 3001, collection: "Photo Restore", title: "🖼️ Old Family Portrait Restore", badge: "Premium", difficulty: 4,
               desc: "Restorasi foto keluarga lawas yang buram, pudar, atau rusak jadi jernih & realistik seperti diambil kamera modern.",
+              suitableFor: ["Old Photo", "Family Portrait", "Faded", "Damaged"],
               colors: ["Natural Skin", "Warm Tone", "HD Clear"],
               prompt: "Use the uploaded image as the main subject. Restore and enhance this old family photo to look like it was taken with a modern digital camera. Portrait orientation (2:3 ratio). Apply PHOTO RESTORE: remove dust, scratches, and fading. Enhance natural skin textures, sharpen facial features authentically. Output must look like a real photograph taken with a Sony A7 IV camera with natural lighting. 300 DPI, photorealistic quality. No text, no watermark.",
               negativePrompt: "AI generated, cartoon, painting, illustration, airbrushed, overprocessed, plastic skin, makeup, fake",
@@ -10882,6 +11090,7 @@
             // ==========================================================================
             { id: 4001, collection: "Family Add", title: "👨‍👩‍👧‍👦 Add Person to Family Photo", badge: "Best Seller", difficulty: 5,
               desc: "Masukkan wajah seseorang ke dalam foto keluarga dengan pencahayaan & posisi yang natural. Hasil real kayak foto beneran.",
+              suitableFor: ["Family Photo", "Add Person", "Group Photo", "Composite"],
               colors: ["Natural Blend", "Consistent Lighting", "Real Skin"],
               prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing family group photo. Portrait orientation (2:3 ratio). Apply FAMILY ADD: perfectly match the lighting, color grading, and perspective of the target family photo. 300 DPI.",
               negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite, glitch, color mismatch",
@@ -10992,19 +11201,20 @@
         }
 
         // === EMPTY STATE & LOADING ===
-        const emptyStateHTML = '<div class="empty-state"><img src="download.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+        const emptyStateHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
 
-        const loadingHTML = '<div class="loading-state"><img src="download.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
+        const loadingHTML = '<div class="loading-state"><img src="loading.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
 
         // === RENDER CARDS (Optimized + Sanitized) ===
         function renderCards(data) {
+            const countSpan = statsCount.querySelector('span:last-child');
             if (!data || data.length === 0) {
                 catalogGrid.innerHTML = emptyStateHTML;
-                statsCount.textContent = '0 Style';
+                if (countSpan) countSpan.textContent = '0 Style';
                 return;
             }
 
-            statsCount.textContent = data.length + ' Styles';
+            if (countSpan) countSpan.textContent = data.length + ' Styles';
 
             const htmlString = data.map(item => {
                 let badgeHTML = '';
@@ -11115,12 +11325,13 @@
         // Event Listener untuk Tombol Kategori
         filterBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
+                const targetBtn = e.currentTarget;
                 // Update UI tombol aktif
                 filterBtns.forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
+                targetBtn.classList.add('active');
 
-                currentFilter = e.target.getAttribute('data-filter');
-                const filterName = e.target.querySelector('span') ? e.target.querySelector('span').textContent : e.target.textContent;
+                currentFilter = targetBtn.getAttribute('data-filter');
+                const filterName = targetBtn.querySelector('span') ? targetBtn.querySelector('span').textContent : targetBtn.textContent;
                 categoryTitle.textContent = currentFilter === 'all' ? 'All Styles' : filterName;
                 setCategoryTheme(currentFilter);
 
@@ -11147,7 +11358,7 @@
         orientationBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 orientationBtns.forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
+                e.currentTarget.classList.add('active');
                 currentOrientation = e.currentTarget.getAttribute('data-orientation');
                 applyFilters();
             });
@@ -11157,7 +11368,7 @@
         subFilterBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 subFilterBtns.forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
+                e.currentTarget.classList.add('active');
                 currentSubFilter = e.currentTarget.getAttribute('data-sub');
                 applyFilters();
             });
@@ -11197,7 +11408,9 @@
 
         // === KEAMANAN: Fungsi Copy Modern (Clipboard API + Fallback) ===
         window.copyText = async function(elementId, btnElement) {
-            const textToCopy = document.getElementById(elementId).innerText.trim();
+            const el = document.getElementById(elementId);
+            if (!el) { btnElement.textContent = '❌ Element not found'; return; }
+            const textToCopy = el.innerText.trim();
             const originalText = btnElement.innerHTML;
             
             try {
