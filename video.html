@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="no-referrer">
+    <title>🎬 Video Prompt Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #0d0d14;
+            --bg-card: #161622;
+            --bg-card-solid: #1e1e2e;
+            --bg-hover: #1f1f32;
+            --bg-glass: rgba(22, 22, 34, 0.9);
+            --text-main: #f0f0f5;
+            --text-muted: #8b8da8;
+            --text-dim: #5a5c73;
+            --accent-primary: #5cc8e8;
+            --accent-secondary: #7ed8ff;
+            --accent-glow: rgba(92, 200, 232, 0.25);
+            --accent-cyan: #4ac8d8;
+            --accent-emerald: #5ec9a0;
+            --accent-rose: #f49cb3;
+            --accent-amber: #f5a623;
+            --badge-premium: linear-gradient(135deg, #f5a623, #ff8c42);
+            --badge-bestseller: linear-gradient(135deg, #5cc8e8, #7ed8ff);
+            --badge-trending: linear-gradient(135deg, #f49cb3, #f7b8c7);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(92, 200, 232, 0.35);
+            --font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+            --radius-sm: 14px;
+            --radius-md: 18px;
+            --radius-lg: 22px;
+            --radius-xl: 30px;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25);
+            --shadow-lg: 0 6px 16px rgba(0,0,0,0.4), 0 12px 36px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 24px rgba(92, 200, 232, 0.18);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-base);
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(92, 200, 232, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(245, 166, 35, 0.05), transparent);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 300px;
+            background: #11111a;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #5cc8e8, #7ed8ff, #f5a623);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .search-box {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 42px;
+            background: #1a1a28;
+            border: 2px solid transparent;
+            color: var(--text-main);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-family: var(--font-family);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(92, 200, 232, 0.15);
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+            padding: 11px 14px;
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-family: var(--font-family);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent-primary);
+            transform: scaleY(0);
+            transition: var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            background: #1a1a28;
+            color: var(--text-main);
+            border-color: #2a2a3a;
+            transform: translateX(4px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, rgba(92, 200, 232, 0.18), rgba(126, 216, 255, 0.12));
+            color: #5cc8e8;
+            border-color: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(92, 200, 232, 0.2);
+            transform: translateX(4px);
+        }
+
+        .filter-btn.active::before {
+            transform: scaleY(1);
+        }
+
+        .filter-count {
+            margin-left: auto;
+            font-size: 0.7rem;
+            background: #1a1a28;
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: var(--text-muted);
+        }
+
+        .filter-btn.active .filter-count {
+            background: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 36px;
+            max-width: 1600px;
+        }
+
+        .header-section {
+            margin-bottom: 36px;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .header-stats h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #f0f0f5;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .stats-badge {
+            background: #161622;
+            box-shadow: var(--shadow-sm);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #5cc8e8;
+            border: 2px solid #2a3a4a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-dot {
+            width: 8px;
+            height: 8px;
+            background: #5cc8e8;
+            border-radius: 50%;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(92, 200, 232, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(92, 200, 232, 0); }
+        }
+
+        /* ===== CATALOG GRID ===== */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 28px;
+            transition: opacity 0.3s ease;
+        }
+        .catalog-grid.fade-transition {
+            opacity: 0;
+        }
+
+        .card {
+            background: #161622;
+            border: 2px solid #242436;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-preview {
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #1f1f32);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid #242436;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(92, 200, 232, 0.08), transparent 70%);
+        }
+
+        .mockup-text {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #5a5c73;
+            margin: 0;
+            white-space: pre;
+            line-height: 1.3;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .card:hover .mockup-text {
+            opacity: 1;
+            color: #8b8da8;
+        }
+
+        .badge-container {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .badge.bestseller {
+            background: var(--badge-bestseller);
+            color: white;
+            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.4);
+        }
+
+        .badge.trending {
+            background: var(--badge-trending);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 160, 177, 0.4);
+        }
+
+        .badge.premium {
+            background: var(--badge-premium);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+        }
+
+        .card-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+            color: #f0f0f5;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .difficulty {
+            color: #f5a623;
+            letter-spacing: 1px;
+        }
+
+        .meta-divider {
+            width: 1px;
+            height: 14px;
+            background: #2a2a3e;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            flex: 1;
+            line-height: 1.7;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            background: #1a2a3a;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #5cc8e8;
+            border: 1.5px solid #2a4a5a;
+            transition: var(--transition-fast);
+        }
+
+        .tag:hover {
+            background: #2a4a5a;
+            border-color: #5cc8e8;
+        }
+
+        .prompt-section {
+            background: #1a1a28;
+            border-radius: var(--radius-md);
+            border: 2px solid #2a2a3e;
+            margin-top: auto;
+            overflow: hidden;
+        }
+
+        .prompt-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.88rem;
+            font-family: var(--font-family);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+
+        .prompt-toggle:hover {
+            background: #1f1f32;
+        }
+
+        .prompt-toggle span {
+            font-size: 0.75rem;
+            transition: var(--transition-fast);
+        }
+
+        .prompt-content {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 2px solid #2a2a3e;
+        }
+
+        .prompt-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prompt-box {
+            background: #0d1b2a;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: #5ec9a0;
+            margin-top: 12px;
+            max-height: 120px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            border: 2px solid #1a3a4a;
+            line-height: 1.6;
+        }
+
+        .prompt-box.negative {
+            color: #f5a0b3;
+            border-color: #3a1a2a;
+        }
+
+        .prompt-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 14px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #7ec8e3, #a8d8ff);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.3);
+        }
+
+        .btn-copy::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .btn-copy:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 6px 20px rgba(126, 200, 227, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-copy.success {
+            background: linear-gradient(135deg, #6bc5a0, #5bb894);
+        }
+
+        .tech-specs {
+            margin-top: 16px;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 2px solid #2a2a3a;
+        }
+
+        .tech-specs div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tech-specs strong {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 260px;
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+            }
+            .main-content {
+                margin-left: 260px;
+                padding: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 2px solid #2a2a3a;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                padding: 20px;
+                max-height: none;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .catalog-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-stats {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .header-stats h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* ===== LOADING & EMPTY STATE ===== */
+        .loading-state,
+        .empty-state {
+            grid-column: 1/-1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .loading-gif,
+        .empty-gif {
+            width: 150px;
+            height: auto;
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .loading-state p,
+        .empty-state h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== LAYOUT TOGGLE ===== */
+        .layout-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .layout-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #2a2a3a;
+            background: #1a1a28;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition-fast);
+        }
+
+        .layout-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-main);
+        }
+
+        .layout-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        /* ===== CATEGORY THEMES ===== */
+        .catalog-grid[data-category="Cinematic"] { --cat-accent: #e74c3c; --cat-glow: rgba(231, 76, 60, 0.2); }
+        .catalog-grid[data-category="Music Video"] { --cat-accent: #9b59b6; --cat-glow: rgba(155, 89, 182, 0.2); }
+        .catalog-grid[data-category="Animation"] { --cat-accent: #2ecc71; --cat-glow: rgba(46, 204, 113, 0.2); }
+        .catalog-grid[data-category="Documentary"] { --cat-accent: #f39c12; --cat-glow: rgba(243, 156, 18, 0.2); }
+        .catalog-grid[data-category="Travel"] { --cat-accent: #3498db; --cat-glow: rgba(52, 152, 219, 0.2); }
+        .catalog-grid[data-category="Food"] { --cat-accent: #e67e22; --cat-glow: rgba(230, 126, 34, 0.2); }
+        .catalog-grid[data-category="Fashion"] { --cat-accent: #e91e63; --cat-glow: rgba(233, 30, 99, 0.2); }
+        .catalog-grid[data-category="Tech Review"] { --cat-accent: #00bcd4; --cat-glow: rgba(0, 188, 212, 0.2); }
+        .catalog-grid[data-category="Commercial"] { --cat-accent: #ff5722; --cat-glow: rgba(255, 87, 34, 0.2); }
+        .catalog-grid[data-category="Vlog"] { --cat-accent: #ff9800; --cat-glow: rgba(255, 152, 0, 0.2); }
+
+        .catalog-grid .card::before {
+            background: linear-gradient(90deg, transparent, var(--cat-accent, var(--accent-primary)), transparent);
+        }
+
+        .catalog-grid .card:hover {
+            border-color: var(--cat-accent, var(--border-glow));
+            box-shadow: var(--shadow-md), 0 4px 20px var(--cat-glow, var(--accent-glow));
+        }
+
+        .catalog-grid .card .badge.bestseller {
+            background: linear-gradient(135deg, var(--cat-accent, var(--accent-primary)), var(--cat-accent, var(--accent-secondary)));
+        }
+
+        /* ===== HORIZONTAL LAYOUT ===== */
+        .catalog-grid.horizontal {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .catalog-grid.horizontal .card {
+            flex-direction: row;
+            max-height: 200px;
+        }
+
+        .catalog-grid.horizontal .card-preview {
+            width: 200px;
+            height: 200px;
+            min-width: 200px;
+            border-bottom: none;
+            border-right: 2px solid #2a2a3a;
+        }
+
+        .catalog-grid.horizontal .card-content {
+            padding: 20px;
+        }
+
+        .catalog-grid.horizontal .card-desc {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .catalog-grid.horizontal .tags-container {
+            margin-bottom: 12px;
+        }
+
+        .catalog-grid.horizontal .prompt-section {
+            display: none;
+        }
+
+        /* ===== VERTICAL LAYOUT (DEFAULT) ===== */
+        .catalog-grid.vertical {
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
+        }
+
+        /* ===== ORIENTATION SUB-FILTER ===== */
+        .orientation-bar {
+            display: none;
+            gap: 10px;
+            align-items: center;
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #1a1a28;
+            border: 2px solid #2a2a3a;
+            border-radius: var(--radius-md);
+        }
+
+        .orientation-bar.show {
+            display: flex;
+        }
+
+        .orientation-bar .orientation-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .orientation-btn {
+            padding: 8px 16px;
+            border: 2px solid #2a2a3a;
+            background: #1a1a28;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .orientation-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-main);
+        }
+
+        .orientation-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        .orientation-btn .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .orientation-btn:not(.active) .count {
+            background: #1a1a28;
+        }
+
+        /* ===== PHOTOGRAPHY SUB-FILTERS ===== */
+        .sub-filters {
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 0 8px 16px;
+            margin-top: -4px;
+        }
+
+        .sub-filters.show {
+            display: flex;
+        }
+
+        .sub-filter {
+            font-size: 0.75rem !important;
+            padding: 4px 10px !important;
+            width: auto !important;
+            border-radius: 14px !important;
+        }
+
+        .sub-filter:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .sub-filter.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* ===== CARD ANIMATION ===== */
+        .card {
+            animation: fadeInUp 0.4s ease backwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">🎬 Video Studio</div>
+        <div class="brand-subtitle">AI Video Prompt Studio</div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search video style, theme...">
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Categories</div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">
+                    <span>All Video Styles</span>
+                    <span class="filter-count">100</span>
+                </button>
+                <button class="filter-btn" data-filter="Cinematic">
+                    <span>🎬 Cinematic</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Music Video">
+                    <span>🎵 Music Video</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Animation">
+                    <span>🎨 Animation</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Documentary">
+                    <span>📽️ Documentary</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Travel">
+                    <span>✈️ Travel</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Food">
+                    <span>🍔 Food</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Fashion">
+                    <span>👗 Fashion</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Tech Review">
+                    <span>💻 Tech Review</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Commercial">
+                    <span>📺 Commercial</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Vlog">
+                    <span>📱 Vlog</span>
+                    <span class="filter-count">10</span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-links" style="margin-top:auto; border-top:2px solid #2a2a3a; padding-top:16px; display:flex; flex-direction:column; gap:4px;">
+            <a href="Poster-fitur.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🖼️ AI Poster</a>
+            <a href="lyric.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎵 Lyric Generator</a>
+            <a href="video.html" class="nav-link active" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(92,200,232,0.18),rgba(126,216,255,0.12));border:2px solid var(--accent-primary);color:#5cc8e8;border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎬 Video Prompt</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="header-section">
+            <div class="header-stats">
+                <div>
+                    <h1 id="categoryTitle">All Video Styles</h1>
+                    <div class="header-subtitle">AI video prompts in 16:9 widescreen</div>
+                </div>
+                <div class="layout-controls">
+                    <button class="layout-btn active" data-layout="vertical" title="Grid View">▦</button>
+                    <button class="layout-btn" data-layout="horizontal" title="List View">☰</button>
+                    <div class="stats-badge" id="statsCount">
+                        <span class="stats-dot"></span>
+                        <span>100 Styles</span>
+                    </div>
+                </div>
+            </div>
+            <div class="orientation-bar" id="orientationBar">
+                <span class="orientation-label">Orientation:</span>
+                <button class="orientation-btn active" data-orientation="all">All <span class="count" id="orientAll">0</span></button>
+                <button class="orientation-btn" data-orientation="2:3">Portrait (2:3) <span class="count" id="orientPortrait">0</span></button>
+                <button class="orientation-btn" data-orientation="3:2">Landscape (3:2) <span class="count" id="orientLandscape">0</span></button>
+            </div>
+        </div>
+
+<div id="catalogGrid" class="catalog-grid vertical">
+            <div class="loading-state">
+<img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif">
+                <p>Memuat video style...</p>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * ==========================================================================
+         * DATA STORE — 100 AI Video Prompts
+         * ==========================================================================
+         */
+        const videoData = [
+    // ===== CINEMATIC (10) =====
+    { id: 1, collection: "Cinematic", title: "🎬 Lone Wanderer", badge: "Premium", difficulty: 4, desc: "Epik sepi di alam liar. Kamera dolly mundur memperlihatkan skala luas.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Teal", "Orange", "Grey"], prompt: "Epic wide shot of a lone figure walking through a misty forest at golden hour. Camera slowly dollies backward revealing the immense scale of towering ancient trees. Cinematic teal-orange color grading. 4K, 60fps, shallow depth of field, atmospheric haze, god rays piercing through canopy. Duration 8 seconds.", negativePrompt: "cartoon, bright daylight, static camera, low quality", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 2, collection: "Cinematic", title: "🎬 Rainy Night Chase", badge: "Best Seller", difficulty: 4, desc: "Kejar-kejaran malam hujan dengan kamera handheld intens.", suitableFor: ["Kling", "Pika", "Runway"], colors: ["Neon Blue", "Rain Grey", "Red"], prompt: "A figure sprinting through a neon-lit alleyway in pouring rain. Handheld camera movement with dynamic shake, puddles splashing, reflections of city lights on wet pavement. Moody cyberpunk atmosphere, dramatic side lighting from neon signs. 24fps, film grain, cinematic anamorphic lens flares, 6 seconds duration.", negativePrompt: "stable camera, daytime, cartoon, clean", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 3, collection: "Cinematic", title: "🎬 Desert Standoff", badge: "Trending", difficulty: 3, desc: "Duel di gurun panas. Kamera pan lambat dramatis.", suitableFor: ["Sora", "Kling", "Pika"], colors: ["Sand Gold", "Sky Orange", "Shadow Black"], prompt: "Two silhouetted figures facing each other in a vast desert at sunset. Camera slowly pans from one to the other, heat distortion rising from the sand. Warm golden hour lighting, long shadows stretching toward the viewer. Epic western cinematic style, 4K, 30fps, dust particles in air, 7 seconds.", negativePrompt: "cartoon, bright noon, modern city, comedy", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 4, collection: "Cinematic", title: "🎬 Deep Sea Discovery", badge: "Premium", difficulty: 5, desc: "Eksplorasi laut dalam dengan kamera floating lambat.", suitableFor: ["Runway", "Sora", "Kling"], colors: ["Deep Blue", "Bioluminescent Cyan", "Black"], prompt: "A vintage diving suit descending through dark ocean waters, camera floating alongside in slow motion. Bioluminescent creatures flickering in the depths, particles of marine snow drifting. Single beam of light from the surface fading above. Eerie atmospheric pressure, 4K, 24fps, underwater caustics, 9 seconds.", negativePrompt: "bright, shallow water, cartoon, daytime", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 5, collection: "Cinematic", title: "🎬 Medieval Battle Charge", badge: "Best Seller", difficulty: 5, desc: "Pertempuran abad pertengahan dengan crane shot megah.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Iron Grey", "Crimson", "Mud Brown"], prompt: "A massive army of medieval knights charging across a misty battlefield at dawn. Crane camera rising from ground level to high overhead, revealing thousands of soldiers. Dramatic lighting through broken clouds, dust and smoke mixing, banners waving. Epic orchestral battlefield, 4K, 60fps, slow motion, 10 seconds.", negativePrompt: "modern, peaceful, clean, no blood, cartoon", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 6, collection: "Cinematic", title: "🎬 Abandoned Mansion Hall", badge: "", difficulty: 3, desc: "Eksplorasi rumah tua angker dengan kamera floating perlahan.", suitableFor: ["Kling", "Pika", "Runway"], colors: ["Grey", "Pale Yellow", "Shadow Black"], prompt: "Camera gliding slowly through a decaying Victorian mansion grand hallway. Dust particles dancing in shafts of light from broken windows, torn curtains billowing, cracked mirrors reflecting the space. Eerie silence broken by creaking floorboards. Moody atmospheric lighting, desaturated palette, 4K, 24fps, 8 seconds.", negativePrompt: "bright, modern furniture, clean, people", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 7, collection: "Cinematic", title: "🎬 Train Window Reflection", badge: "", difficulty: 2, desc: "Perjalanan kereta dengan refleksi dramatis di jendela.", suitableFor: ["Runway", "Sora", "Pika"], colors: ["Teal", "Warm Amber", "Night Black"], prompt: "Close-up of a passenger's face reflected in a rain-streaked train window at night. Camera slowly pushes in as passing city lights create streaking bokeh behind the reflection. Melancholic romantic mood, warm interior light contrasting with cool exterior, 4K, 30fps, 6 seconds.", negativePrompt: "daytime, empty train, bright, cartoon", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 8, collection: "Cinematic", title: "🎬 Mountain Summit Sunrise", badge: "Premium", difficulty: 3, desc: "Puncak gunung saat matahari terbit. Kamera tilt up dramatis.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Sky Blue", "Cloud Pink", "Mountain Purple"], prompt: "Point-of-view shot from a mountain summit as the first rays of sunrise break over layered peaks. Camera slowly tilts up from the valley below to the blazing horizon. Clouds of mist rolling between mountains, golden light painting the landscape. Majestic awe-inspiring atmosphere, 4K, 60fps, 8 seconds.", negativePrompt: "night, storm, city, pollution, flat lighting", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 9, collection: "Cinematic", title: "🎬 Space Station Orbit", badge: "Trending", difficulty: 4, desc: "Stasiun luar angkasa mengorbit bumi dengan kamera 360 derajat.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Space Black", "Earth Blue", "Star White"], prompt: "Camera orbiting alongside a space station with Earth's curved horizon in the background. Slow rotation revealing solar panels, docking ports, and the thin blue atmosphere layer. Sun glare creating lens flare across the station. Awe-inspiring cosmic silence, 4K, 60fps, zero gravity feel, 10 seconds.", negativePrompt: "indoor, ground level, atmosphere, cartoon", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 10, collection: "Cinematic", title: "🎬 Candlelit Dinner Table", badge: "", difficulty: 2, desc: "Makan malam romantis dengan pencahayaan lilin hangat.", suitableFor: ["Pika", "Runway", "Kling"], colors: ["Candle Gold", "Warm Amber", "Shadow Black"], prompt: "Close-up tracking shot moving slowly across a candlelit dinner table with wine glasses, silverware, and floral centerpiece. Warm flickering candlelight creating dancing shadows, soft bokeh in background. Intimate romantic atmosphere, shallow depth of field, 4K, 24fps, 7 seconds.", negativePrompt: "daylight, fluorescent light, empty table, cartoon", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== MUSIC VIDEO (10) =====
+    { id: 11, collection: "Music Video", title: "🎵 Neon Dance Floor", badge: "Best Seller", difficulty: 3, desc: "Lantai dansa neon dengan gerakan kamera sinematik.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Neon Pink", "Cyan", "Purple"], prompt: "A dancer moving on a neon-lit grid floor surrounded by LED walls. Camera orbits around the dancer in slow motion as lights pulse with the beat. Dynamic lighting shifts from pink to cyan to purple. Shallow depth of field, smoke machine haze creating light beams, 4K, 30fps, 8 seconds.", negativePrompt: "empty stage, no lights, daytime, static camera", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 12, collection: "Music Video", title: "🎵 Rooftop Sunset Performance", badge: "Premium", difficulty: 3, desc: "Pertunjukan rooftop saat senja dengan kamera crane.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Sunset Gold", "City Silhouette", "Sky Purple"], prompt: "A singer performing on a city rooftop at sunset with microphone in hand. Crane camera starts close on face then rises to reveal the entire skyline behind. Wind blowing hair, warm golden backlight creating rim light. Emotional intimate concert feel, 4K, 24fps, 10 seconds.", negativePrompt: "indoor, no audience, daylight, flat lighting", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 13, collection: "Music Video", title: "🎵 Rainy Street Ballad", badge: "Trending", difficulty: 4, desc: "Balada di jalan hujan dengan kamera tracking mundur.", suitableFor: ["Kling", "Pika", "Runway"], colors: ["Rain Grey", "Street Light Orange", "Wet Black"], prompt: "Singer walking backward on a wet cobblestone street at night, camera tracking in reverse. Rain falling, street lamps creating reflections on wet stone, umbrella twirling. Slow motion raindrops catching light, melancholic mood, film grain, 4K, 24fps, 8 seconds.", negativePrompt: "sunny, dry pavement, bright, comedy", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 14, collection: "Music Video", title: "🎵 Glowstick Crowd Wave", badge: "Best Seller", difficulty: 2, desc: "Kerumunan konser dengan gelang bercahaya, kamera dari atas.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Glowstick Green", "Concert Blue", "Stage White"], prompt: "Aerial top-down shot of a massive concert crowd with thousands of glowing wristbands waving in synchronized rhythm. Camera slowly descends into the sea of lights. Flashing stage lights illuminating the scene, energy and euphoria, 4K, 30fps, 8 seconds.", negativePrompt: "empty stadium, no crowd, daytime, quiet", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 15, collection: "Music Video", title: "🎵 Desert Dune Dancer", badge: "", difficulty: 4, desc: "Tarian di bukit pasir dengan kamera drone mengikuti.", suitableFor: ["Runway", "Sora", "Kling"], colors: ["Sand Beige", "Sky Blue", "Shadow Bronze"], prompt: "A dancer in flowing red fabric performing on massive sand dunes. Drone camera follows the dancer from above, creating sweeping aerial choreography. Golden afternoon sun casting long dramatic shadows, wind sculpting sand patterns. Epic cinematic music video style, 4K, 60fps, 10 seconds.", negativePrompt: "indoor, no wind, flat ground, night", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 16, collection: "Music Video", title: "🎵 Mirror Room Illusion", badge: "Premium", difficulty: 5, desc: "Ruang cermin tak terbatas dengan efek visual psikedelik.", suitableFor: ["Pika", "Kling", "Runway"], colors: ["Mirror Silver", "Laser Red", "Glitch Blue"], prompt: "A performer surrounded by infinite reflections in a mirrored room with laser lights. Camera pushes through layers of reflections creating kaleidoscopic patterns. Fast cuts between angles, strobe effects, distorting reality feel. Psychedelic music video aesthetic, 4K, 30fps, 7 seconds.", negativePrompt: "single reflection, no lights, plain room, slow", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 17, collection: "Music Video", title: "🎵 Subway Car Serenade", badge: "", difficulty: 3, desc: "Pertunjukan akustik di gerbong kereta bawah tanah.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Subway Orange", "Grey", "Skin Tone"], prompt: "A musician playing acoustic guitar on a moving subway car with passengers watching. Camera slowly glides through the carriage, capturing authentic reactions. Warm interior lighting against dark tunnel windows, intimate street performance vibe, 4K, 24fps, 8 seconds.", negativePrompt: "empty train, silent, no passengers, bright daylight", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 18, collection: "Music Video", title: "🎵 Fog Machine Dreamscape", badge: "", difficulty: 3, desc: "Lanskap kabut surealis dengan kamera floating perlahan.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Fog White", "Mist Blue", "Shadow Grey"], prompt: "A figure walking through thick fog in an open field at dawn. Camera floats alongside at waist height, barely visible shapes in the mist. Soft diffused lighting, dreamlike atmosphere, silhouettes emerging and disappearing. Haunting beautiful music video aesthetic, 4K, 24fps, 9 seconds.", negativePrompt: "clear day, sharp details, bright colors, city", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 19, collection: "Music Video", title: "🎵 Graffiti Alley Rap", badge: "Trending", difficulty: 2, desc: "Rap di gang penuh grafiti dengan kamera handheld energik.", suitableFor: ["Pika", "Runway", "Kling"], colors: ["Spray Paint Colorful", "Concrete Grey", "Red"], prompt: "Rapper performing in a vibrant graffiti-covered alley with spray paint cans scattered. Handheld camera with energetic movement, dutch angles, quick zooms. Street art backdrop of murals and tags, urban raw atmosphere, 4K, 30fps, 7 seconds.", negativePrompt: "clean wall, empty alley, quiet, no art", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 20, collection: "Music Video", title: "🎵 Underwater Music Box", badge: "Premium", difficulty: 5, desc: "Balerina kotak musik di bawah air dengan kamera lambat.", suitableFor: ["Sora", "Kling", "Pika"], colors: ["Water Blue", "Gold", "Bubble White"], prompt: "A music box ballerina dancing in a submerged antique music box underwater. Camera slowly circles as bubbles rise, light refracts through water creating prismatic effects. Delicate melancholy atmosphere, slow motion, 4K, 60fps, 8 seconds.", negativePrompt: "dry, bright, modern, fast movement, cartoon", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== ANIMATION (10) =====
+    { id: 21, collection: "Animation", title: "🎨 Cel Shaded City Walk", badge: "Best Seller", difficulty: 3, desc: "Animasi 2D cel-shaded dengan karakter berjalan di kota.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Bold Blue", "Bright Yellow", "Red"], prompt: "2D cel-shaded animated character walking through a stylized cityscape. Camera tracks alongside in profile, flat colors with hard shadows, motion lines behind. Vibrant expressive animation style, bold outlines, 24fps, 6 seconds.", negativePrompt: "3D, realistic, soft shading, muted colors", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 22, collection: "Animation", title: "🎨 Stop Motion Bakery", badge: "Premium", difficulty: 4, desc: "Stop motion pembuatan roti dengan kamera makro.", suitableFor: ["Kling", "Runway", "Pika"], colors: ["Dough Cream", "Baking Brown", "Oven Orange"], prompt: "Stop motion animation of ingredients assembling themselves into a loaf of bread. Camera macro close-up on mixing bowl, dough rising, then baked bread emerging from oven. Warm cozy kitchen lighting, slight imperfection of stop motion, 24fps, 8 seconds.", negativePrompt: "smooth animation, CGI, realistic physics, digital", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 23, collection: "Animation", title: "🎨 Watercolor World", badge: "Trending", difficulty: 5, desc: "Dunia cat air dengan kamera melayang di atas kanvas.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Pastel Pink", "Soft Blue", "Wash Green"], prompt: "A world made entirely of watercolor paint on paper. Camera floating over painted landscapes where colors bleed and blend organically. Brush strokes visible, paint drips animating into rivers, pigments swirling. Dreamy artistic atmosphere, 24fps, 8 seconds.", negativePrompt: "digital art, sharp edges, photorealistic, oil paint", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 24, collection: "Animation", title: "🎨 Neon Synthwave Car", badge: "", difficulty: 3, desc: "Mobil retro synthwave di jalan neon, animasi 80s style.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Neon Pink", "Cyan", "Purple"], prompt: "Retro synthwave animated car driving on an infinite neon grid road under a setting sun grid. Camera follows from behind as the car weaves through traffic. VHS grain, chromatic aberration, glowing trails, 80s aesthetic, 30fps, 6 seconds.", negativePrompt: "realistic car, daytime, no glow, modern", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 25, collection: "Animation", title: "🎨 Paper Cutout Adventure", badge: "", difficulty: 4, desc: "Animasi potongan kertas dengan kamera side-scrolling.", suitableFor: ["Kling", "Runway", "Pika"], colors: ["Construction Paper Colors", "Scissors Silver", "Glue White"], prompt: "Paper cutout style animation with textured paper characters and environments. Camera side-scrolls through a layered diorama landscape. Visible paper texture, slight shadows cast by layers, handcrafted aesthetic, 24fps, 7 seconds.", negativePrompt: "3D, digital smooth, realistic texture, CGI", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 26, collection: "Animation", title: "🎨 Morphing Claymation", badge: "Premium", difficulty: 5, desc: "Claymation dengan transformasi bentuk organik.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Clay Brown", "Sculpt Green", "Warm Yellow"], prompt: "Clay animation of a figure continuously morphing from one shape to another. Camera static wide shot showing the full transformation process. Fingerprint textures in clay, slight wobble and imperfection, warm studio lighting, 24fps, 8 seconds.", negativePrompt: "smooth morph, digital effect, perfect transition, CGI", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 27, collection: "Animation", title: "🎨 Pixel Art Quest", badge: "Best Seller", difficulty: 2, desc: "Petualangan pixel art side-scrolling retro game.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Retro Blue", "Sprite Green", "8-bit Brown"], prompt: "Pixel art animated scene of a hero walking through a retro RPG forest. Camera follows in classic side-scrolling platformer style. Blocky pixel aesthetic, limited color palette, nostalgic game feel, 30fps, 6 seconds.", negativePrompt: "high resolution, smooth graphics, 3D, modern graphics", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 28, collection: "Animation", title: "🎨 Ink Splatter Transformation", badge: "", difficulty: 4, desc: "Transformasi dengan efek tinta menyembur organik.", suitableFor: ["Kling", "Runway", "Sora"], colors: ["Ink Black", "Splash Blue", "Paper White"], prompt: "A character transforming through explosive ink splatter effects. Camera starts on silhouette then pulls back as ink sprays outward forming new shapes. Dynamic fluid motion, organic ink textures, calligraphic style, 30fps, 6 seconds.", negativePrompt: "clean transition, digital effect, no ink texture", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 29, collection: "Animation", title: "🎨 Balloon Animal Inflation", badge: "", difficulty: 3, desc: "Hewan balon mengembang sendiri dalam animasi whimsical.", suitableFor: ["Pika", "Runway", "Kling"], colors: ["Balloon Red", "Blue", "Yellow"], prompt: "Balloon animals twisting and inflating themselves in a whimsical empty room. Camera slowly orbits as colorful balloons take shape. Playful magical atmosphere, shiny balloon reflections, slight bounce animation, 24fps, 7 seconds.", negativePrompt: "flat balloons, dull colors, still, deflated", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 30, collection: "Animation", title: "🎨 Shadow Puppet Theater", badge: "Trending", difficulty: 4, desc: "Teater bayangan dengan animasi siluet dramatis.", suitableFor: ["Runway", "Sora", "Kling"], colors: ["Shadow Black", "Screen Cream", "Light Warm"], prompt: "Shadow puppet animation on a backlit screen, camera frontal showing silhouette figures moving in dramatic narrative. Flickering light source creating organic shadow movement, hands manipulating puppets visible at bottom. Traditional storytelling atmosphere, 24fps, 8 seconds.", negativePrompt: "colorful, digital, no puppeteer, realistic", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== DOCUMENTARY (10) =====
+    { id: 31, collection: "Documentary", title: "📽️ Amazon River Expedition", badge: "Premium", difficulty: 3, desc: "Ekspedisi sungai Amazon dengan kamera observasional.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Jungle Green", "River Brown", "Sky Blue"], prompt: "Documentary style shot of a boat navigating through the Amazon river. Camera handheld with natural movement, capturing monkeys in trees and exotic birds. Golden morning light filtering through dense canopy, humid atmosphere, 4K, 30fps, 8 seconds.", negativePrompt: "studio, artificial lighting, no wildlife, city", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 32, collection: "Documentary", title: "📽️ Arctic Ice Research", badge: "Best Seller", difficulty: 4, desc: "Peneliti di Arktik dengan cuaca ekstrem.", suitableFor: ["Runway", "Kling", "Sora"], colors: ["Ice White", "Sky Pale Blue", "Suit Orange"], prompt: "Researchers in bright orange suits collecting ice core samples on a vast arctic plain. Camera follows from behind as wind whips snow across the landscape. Harsh cold environment, overcast diffused lighting, documentary realism, 4K, 30fps, 8 seconds.", negativePrompt: "warm, green, sunny, no snow, tropical", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 33, collection: "Documentary", title: "📽️ Savannah Wildlife Gathering", badge: "", difficulty: 3, desc: "Kawanan satwa di sabana Afrika saat matahari terbit.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Savannah Gold", "Sky Orange", "Animal Brown"], prompt: "Wide shot of a massive herd of animals gathering at a watering hole in the African savannah at sunrise. Camera slowly zooms out to reveal the vast landscape. Golden hour lighting, dust particles in air, natural behavior documentary style, 4K, 60fps, 9 seconds.", negativePrompt: "zoo, captivity, artificial environment, night", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 34, collection: "Documentary", title: "📽️ Urban Street Food Night", badge: "Trending", difficulty: 2, desc: "Jajanan malam di pasar kota dengan kamera observasional.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Warm Street Light", "Food Colorful", "Night Blue"], prompt: "Handheld camera walking through a bustling night market street food area. Steam rising from food stalls, sizzling woks, colorful ingredient displays. Warm glow from hanging lights, authentic street food documentary feel, 4K, 30fps, 7 seconds.", negativePrompt: "empty street, no food, clean, daytime", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 35, collection: "Documentary", title: "📽️ Volcano Lava Flow", badge: "Premium", difficulty: 5, desc: "Aliran lava gunung berapi dengan kamera tahan panas.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Lava Red", "Smoke Grey", "Night Black"], prompt: "Close-up of glowing lava slowly flowing down a volcanic mountainside at night. Camera steady on tripod capturing the mesmerizing movement, smoke billowing, red glow illuminating surrounding rocks. Powerful natural phenomenon documentary, 4K, 24fps, 10 seconds.", negativePrompt: "water, green vegetation, cold, safe distance", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 36, collection: "Documentary", title: "📽️ Deep Cave Exploration", badge: "", difficulty: 4, desc: "Eksplorasi goa dalam dengan headlamp sebagai sumber cahaya.", suitableFor: ["Kling", "Runway", "Sora"], colors: ["Cave Black", "Headlamp White", "Rock Brown"], prompt: "POV shot of a caver crawling through a narrow passage, headlamp illuminating ancient rock formations. Camera shakes with natural movement, dust particles in light beam, stalactites dripping. Claustrophobic exploration documentary feel, 4K, 30fps, 8 seconds.", negativePrompt: "open space, bright, dry, no cave formations", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 37, collection: "Documentary", title: "📽️ Fishermen Dawn Catch", badge: "", difficulty: 2, desc: "Nelayan tradisional saat fajar dengan kamera dari perahu.", suitableFor: ["Runway", "Sora", "Pika"], colors: ["Dawn Blue", "Net Green", "Wood Brown"], prompt: "Traditional fishermen casting nets from a wooden boat at dawn on calm waters. Camera rocks gently with the boat, mist rising from the water surface. Soft pastel sunrise colors, documentary realism, 4K, 30fps, 8 seconds.", negativePrompt: "industrial fishing, night, stormy, modern boat", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 38, collection: "Documentary", title: "📽️ Desert Night Timelapse", badge: "Premium", difficulty: 4, desc: "Time-lapse langit malam di gurun dengan Milky Way.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Night Blue", "Star White", "Sand Brown"], prompt: "Time-lapse of the Milky Way galaxy rotating over a desert landscape at night. Camera locked on tripod, stars streaking across the sky, a lone cactus silhouetted. Vast cosmic scale, peaceful isolation, 4K compressed to 8 seconds.", negativePrompt: "daytime, clouds, city lights, pollution", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 39, collection: "Documentary", title: "📽️ Blacksmith Workshop", badge: "Best Seller", difficulty: 3, desc: "Pandai besi tradisional dengan kamera close-up dramatis.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Forge Orange", "Iron Grey", "Sweat Brown"], prompt: "Close-up of a blacksmith hammering glowing red metal on an anvil, sparks flying. Camera captures the intensity of the workshop, sweat on skin, fire reflections. Gritty traditional craftsmanship documentary, 4K, 30fps, 7 seconds.", negativePrompt: "clean, factory, modern equipment, no fire", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 40, collection: "Documentary", title: "📽️ Monarch Butterfly Migration", badge: "Trending", difficulty: 3, desc: "Migrasi kupu-kupu monarch di hutan dengan kamera slow-motion.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Butterfly Orange", "Forest Green", "Sky Blue"], prompt: "Thousands of monarch butterflies covering trees and taking flight in slow motion. Camera pans across the rustling orange wings as they rise into the air. Sunlight filtering through the swarm, magical natural phenomenon, 4K, 60fps, 8 seconds.", negativePrompt: "few butterflies, dead trees, winter, no movement", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== TRAVEL (10) =====
+    { id: 41, collection: "Travel", title: "✈️ Venice Canal Morning", badge: "Best Seller", difficulty: 2, desc: "Kanal Venice pagi hari dengan kamera gondola mengambang.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Canal Green", "Building Warm", "Sky Blue"], prompt: "A gondola gliding through a quiet Venice canal at sunrise. Camera mounted on gondola gives gentle bobbing movement, historic buildings and bridges passing by. Soft morning mist over water, warm golden light on terracotta walls, 4K, 30fps, 8 seconds.", negativePrompt: "crowded, night, noisy, modern buildings, storm", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 42, collection: "Travel", title: "✈️ Tokyo Crosswalk Rush", badge: "Premium", difficulty: 3, desc: "Shibuya scramble crossing dari kamera tinggi.", suitableFor: ["Runway", "Kling", "Sora"], colors: ["City Grey", "Neon Blue", "Red"], prompt: "High angle shot of Shibuya scramble crossing as hundreds of pedestrians cross simultaneously. Camera slowly descends from building level to street level. Neon signs, city energy, organized chaos, 4K, 30fps, 7 seconds.", negativePrompt: "empty streets, no people, rural, quiet", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 43, collection: "Travel", title: "✈️ Santorini Sunset", badge: "Trending", difficulty: 2, desc: "Matahari terbenam di Santorini dengan kamera tracking.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Sunset Orange", "Building White", "Sea Blue"], prompt: "Camera tracking smoothly along a white-washed Santorini street with blue domes as the sun sets over the Aegean Sea. Wind blowing laundry on lines, cats on steps, golden hour glow. Romantic travel aesthetic, 4K, 30fps, 8 seconds.", negativePrompt: "night, cloudy, empty, no sunset, gray", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 44, collection: "Travel", title: "✈️ Bali Rice Terrace Walk", badge: "", difficulty: 2, desc: "Terasering sawah Bali dari kamera drone.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Rice Green", "Muddy Brown", "Sky Blue"], prompt: "Drone camera flying low over lush green rice terraces in Bali, following a farmer walking along narrow irrigation paths. Palm trees in distance, tropical humidity haze, lush vibrant greenery. Serene agricultural landscape, 4K, 30fps, 8 seconds.", negativePrompt: "dry fields, no water, urban, concrete", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 45, collection: "Travel", title: "✈️ Paris Rainy Afternoon", badge: "Premium", difficulty: 3, desc: "Paris sore hujan dari kamera di kafe.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Parisian Grey", "Cafe Gold", "Wet Stone"], prompt: "POV sitting at a Parisian sidewalk cafe as rain falls on cobblestone streets. Camera stationary as people walk past with umbrellas, Eiffel Tower faint in misty distance. Steam from espresso, raindrops on glass table. Romantic melancholic travel vibe, 4K, 30fps, 8 seconds.", negativePrompt: "sunny, empty streets, no Eiffel, modern ugly", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 46, collection: "Travel", title: "✈️ Sahara Caravan Trek", badge: "Best Seller", difficulty: 4, desc: "Kafilah unta di Sahara dengan kamera wide.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Sand Gold", "Camel Brown", "Sky Blue"], prompt: "Wide shot of a camel caravan trekking across massive Saharan sand dunes. Camera pulls back to reveal the tiny silhouettes against endless golden sand. Heat shimmer, harsh midday shadows, epic travel documentary scale, 4K, 30fps, 9 seconds.", negativePrompt: "forest, green, road, cars, modern", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 47, collection: "Travel", title: "✈️ Iceland Waterfall Close-up", badge: "", difficulty: 3, desc: "Air terjun Iceland dari kamera makro dengan spray.", suitableFor: ["Runway", "Sora", "Kling"], colors: ["Waterfall Blue", "Rock Black", "Mist White"], prompt: "Close-up of powerful Icelandic waterfall crashing into a glacial river. Camera slowly zooms in on the churning water, mist particles filling the air, rainbows forming in spray. Raw natural power, cold atmosphere, 4K, 60fps, 7 seconds.", negativePrompt: "dry, sunny, no waterfall, tropical, warm", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 48, collection: "Travel", title: "✈️ Hong Kong Night Market", badge: "Trending", difficulty: 2, desc: "Pasar malam Hong Kong dari handheld kamera.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Neon Red", "Warm Yellow", "Night Blue"], prompt: "Handheld walk through a vibrant Hong Kong night market, vendor stalls with hanging lanterns, sizzling street food, colorful merchandise. Camera captures the chaotic energy, close-ups of products, faces of vendors. Dense urban travel experience, 4K, 30fps, 7 seconds.", negativePrompt: "empty, daytime, quiet, clean, no vendors", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 49, collection: "Travel", title: "✈️ Patagonia Mountain Trail", badge: "", difficulty: 4, desc: "Pendakian Patagonia dengan kamera di belakang pejalan.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Mountain Grey", "Trail Brown", "Sky Blue"], prompt: "Following a hiker from behind on a narrow Patagonian trail with snow-capped peaks ahead. Camera bounces with each step, wind noise, dramatic clouds moving fast. Small human against vast landscape, epic adventure travel, 4K, 30fps, 9 seconds.", negativePrompt: "indoor, flat terrain, no mountains, sunny calm", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 50, collection: "Travel", title: "✈️ Maldives Overwater Villa", badge: "Premium", difficulty: 2, desc: "Villa atas air Maldives dari kamera drone.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Ocean Turquoise", "Villa Wood", "Sky Blue"], prompt: "Drone camera flying over crystal clear turquoise water toward a row of overwater villas at sunrise. Coral visible below surface, gentle waves, palm trees silhouetted against pastel sky. Paradise travel aesthetic, 4K, 30fps, 8 seconds.", negativePrompt: "pollution, grey sky, no villas, rough sea", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== FOOD (10) =====
+    { id: 51, collection: "Food", title: "🍔 Pizza Pull Shot", badge: "Best Seller", difficulty: 3, desc: "Close-up makro adonan pizza ditarik hingga putus.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Dough Gold", "Sauce Red", "Cheese Yellow"], prompt: "Macro close-up of melted mozzarella cheese stretching as a slice of pizza is pulled away from the pie. Camera tracks the stretch in slow motion, steam rising, crispy crust visible. Warm oven lighting, food commercial quality, 4K, 60fps, 6 seconds.", negativePrompt: "cold pizza, no cheese pull, dull lighting, flat", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 52, collection: "Food", title: "🍔 Chocolate Lava Cake", badge: "Premium", difficulty: 3, desc: "Pisau memotong cake coklat lava meleleh sempurna.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Chocolate Dark", "Lava Brown", "Plate White"], prompt: "A spoon cracking the shell of a warm chocolate lava cake, molten center flowing out in slow motion. Camera close-up macro shot, steam rising, powdered sugar dusting. Rich warm dessert lighting, decadent food commercial, 4K, 60fps, 7 seconds.", negativePrompt: "dry cake, no flow, cold, artificial colors", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 53, collection: "Food", title: "🍔 Sushi Chef Knife Work", badge: "Trending", difficulty: 4, desc: "Pisau chef sushi memotong ikan segar.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Fish Silver", "Rice White", "Wood Brown"], prompt: "Close-up of a sushi chef's hands with a sharp knife slicing through fresh salmon. Camera captures each precise cut, knife glistening with moisture, fish texture visible. Professional kitchen lighting, documentary food style, 4K, 30fps, 6 seconds.", negativePrompt: "dull knife, pre-cut fish, messy, no skill", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 54, collection: "Food", title: "🍔 Sizzling Steak Platter", badge: "Best Seller", difficulty: 3, desc: "Steak dipanggang di hot plate granit.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Meat Brown", "Fire Red", "Vegetable Green"], prompt: "A raw steak placed on a sizzling hot granite plate, immediate searing and smoke. Camera slowly zooms in on the caramelizing crust, butter melting on top. Dramatic grill lighting, steam and smoke effects, ASMR food quality, 4K, 30fps, 7 seconds.", negativePrompt: "boiled meat, no sizzle, dull, cold", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 55, collection: "Food", title: "🍔 Noodle Pull from Bowl", badge: "", difficulty: 3, desc: "Mie ditarik dari mangkuk dengan sumpit.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Noodle Yellow", "Broth Brown", "Bowl White"], prompt: "Chopsticks lifting a tangled mass of steaming noodles from a ceramic bowl of broth. Camera follows the noodles upward, broth droplets falling, steam swirling. Warm cozy ramen shop lighting, close-up food porn, 4K, 60fps, 6 seconds.", negativePrompt: "dry noodles, no broth, cold, no steam", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 56, collection: "Food", title: "🍔 Fruit Splash Slow Motion", badge: "Premium", difficulty: 5, desc: "Buah jatuh ke air menciptakan percikan dramatis.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Fruit Colorful", "Water Clear", "Splash White"], prompt: "A ripe strawberry dropping into crystal clear water creating a crown splash. Extreme slow motion, 1000fps, macro lens capturing every droplet and ripple. Vibrant juicy colors, commercial food photography style, 4K, 60fps, 5 seconds.", negativePrompt: "still water, no splash, dull fruit, blurred", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 57, collection: "Food", title: "🍔 Dough Kneading Macro", badge: "", difficulty: 2, desc: "Tangan chef menguleni adonan roti.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Dough Cream", "Flour White", "Hand Skin"], prompt: "Top-down overhead shot of a chef's hands kneading dough on a marble counter. Warm kitchen lighting, flour dust particles floating in sunbeams. Focus on the rhythmic pressing and folding, 4K macro detail, 30fps, 8 seconds.", negativePrompt: "machine kneading, no hands, dark kitchen", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 58, collection: "Food", title: "🍔 Coffee Pour Over Art", badge: "Trending", difficulty: 2, desc: "Kopi V60 manual dengan close-up tetesan.", suitableFor: ["Pika", "Runway", "Kling"], colors: ["Coffee Brown", "Cream White", "Steam Grey"], prompt: "Close-up of hot water being poured over coffee grounds in a V60 dripper, bubbles forming and coffee extracting. Camera macro shot of the bloom and drip, steam rising elegantly. Cozy cafe atmosphere, morning light, 4K, 30fps, 7 seconds.", negativePrompt: "instant coffee, no steam, dark, no detail", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 59, collection: "Food", title: "🍔 Taco Assembly B-roll", badge: "", difficulty: 2, desc: "Perakitan taco dengan bahan berjatuhan.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Tortilla Brown", "Tomato Red", "Avocado Green"], prompt: "Ingredients being layered onto a tortilla in sequence: seasoned meat, pico de gallo, guacamole, sour cream. Camera moves along the assembly line, zooming into each fresh ingredient. Bright studio food lighting, commercial quality, 4K, 30fps, 6 seconds.", negativePrompt: "processed food, no fresh ingredients, dark", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 60, collection: "Food", title: "🍔 Wine Pour into Glass", badge: "Premium", difficulty: 3, desc: "Anggur merah dituang ke gelas kristal.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Wine Red", "Glass Clear", "Background Dark"], prompt: "Red wine being poured into a crystal wine glass, camera close-up on the liquid cascading and splashing. Backlit with warm candlelight creating ruby highlights, bubbles rising. Elegant fine dining atmosphere, slow motion, 4K, 60fps, 6 seconds.", negativePrompt: "water, plastic cup, no pour, flat lighting", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== FASHION (10) =====
+    { id: 61, collection: "Fashion", title: "👗 Runway Walk Power", badge: "Best Seller", difficulty: 3, desc: "Fashion show dengan kamera tracking maju.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Runway White", "Fashion Black", "Spotlight"], prompt: "A model striding confidently down a fashion runway, camera tracking backward at the same pace. Dramatic spotlights, flashing cameras from sides, flowing fabric. High fashion editorial style, 4K, 30fps, 7 seconds.", negativePrompt: "casual walk, empty runway, no audience, static", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 62, collection: "Fashion", title: "👗 Fabric Close-up Detail", badge: "Premium", difficulty: 4, desc: "Close-up tekstur kain mewah dengan gerakan lambat.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Silk Gold", "Velvet Red", "Texture Detail"], prompt: "Macro close-up of luxurious silk fabric rippling and catching light. Camera slowly moves across the texture, revealing intricate weave patterns and shimmer. Elegant soft studio lighting, fashion commercial quality, 4K, 60fps, 6 seconds.", negativePrompt: "cheap fabric, dull, no movement, rough texture", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 63, collection: "Fashion", title: "👗 Street Style Spin", badge: "Trending", difficulty: 2, desc: "Street fashion dengan model berputar di jalan kota.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Street Grey", "Outfit Colorful", "Sky Blue"], prompt: "A fashion model spinning in slow motion on a city street, coat and hair flying outward. Camera captures the movement from low angle, background blurred with traffic. Urban editorial style, natural lighting, 4K, 30fps, 6 seconds.", negativePrompt: "indoor, no movement, plain background, studio", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 64, collection: "Fashion", title: "👗 Jewelry Macro Sparkle", badge: "Premium", difficulty: 5, desc: "Makro perhiasan berkilau dengan efek bokeh.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Diamond White", "Gold", "Bokeh Background"], prompt: "Extreme macro shot of a diamond necklace with each gem catching and refracting light. Camera slowly pulls focus across the piece, creating prismatic rainbow flashes. Luxurious jewelry commercial aesthetic, 4K, 60fps, 7 seconds.", negativePrompt: "dull stones, no sparkle, cheap metal, dark", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 65, collection: "Fashion", title: "👗 Hat and Silhouette", badge: "", difficulty: 3, desc: "Siluet fashion dengan pencahayaan backlight dramatis.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Silhouette Black", "Backlight Gold", "Haze Grey"], prompt: "A model in a wide brim hat standing in profile against a massive golden backlight. Camera circles slowly as smoke machine haze catches the light beams. Mysterious high fashion editorial, 4K, 30fps, 8 seconds.", negativePrompt: "front lighting, details visible, casual, no hat", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 66, collection: "Fashion", title: "👗 Leather Jacket Rebel", badge: "Best Seller", difficulty: 2, desc: "Model jaket kulit dengan attitude di gang kota.", suitableFor: ["Pika", "Runway", "Kling"], colors: ["Leather Black", "Silver Zipper", "Brick Wall"], prompt: "A model in a leather jacket leaning against a brick wall, looking away then turning to camera. Handheld camera with slight movement, punk rock attitude, urban edge. Fashion editorial tough aesthetic, 4K, 30fps, 5 seconds.", negativePrompt: "soft pastel, delicate, indoor studio, happy", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 67, collection: "Fashion", title: "👗 Flowing Dress Beach", badge: "", difficulty: 3, desc: "Gaun panjang berkibar di pantai saat sunset.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Dress White", "Sunset Pink", "Ocean Blue"], prompt: "A model in a flowing white dress walking along a beach at sunset, fabric billowing in ocean wind. Camera tracks from side, capturing the dress movement against golden sky and waves. Romantic editorial fashion, 4K, 30fps, 8 seconds.", negativePrompt: "no wind, cloudy, dress static, casual", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 68, collection: "Fashion", title: "👗 Tailored Suit Precision", badge: "Premium", difficulty: 4, desc: "Jahitan setelan pria dengan detail makro.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Suit Navy", "Thread Silver", "Lapel Detail"], prompt: "Macro close-up of a master tailor's hands stitching a bespoke suit lapel with needle and thread. Camera tracks the precise hand movements, fabric texture, tailor's concentrated expression. Craftsmanship documentary fashion style, 4K, 30fps, 7 seconds.", negativePrompt: "machine sewing, fast, cheap fabric, no detail", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 69, collection: "Fashion", title: "👗 Neon Photoshoot Studio", badge: "Trending", difficulty: 3, desc: "Pemotretan fashion dengan lampu neon warna-warni.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Neon Pink", "Cyan", "Purple"], prompt: "A model posing in a photoshoot studio with alternating neon colored lights. Camera slowly zooms in and out as lights shift colors, creating dramatic mood changes. Creative editorial fashion, 4K, 30fps, 7 seconds.", negativePrompt: "white studio, natural light, no color, plain", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 70, collection: "Fashion", title: "👗 Vintage Hat Shop", badge: "", difficulty: 2, desc: "Toko topi vintage dengan detail aksesoris.", suitableFor: ["Runway", "Sora", "Kling"], colors: ["Shop Wood", "Hat Multiple", "Mirror Silver"], prompt: "Camera gliding through a vintage hat shop with hats displayed on stands and mannequins. Slow push through the collection, focusing on details of feathers, ribbons, and veils. Warm nostalgic fashion retail aesthetic, 4K, 30fps, 8 seconds.", negativePrompt: "modern store, empty, no hats, bright fluorescent", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== TECH REVIEW (10) =====
+    { id: 71, collection: "Tech Review", title: "💻 Phone Unboxing Premium", badge: "Best Seller", difficulty: 2, desc: "Unboxing smartphone flagship dengan kamera sinematik.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Box White", "Product Black", "Light Blue"], prompt: "Smooth unboxing of a premium smartphone - lid lifting slowly, device revealed. Camera macro on unboxing motion, box sliding open, static electricity visible. Clean product review lighting, 4K, 30fps, 6 seconds.", negativePrompt: "messy, fast, no detail, bad lighting, dirty", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 72, collection: "Tech Review", title: "💻 Laptop Keyboard Typing", badge: "Premium", difficulty: 3, desc: "Close-up keyboard laptop RGB dengan jari mengetik cepat.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Keyboard RGB", "Screen Blue", "Desk Dark"], prompt: "Macro close-up of fingers typing rapidly on a mechanical keyboard with RGB backlighting. Camera follows key presses, capturing each switch activation. Blue light from monitor illuminating hands, tech review aesthetic, 4K, 60fps, 6 seconds.", negativePrompt: "membrane keyboard, no lights, slow typing", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 73, collection: "Tech Review", title: "💻 Drone Aerial Test", badge: "Trending", difficulty: 4, desc: "Drone terbang dengan kamera POV dari drone.", suitableFor: ["Runway", "Kling", "Sora"], colors: ["Sky Blue", "Drone Grey", "Propeller Blur"], prompt: "POV from a consumer drone as it takes off and flies over a landscape. Camera captures the drone's own propeller in frame, stabilization kicking in. Smooth aerial transition from ground to sky, tech demo style, 4K, 60fps, 7 seconds.", negativePrompt: "no propellers visible, grounded, indoors", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 74, collection: "Tech Review", title: "💻 Smartwatch UI Demo", badge: "", difficulty: 2, desc: "Close-up layar smartwatch dengan animasi UI.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Screen OLED", "Watch Silver", "UI Blue"], prompt: "Close-up of a smartwatch screen displaying animated UI elements - heart rate, notifications, compass. Camera macro on the glowing OLED display, always-on display dimming. Clean tech review isolation, 4K, 30fps, 6 seconds.", negativePrompt: "broken screen, off display, dirty watch", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 75, collection: "Tech Review", title: "💻 Gaming PC Setup Tour", badge: "Best Seller", difficulty: 3, desc: "Setup PC gaming RGB dengan smoke efek.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["RGB Rainbow", "Case Black", "Neon Strip"], prompt: "Camera gliding through a complete RGB gaming PC setup - tower with fans, dual monitors, mechanical keyboard, mouse. Rainbow lighting, smoke machine haze catching light beams. Ultimate tech enthusiast aesthetic, 4K, 30fps, 8 seconds.", negativePrompt: "no RGB, messy cables, old hardware, dark", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 76, collection: "Tech Review", title: "💻 Wireless Earbuds Macro", badge: "", difficulty: 4, desc: "Makro earbuds dengan detail material premium.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Earbud White", "Charging Case", "Metal Silver"], prompt: "Macro shot of premium wireless earbuds being placed into charging case, magnetic snap closure. Camera captures every surface detail, reflections on polished plastic, LED indicator pulsing. Tech product commercial quality, 4K, 60fps, 6 seconds.", negativePrompt: "cheap plastic, no detail, dirty, low resolution", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 77, collection: "Tech Review", title: "💻 PC Build Time-lapse", badge: "Trending", difficulty: 5, desc: "Time-lapse perakitan PC dari awal hingga jadi.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Component Colorful", "Motherboard Green", "Case Grey"], prompt: "Time-lapse of a complete PC build: motherboard installation, CPU, RAM, GPU, cabling, power on. Camera locked on tripod capturing hours of work in minutes. Satisfying build progression, workshop lighting, 4K, 8 second compressed.", negativePrompt: "messy build, no progression, static, incomplete", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 78, collection: "Tech Review", title: "💻 Monitor Color Calibration", badge: "Premium", difficulty: 3, desc: "Kalibrasi warna monitor dengan alat sensor.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Test Pattern", "Sensor Black", "Screen White"], prompt: "A color calibration sensor attached to a professional monitor, displaying calibration patterns. Camera close-up as colors cycle through test patterns. Precise technical review aesthetic, 4K, 30fps, 6 seconds.", negativePrompt: "uncalibrated, wrong colors, no sensor", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 79, collection: "Tech Review", title: "💻 Mechanical Switch Close-up", badge: "", difficulty: 3, desc: "Makro switch keyboard mekanik dengan actuation.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Switch Blue", "PCB Green", "Keycap Beige"], prompt: "Extreme macro of a mechanical keyboard switch being pressed in slow motion - stem moving, spring compressing, contact actuation. Camera captures the internal mechanism. Satisfying tech detail, 4K, 60fps, 5 seconds.", negativePrompt: "scissor switch, dirty, no actuation visible", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 80, collection: "Tech Review", title: "💻 VR Headset Immersion", badge: "Best Seller", difficulty: 3, desc: "VR headset dengan refleksi lensa dan kamera orbit.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Headset Black", "Lens Blue", "LED Green"], prompt: "Camera orbiting a VR headset on a display stand, lens reflections changing with angle. LED indicators pulsing, premium material textures visible. Futuristic tech review styling, 4K, 30fps, 7 seconds.", negativePrompt: "cheap cardboard VR, no detail, off, broken", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== COMMERCIAL (10) =====
+    { id: 81, collection: "Commercial", title: "📺 Perfume Bottle Luxury", badge: "Premium", difficulty: 4, desc: "Botol parfum mewah dengan pencahayaan dramatis.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Glass Crystal", "Liquid Amber", "Gold Cap"], prompt: "A luxury perfume bottle rotating slowly on a reflective surface with dramatic side lighting. Camera macro on the liquid inside, bubbles rising, gold cap glistening. High-end commercial aesthetic, 4K, 60fps, 7 seconds.", negativePrompt: "cheap bottle, no reflection, dull, flat light", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 82, collection: "Commercial", title: "📺 Car Commercial Glide", badge: "Best Seller", difficulty: 4, desc: "Mobil mewah melaju dengan kamera tracking sinematik.", suitableFor: ["Runway", "Kling", "Sora"], colors: ["Car Silver", "Road Grey", "Sky Blue"], prompt: "A luxury sedan gliding along a coastal highway at golden hour. Camera tracks from a chase car, capturing the vehicle's curves and reflections. Dramatic light flares, cinematic color grading, sleek commercial quality, 4K, 60fps, 8 seconds.", negativePrompt: "dirty car, urban background, cloudy, static", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 83, collection: "Commercial", title: "📺 Beverage Pour with Ice", badge: "Trending", difficulty: 3, desc: "Minuman dituang ke gelas berisi es batu.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Beverage Amber", "Ice Clear", "Glass Condensation"], prompt: "A carbonated beverage being poured over ice in a highball glass, bubbles rising and condensation forming. Camera macro close-up on the pour, ice cracking slightly, droplets splashing. Refreshing cold commercial aesthetic, 4K, 60fps, 6 seconds.", negativePrompt: "warm drink, no ice, no carbonation, still", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 84, collection: "Commercial", title: "📺 Sneaker Product Shot", badge: "Premium", difficulty: 3, desc: "Sepatu sneaker berputar dengan detail makro.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Shoe White", "Swoosh Red", "Sole Black"], prompt: "A premium sneaker rotating on a turntable with dramatic studio lighting. Camera captures every angle - stitching, materials, logo, sole pattern. High-end footwear commercial, 4K, 30fps, 7 seconds.", negativePrompt: "dirty sneaker, bad stitching, cheap material", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 85, collection: "Commercial", title: "📺 Skincare Droplet Close-up", badge: "", difficulty: 4, desc: "Tetesan serum skincare makro dengan efek glossy.", suitableFor: ["Sora", "Kling", "Runway"], colors: ["Serum Clear", "Skin Gold", "Bottle White"], prompt: "A single drop of serum falling from a dropper onto perfect skin, spreading slowly in macro. Camera captures the liquid refraction, skin texture moisturized, glowing. Clean beauty commercial aesthetic, 4K, 60fps, 6 seconds.", negativePrompt: "dry skin, no droplet, messy application", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 86, collection: "Commercial", title: "📺 Smart Home Light Activation", badge: "", difficulty: 2, desc: "Lampu smart home menyala otomatis dengan kamera tracking.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Warm Light", "Room Dark", "Technology Blue"], prompt: "A smart home light turning on automatically as someone enters a dark room. Camera captures the warm light spreading across the space, smart device indicators. Cozy modern lifestyle commercial, 4K, 30fps, 6 seconds.", negativePrompt: "manual switch, no automation, bright already", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 87, collection: "Commercial", title: "📺 Chocolate Bar Unwrap", badge: "Best Seller", difficulty: 3, desc: "Coklat batang dibuka dengan suara dan gerakan memuaskan.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Wrapper Colorful", "Chocolate Brown", "Foil Gold"], prompt: "A premium chocolate bar being unwrapped slowly, foil crinkling, wrapper peeling back to reveal the glossy chocolate. Camera macro on the snap as a piece breaks off. Satisfying food commercial ASMR, 4K, 60fps, 6 seconds.", negativePrompt: "wrapped, no unwrap, melted chocolate, cheap", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 88, collection: "Commercial", title: "📺 Watch Rotating Display", badge: "Premium", difficulty: 3, desc: "Jam tangan mewah berputar di display case.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Watch Silver", "Dial Blue", "Leather Brown"], prompt: "A luxury wristwatch rotating slowly on a wooden display stand, camera macro on the intricate dial and sweeping second hand. Reflections on sapphire crystal, leather strap texture. Precision watch commercial, 4K, 60fps, 8 seconds.", negativePrompt: "digital watch, scratched, no movement, cheap", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 89, collection: "Commercial", title: "📺 Lipstick Application Macro", badge: "Trending", difficulty: 4, desc: "Aplikasi lipstik makro dengan tekstur sempurna.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Lipstick Red", "Skin Natural", "Tube Gold"], prompt: "Macro close-up of lipstick being applied to lips, the bullet twisting up and gliding across. Camera captures the creamy texture and rich pigment. Beauty commercial perfection, 4K, 60fps, 6 seconds.", negativePrompt: "chapped lips, smudged, no pigment, dry", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 90, collection: "Commercial", title: "📺 Furniture Assembly B-roll", badge: "", difficulty: 2, desc: "Rakitan furnitur dengan kamera time-lapse.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Wood Brown", "Tool Silver", "Instruction Blue"], prompt: "Time-lapse of flat-pack furniture being assembled piece by piece. Camera captures the process from a static angle, tools in use, pieces clicking together. Satisfying DIY commercial, 4K, 30fps, 7 seconds.", negativePrompt: "already built, no assembly, messy, slow", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+
+    // ===== VLOG (10) =====
+    { id: 91, collection: "Vlog", title: "📱 Morning Routine Cozy", badge: "Best Seller", difficulty: 2, desc: "Rutinitas pagi aesthetic dengan lighting alami.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Warm Morning", "Interior Cream", "Coffee Brown"], prompt: "POV morning routine - making coffee, natural light streaming through window. Camera follows hands in first person, pouring coffee, steam rising. Cozy warm lifestyle vlog aesthetic, 4K, 30fps, 7 seconds.", negativePrompt: "dark, messy, no light, unappealing", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 92, collection: "Vlog", title: "📱 Travel Journal Writing", badge: "Premium", difficulty: 3, desc: "Menulis jurnal perjalanan di kafe aesthetic.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Journal Brown", "Ink Blue", "Cafe Warm"], prompt: "Hands writing in a travel journal at a cozy cafe table, passport and ticket stubs nearby. Camera slowly zooms in on the handwriting, latte art visible in cup. Nostalgic travel vlog aesthetic, 4K, 30fps, 7 seconds.", negativePrompt: "blank page, no items, messy table, bright", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 93, collection: "Vlog", title: "📱 Gym Workout Progression", badge: "Trending", difficulty: 3, desc: "Latihan gym dengan kamera time-lapse dan dynamic.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Gym Grey", "Iron Black", "Sweat Glow"], prompt: "Time-lapse of a gym workout - weights being lifted, sweat forming, determination on face. Camera captures from static tripod, sunset light through windows changing. Fitness vlog progress aesthetic, 4K, 30fps, 6 seconds.", negativePrompt: "empty gym, no workout, night, dirty", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 94, collection: "Vlog", title: "📱 Grocery Haul Unpacking", badge: "", difficulty: 1, desc: "Belanja bulanan ditata aesthetic di meja dapur.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Produce Colorful", "Bag Brown", "Counter Marble"], prompt: "Groceries being unpacked from paper bags and arranged on a marble countertop. Camera top-down overhead shot, capturing the organized layout of fresh produce and items. Satisfying organization vlog, 4K, 30fps, 6 seconds.", negativePrompt: "plastic bags, messy, no produce, dirty", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 95, collection: "Vlog", title: "📱 Desk Setup Tour", badge: "Premium", difficulty: 3, desc: "Setup meja kerja minimalis dengan kamera glide.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Desk Wood", "Tech Silver", "Plant Green"], prompt: "Camera gliding smoothly across a minimalist desk setup - monitor, keyboard, plant, coffee, notebook. Slow revealing of each item with cinematic transitions. Workspace aesthetic vlog, 4K, 30fps, 7 seconds.", negativePrompt: "cluttered, messy cables, dark, no style", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 96, collection: "Vlog", title: "📱 Rainy Day Window", badge: "", difficulty: 2, desc: "Suasana hujan dari jendela dengan kamera statis.", suitableFor: ["Sora", "Runway", "Pika"], colors: ["Rain Grey", "Window Glass", "Sky Overcast"], prompt: "Static shot looking out a window as rain streams down the glass, city blurred in background. Camera stationary, capturing raindrops forming and running down. Cozy melancholic vlog atmosphere, 4K, 30fps, 8 seconds.", negativePrompt: "sunny, clear window, no rain, bright", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 97, collection: "Vlog", title: "📱 Wardrobe Styling Session", badge: "Best Seller", difficulty: 2, desc: "Memilih outfit dengan kamera mirror reflection.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Closet Colorful", "Mirror Silver", "Light Warm"], prompt: "Camera captures a person choosing outfits in front of a mirror, trying different combinations. Slow wardrobe selection process, fabric textures visible. Fashion vlog aesthetic, 4K, 30fps, 6 seconds.", negativePrompt: "empty closet, no choices, messy, dark", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 98, collection: "Vlog", title: "📱 Cooking Pasta Vlog", badge: "Trending", difficulty: 3, desc: "Memasak pasta ala vlog dengan kamera overhead.", suitableFor: ["Runway", "Kling", "Pika"], colors: ["Sauce Red", "Pasta Yellow", "Pot Metal"], prompt: "Top-down overhead cooking vlog of pasta being made - onions sizzling, tomatoes crushing, pasta boiling. Camera captures the entire cooking process from above. Cooking vlog aesthetic, 4K, 30fps, 8 seconds.", negativePrompt: "burnt food, no process, already plated", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 99, collection: "Vlog", title: "📱 Reading Nook Ambience", badge: "", difficulty: 1, desc: "Sudut baca cozy dengan buku dan lilin.", suitableFor: ["Runway", "Pika", "Kling"], colors: ["Book Warm", "Candle Gold", "Blanket Cream"], prompt: "Cozy reading nook scene - book pages turning by candlelight, blanket draped, tea steaming. Camera slow push toward the book, warm intimate lighting. Relaxing book vlog aesthetic, 4K, 30fps, 7 seconds.", negativePrompt: "bright overhead light, no book, messy", ratio: "16:9", size: "1920x1080", dpi: "N/A" },
+    { id: 100, collection: "Vlog", title: "📱 Journaling Morning Pages", badge: "Premium", difficulty: 2, desc: "Menulis pagi hari dengan jurnal dan kopi.", suitableFor: ["Sora", "Runway", "Kling"], colors: ["Morning Sun", "Journal White", "Coffee Black"], prompt: "First person POV of writing in a journal at a sunlit desk, morning light casting long shadows. Camera captures the pen moving across paper, coffee cup beside. Peaceful morning vlog aesthetic, 4K, 30fps, 7 seconds.", negativePrompt: "night time, no writing, dark room", ratio: "16:9", size: "1920x1080", dpi: "N/A" }
+        ];
+        /**
+         * ==========================================================================
+         * LOGIKA APLIKASI (JAVASCRIPT)
+         * Menggunakan Vanilla JS. Aman dari framework bloat.
+         * ==========================================================================
+         */
+
+        const catalogGrid = document.getElementById('catalogGrid');
+        const statsCount = document.getElementById('statsCount');
+        const categoryTitle = document.getElementById('categoryTitle');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn:not(.sub-filter)');
+        const layoutBtns = document.querySelectorAll('.layout-btn');
+
+        // === LAYOUT TOGGLE ===
+        let currentLayout = 'vertical';
+        layoutBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                layoutBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLayout = btn.getAttribute('data-layout');
+                catalogGrid.classList.remove('vertical', 'horizontal');
+                catalogGrid.classList.add(currentLayout);
+            });
+        });
+
+        // === CATEGORY THEME ===
+        function setCategoryTheme(category) {
+            catalogGrid.setAttribute('data-category', category === 'all' ? '' : category);
+        }
+
+        // === KEAMANAN: Sanitasi input untuk mencegah XSS ===
+        function sanitize(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        // === Fungsi bintang rating ===
+        function renderStars(count) {
+            return '★'.repeat(Math.min(count, 5)) + '☆'.repeat(Math.max(0, 5 - count));
+        }
+
+        // === EMPTY STATE & LOADING ===
+        const emptyStateHTML = '<div class="empty-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+
+        const loadingHTML = '<div class="loading-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
+
+        // === RENDER CARDS (Optimized + Sanitized) ===
+        function renderCards(data) {
+            if (!data || data.length === 0) {
+                catalogGrid.innerHTML = emptyStateHTML;
+                statsCount.textContent = '0 Style';
+                return;
+            }
+
+            statsCount.textContent = data.length + ' Styles';
+
+            const htmlString = data.map(item => {
+                let badgeHTML = '';
+                if(item.badge === "Best Seller") {
+                    badgeHTML = '<span class="badge bestseller">Best Seller</span>';
+                } else if(item.badge === "Trending") {
+                    badgeHTML = '<span class="badge trending">Trending</span>';
+                } else if(item.badge === "Premium") {
+                    badgeHTML = '<span class="badge premium">Premium</span>';
+                }
+
+                const tagsHTML = item.suitableFor.map(tag => '<span class="tag">' + sanitize(tag) + '</span>').join('');
+                const collUpper = sanitize(item.collection.toUpperCase().padEnd(10).substring(0,10));
+                const ratioLabel = item.ratio === '3:2' ? 'LANDSCAPE' : 'POSTER';
+
+                return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(item.prompt) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(item.negativePrompt) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
+            }).join('');
+
+            catalogGrid.classList.remove('fade-transition');
+            catalogGrid.innerHTML = htmlString;
+        }
+
+        // --- SISTEM FILTER & PENCARIAN ---
+
+        let currentFilter = 'all';
+        let currentOrientation = 'all';
+        let currentSubFilter = '';
+        let searchQuery = '';
+        const orientationBar = document.getElementById('orientationBar');
+        const orientationBtns = document.querySelectorAll('.orientation-btn');
+        const photoSubFilters = document.getElementById('photoSubFilters');
+        const subFilterBtns = document.querySelectorAll('.sub-filter');
+
+        // === SUB-CATEGORY KEYWORDS ===
+        const subCategoryKeywords = {
+            'Shrine Shop': ['shrine', 'omamori', 'temple', 'spiritual'],
+            'Warehouse': ['warehouse', 'storage', 'gudang'],
+            'Antique': ['antique', 'vintage camera', 'antik'],
+            'Japanese Shop': ['gift shop', 'craft store', 'japanese shop'],
+            'Cashier': ['checkout', 'konbini', 'kasir'],
+            'Office': ['office', 'meeting', 'kantor'],
+            'Gaming': ['gaming', 'streamer', 'headset'],
+            'Cafe': ['kissaten', 'cafe', 'coffee'],
+            '90s Camera': ['90s', 'disposable', 'film camera'],
+            'Outdoor': ['garden outdoor', 'tokyo street', 'outdoor'],
+            'Indoor': ['room interior', 'bedroom', 'indoor'],
+            'Extra': ['ramen', 'station', 'doll']
+        };
+
+        // === DYNAMIC SPECIAL: Auto-pick Top 15 from all categories ===
+        function getSpecialStyles() {
+            return videoData
+                .filter(item => item.collection !== 'Special')
+                .filter(item => item.badge === 'Best Seller' || item.badge === 'Premium')
+                .sort((a, b) => b.difficulty - a.difficulty)
+                .slice(0, 15)
+                .map(item => ({...item, collection: 'Special'}));
+        }
+
+        function applyFilters() {
+            let filteredData = videoData;
+
+            if (currentFilter === 'Special') {
+                filteredData = getSpecialStyles();
+            } else if (currentFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.collection === currentFilter);
+            }
+
+            // Sub-category filter for Photography
+            if (currentSubFilter && currentFilter === 'Photography') {
+                const keywords = subCategoryKeywords[currentSubFilter] || [];
+                filteredData = filteredData.filter(item => {
+                    const searchText = (item.title + ' ' + item.desc + ' ' + item.suitableFor.join(' ')).toLowerCase();
+                    return keywords.some(kw => searchText.includes(kw.toLowerCase()));
+                });
+            }
+
+            if (searchQuery.trim() !== '') {
+                const query = searchQuery.toLowerCase();
+                filteredData = filteredData.filter(item => {
+                    return item.title.toLowerCase().includes(query) || 
+                           item.desc.toLowerCase().includes(query) ||
+                           item.suitableFor.some(tag => tag.toLowerCase().includes(query)) ||
+                           item.colors.some(color => color.toLowerCase().includes(query));
+                });
+            }
+
+            // Filter by orientation
+            if (currentOrientation !== 'all') {
+                filteredData = filteredData.filter(item => item.ratio === currentOrientation);
+            }
+
+            // Update orientation counts
+            updateOrientationCounts(filteredData);
+
+            catalogGrid.classList.add('fade-transition');
+            setTimeout(() => renderCards(filteredData), 150);
+        }
+
+        // === ORIENTATION COUNTS ===
+        function updateOrientationCounts(data) {
+            const portrait = data.filter(item => item.ratio === '2:3').length;
+            const landscape = data.filter(item => item.ratio === '3:2').length;
+            const all = data.length;
+            document.getElementById('orientAll').textContent = all;
+            document.getElementById('orientPortrait').textContent = portrait;
+            document.getElementById('orientLandscape').textContent = landscape;
+        }
+
+        // Event Listener untuk Tombol Kategori
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update UI tombol aktif
+                filterBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                currentFilter = e.target.getAttribute('data-filter');
+                const filterName = e.target.querySelector('span') ? e.target.querySelector('span').textContent : e.target.textContent;
+                categoryTitle.textContent = currentFilter === 'all' ? 'All Video Styles' : filterName;
+                setCategoryTheme(currentFilter);
+
+                // Show/hide orientation bar
+                currentOrientation = 'all';
+                orientationBtns.forEach(b => b.classList.remove('active'));
+                orientationBtns[0].classList.add('active');
+                orientationBar.classList.add('show');
+
+                // Show/hide Photography sub-filters
+                if (currentFilter === 'Photography') {
+                    photoSubFilters.classList.add('show');
+                } else {
+                    photoSubFilters.classList.remove('show');
+                    currentSubFilter = '';
+                    subFilterBtns.forEach(b => b.classList.remove('active'));
+                }
+
+                applyFilters();
+            });
+        });
+
+        // Event Listener untuk Orientation Filter
+        orientationBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                orientationBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentOrientation = e.currentTarget.getAttribute('data-orientation');
+                applyFilters();
+            });
+        });
+
+        // Event Listener untuk Sub-Category Filter (Photography)
+        subFilterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                subFilterBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentSubFilter = e.currentTarget.getAttribute('data-sub');
+                applyFilters();
+            });
+        });
+
+        // Event Listener untuk Kotak Pencarian ( dengan debounce 300ms)
+        searchInput.addEventListener('input', (e) => {
+            debounceSearch(() => {
+                searchQuery = e.target.value;
+                applyFilters();
+            }, 300);
+        });
+
+
+        // --- UTILITAS INTERAKSI UI ---
+
+        // Fungsi Accordion Expand/Collapse
+        window.togglePrompt = function(btnElement) {
+            const content = btnElement.nextElementSibling;
+            const arrow = btnElement.querySelector('span');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.textContent = '▼';
+            } else {
+                content.classList.add('active');
+                arrow.textContent = '▲';
+            }
+        };
+
+        // === KEAMANAN: Fungsi Sanitasi XSS ===
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // === KEAMANAN: Fungsi Copy Modern (Clipboard API + Fallback) ===
+        window.copyText = async function(elementId, btnElement) {
+            const textToCopy = document.getElementById(elementId).innerText.trim();
+            const originalText = btnElement.innerHTML;
+            
+            try {
+                // Modern Clipboard API (HTTPS/localhost only)
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    // Fallback: textarea method
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    textArea.style.cssText = "position:fixed;left:-9999px;top:-9999px;opacity:0";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                
+                btnElement.textContent = "✅ Berhasil Dicopy!";
+                btnElement.classList.add('success');
+                setTimeout(() => {
+                    btnElement.innerHTML = originalText;
+                    btnElement.classList.remove('success');
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Copy failed:', err);
+                // Fallback terakhir: select text dari elemen
+                const range = document.createRange();
+                range.selectNodeContents(document.getElementById(elementId));
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                alert("Tekan Ctrl+C untuk copy");
+            }
+        };
+
+        // === DEBOUNCE UNTUK SEARCH ===
+        let searchTimeout;
+        function debounceSearch(callback, delay) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(callback, delay);
+        }
+
+        // === INISIALISASI ===
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(videoData);
+        });
+
+    </script>
+</body>
+</html>
+

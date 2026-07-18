@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="no-referrer">
+    <title>🎵 Lyric Generator Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #0d0d14;
+            --bg-card: #161622;
+            --bg-card-solid: #1e1e2e;
+            --bg-hover: #1f1f32;
+            --bg-glass: rgba(22, 22, 34, 0.9);
+            --text-main: #f0f0f5;
+            --text-muted: #8b8da8;
+            --text-dim: #5a5c73;
+            --accent-primary: #5cc8e8;
+            --accent-secondary: #7ed8ff;
+            --accent-glow: rgba(92, 200, 232, 0.25);
+            --accent-cyan: #4ac8d8;
+            --accent-emerald: #5ec9a0;
+            --accent-rose: #f49cb3;
+            --accent-amber: #f5a623;
+            --badge-premium: linear-gradient(135deg, #f5a623, #ff8c42);
+            --badge-bestseller: linear-gradient(135deg, #5cc8e8, #7ed8ff);
+            --badge-trending: linear-gradient(135deg, #f49cb3, #f7b8c7);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(92, 200, 232, 0.35);
+            --font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+            --radius-sm: 14px;
+            --radius-md: 18px;
+            --radius-lg: 22px;
+            --radius-xl: 30px;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25);
+            --shadow-lg: 0 6px 16px rgba(0,0,0,0.4), 0 12px 36px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 24px rgba(92, 200, 232, 0.18);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-base);
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(92, 200, 232, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(245, 166, 35, 0.05), transparent);
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 300px;
+            background: #11111a;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #5cc8e8, #7ed8ff, #f5a623);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .search-box {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 42px;
+            background: #1a1a28;
+            border: 2px solid transparent;
+            color: var(--text-main);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-family: var(--font-family);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(92, 200, 232, 0.15);
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+            padding: 11px 14px;
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-family: var(--font-family);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent-primary);
+            transform: scaleY(0);
+            transition: var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            background: #1a1a28;
+            color: var(--text-main);
+            border-color: #2a2a3a;
+            transform: translateX(4px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, rgba(92, 200, 232, 0.18), rgba(126, 216, 255, 0.12));
+            color: #5cc8e8;
+            border-color: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(92, 200, 232, 0.2);
+            transform: translateX(4px);
+        }
+
+        .filter-btn.active::before {
+            transform: scaleY(1);
+        }
+
+        .filter-count {
+            margin-left: auto;
+            font-size: 0.7rem;
+            background: #1a1a28;
+            padding: 2px 8px;
+            border-radius: 10px;
+            color: var(--text-muted);
+        }
+
+        .filter-btn.active .filter-count {
+            background: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 36px;
+            max-width: 1600px;
+        }
+
+        .header-section {
+            margin-bottom: 36px;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .header-stats h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #f0f0f5;
+        }
+
+        .header-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .stats-badge {
+            background: #161622;
+            box-shadow: var(--shadow-sm);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #5cc8e8;
+            border: 2px solid #2a3a4a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-dot {
+            width: 8px;
+            height: 8px;
+            background: #5cc8e8;
+            border-radius: 50%;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(92, 200, 232, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(92, 200, 232, 0); }
+        }
+
+        /* ===== CATALOG GRID ===== */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 28px;
+            transition: opacity 0.3s ease;
+        }
+        .catalog-grid.fade-transition {
+            opacity: 0;
+        }
+
+        .card {
+            background: #161622;
+            border: 2px solid #242436;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-preview {
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #1f1f32);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid #242436;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(92, 200, 232, 0.08), transparent 70%);
+        }
+
+        .mockup-text {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #5a5c73;
+            margin: 0;
+            white-space: pre;
+            line-height: 1.3;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .card:hover .mockup-text {
+            opacity: 1;
+            color: #8b8da8;
+        }
+
+        .badge-container {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: flex;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .badge.bestseller {
+            background: var(--badge-bestseller);
+            color: white;
+            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.4);
+        }
+
+        .badge.trending {
+            background: var(--badge-trending);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 160, 177, 0.4);
+        }
+
+        .badge.premium {
+            background: var(--badge-premium);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+        }
+
+        .card-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+            color: #f0f0f5;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .difficulty {
+            color: #f5a623;
+            letter-spacing: 1px;
+        }
+
+        .meta-divider {
+            width: 1px;
+            height: 14px;
+            background: #2a2a3e;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            flex: 1;
+            line-height: 1.7;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .tag {
+            background: #1a2a3a;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: #5cc8e8;
+            border: 1.5px solid #2a4a5a;
+            transition: var(--transition-fast);
+        }
+
+        .tag:hover {
+            background: #2a4a5a;
+            border-color: #5cc8e8;
+        }
+
+        .prompt-section {
+            background: #1a1a28;
+            border-radius: var(--radius-md);
+            border: 2px solid #2a2a3e;
+            margin-top: auto;
+            overflow: hidden;
+        }
+
+        .prompt-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.88rem;
+            font-family: var(--font-family);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+
+        .prompt-toggle:hover {
+            background: #1f1f32;
+        }
+
+        .prompt-toggle span {
+            font-size: 0.75rem;
+            transition: var(--transition-fast);
+        }
+
+        .prompt-content {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 2px solid #2a2a3e;
+        }
+
+        .prompt-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prompt-box {
+            background: #0d1b2a;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: #5ec9a0;
+            margin-top: 12px;
+            max-height: 120px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            border: 2px solid #1a3a4a;
+            line-height: 1.6;
+        }
+
+        .prompt-box.negative {
+            color: #f5a0b3;
+            border-color: #3a1a2a;
+        }
+
+        .prompt-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 14px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #7ec8e3, #a8d8ff);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: var(--font-family);
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.3);
+        }
+
+        .btn-copy::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .btn-copy:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 6px 20px rgba(126, 200, 227, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-copy.success {
+            background: linear-gradient(135deg, #6bc5a0, #5bb894);
+        }
+
+        .tech-specs {
+            margin-top: 16px;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 2px solid #2a2a3a;
+        }
+
+        .tech-specs div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tech-specs strong {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 260px;
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+            }
+            .main-content {
+                margin-left: 260px;
+                padding: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 2px solid #2a2a3a;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                padding: 20px;
+                max-height: none;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .catalog-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-stats {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .header-stats h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* ===== LOADING & EMPTY STATE ===== */
+        .loading-state,
+        .empty-state {
+            grid-column: 1/-1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .loading-gif,
+        .empty-gif {
+            width: 150px;
+            height: auto;
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .loading-state p,
+        .empty-state h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== LAYOUT TOGGLE ===== */
+        .layout-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .layout-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #2a2a3a;
+            background: #1a1a28;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition-fast);
+        }
+
+        .layout-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-main);
+        }
+
+        .layout-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        /* ===== CATEGORY THEMES ===== */
+        .catalog-grid[data-category="DJ/EDM"] { --cat-accent: #a855f7; --cat-glow: rgba(168, 85, 247, 0.2); }
+        .catalog-grid[data-category="Akustik"] { --cat-accent: #f59e0b; --cat-glow: rgba(245, 158, 11, 0.2); }
+        .catalog-grid[data-category="Santai"] { --cat-accent: #6bc5a0; --cat-glow: rgba(107, 197, 160, 0.2); }
+        .catalog-grid[data-category="Remix"] { --cat-accent: #f97316; --cat-glow: rgba(249, 115, 22, 0.2); }
+        .catalog-grid[data-category="Pantai"] { --cat-accent: #38bdf8; --cat-glow: rgba(56, 189, 248, 0.2); }
+        .catalog-grid[data-category="Cinta"] { --cat-accent: #f472b6; --cat-glow: rgba(244, 114, 182, 0.2); }
+        .catalog-grid[data-category="Galau"] { --cat-accent: #6b7280; --cat-glow: rgba(107, 114, 128, 0.2); }
+        .catalog-grid[data-category="Semangat"] { --cat-accent: #ef4444; --cat-glow: rgba(239, 68, 68, 0.2); }
+        .catalog-grid[data-category="Party"] { --cat-accent: #eab308; --cat-glow: rgba(234, 179, 8, 0.2); }
+        .catalog-grid[data-category="Nostalgia"] { --cat-accent: #8b5cf6; --cat-glow: rgba(139, 92, 246, 0.2); }
+
+        .catalog-grid .card::before {
+            background: linear-gradient(90deg, transparent, var(--cat-accent, var(--accent-primary)), transparent);
+        }
+
+        .catalog-grid .card:hover {
+            border-color: var(--cat-accent, var(--border-glow));
+            box-shadow: var(--shadow-md), 0 4px 20px var(--cat-glow, var(--accent-glow));
+        }
+
+        .catalog-grid .card .badge.bestseller {
+            background: linear-gradient(135deg, var(--cat-accent, var(--accent-primary)), var(--cat-accent, var(--accent-secondary)));
+        }
+
+        /* ===== HORIZONTAL LAYOUT ===== */
+        .catalog-grid.horizontal {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .catalog-grid.horizontal .card {
+            flex-direction: row;
+            max-height: 200px;
+        }
+
+        .catalog-grid.horizontal .card-preview {
+            width: 200px;
+            height: 200px;
+            min-width: 200px;
+            border-bottom: none;
+            border-right: 2px solid #2a2a3a;
+        }
+
+        .catalog-grid.horizontal .card-content {
+            padding: 20px;
+        }
+
+        .catalog-grid.horizontal .card-desc {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .catalog-grid.horizontal .tags-container {
+            margin-bottom: 12px;
+        }
+
+        .catalog-grid.horizontal .prompt-section {
+            display: none;
+        }
+
+        /* ===== VERTICAL LAYOUT (DEFAULT) ===== */
+        .catalog-grid.vertical {
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
+        }
+
+        /* ===== ORIENTATION SUB-FILTER ===== */
+        .orientation-bar {
+            display: none;
+            gap: 10px;
+            align-items: center;
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #1a1a28;
+            border: 2px solid #2a2a3a;
+            border-radius: var(--radius-md);
+        }
+
+        .orientation-bar.show {
+            display: flex;
+        }
+
+        .orientation-bar .orientation-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .orientation-btn {
+            padding: 8px 16px;
+            border: 2px solid #2a2a3a;
+            background: #1a1a28;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .orientation-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-main);
+        }
+
+        .orientation-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #0d1b22;
+        }
+
+        .orientation-btn .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        .orientation-btn:not(.active) .count {
+            background: #1a1a28;
+        }
+
+        /* ===== SUB-FILTERS (unused in lyric) ===== */
+
+        /* ===== CARD ANIMATION ===== */
+        .card {
+            animation: fadeInUp 0.4s ease backwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">🎵 Lyric Pro</div>
+        <div class="brand-subtitle">AI Lyric Generator</div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search lyrics style, theme...">
+        </div>
+
+            <div class="filter-section">
+                <div class="filter-section-title">Genres</div>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">
+                        <span>All Lyric Styles</span>
+                        <span class="filter-count">100</span>
+                    </button>
+                    <button class="filter-btn" data-filter="DJ/EDM">
+                        <span>🎧 DJ/EDM</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Akustik">
+                        <span>🎸 Akustik</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Santai">
+                        <span>☕ Santai</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Remix">
+                        <span>🔄 Remix</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Pantai">
+                        <span>🏖️ Pantai</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Cinta">
+                        <span>💕 Cinta</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Galau">
+                        <span>💔 Galau</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Semangat">
+                        <span>🔥 Semangat</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Party">
+                        <span>🎉 Party</span>
+                        <span class="filter-count">10</span>
+                    </button>
+                    <button class="filter-btn" data-filter="Nostalgia">
+                        <span>📼 Nostalgia</span>
+                        <span class="filter-count">10</span>
+                    </button>
+            </div>
+        </div>
+        <div class="nav-links" style="margin-top:auto; border-top:2px solid #2a2a3a; padding-top:16px; display:flex; flex-direction:column; gap:4px;">
+            <a href="Poster-fitur.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🖼️ AI Poster</a>
+            <a href="lyric.html" class="nav-link active" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(92,200,232,0.18),rgba(126,216,255,0.12));border:2px solid var(--accent-primary);color:#5cc8e8;border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎵 Lyric Generator</a>
+            <a href="video.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎬 Video Prompt</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="header-section">
+            <div class="header-stats">
+                <div>
+                    <h1 id="categoryTitle">All Lyric Styles</h1>
+                    <div class="header-subtitle">AI lyric prompts for every mood &amp; genre</div>
+                </div>
+                <div class="layout-controls">
+                    <button class="layout-btn active" data-layout="vertical" title="Grid View">▦</button>
+                    <button class="layout-btn" data-layout="horizontal" title="List View">☰</button>
+                    <div class="stats-badge" id="statsCount">
+                        <span class="stats-dot"></span>
+                        <span>100 Lyrics</span>
+                    </div>
+                </div>
+            </div>
+            <div class="orientation-bar" id="orientationBar">
+                <span class="orientation-label">Orientation:</span>
+                <button class="orientation-btn active" data-orientation="all">All <span class="count" id="orientAll">0</span></button>
+                <button class="orientation-btn" data-orientation="16:9">Wide (16:9) <span class="count" id="orientWide">0</span></button>
+            </div>
+        </div>
+
+<div id="catalogGrid" class="catalog-grid vertical">
+            <div class="loading-state">
+<img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif">
+                <p>Memuat lyric style...</p>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script>
+        /**
+         * ==========================================================================
+         * DATA STORE (DATABASE LOKAL)
+         * Bagian ini adalah tempat Anda menyimpan ke-100 style Anda.
+         * Saya sertakan 8 Style Master dari permintaan Anda, ditambah 2 style ekstra
+         * sebagai contoh. Formatnya sangat rapi (JSON object), mudah diduplikasi.
+         * * Untuk menambah poster, cukup copy-paste block objek {...} di bawah ini.
+         * ==========================================================================
+         */
+        const lyricData = [
+            // DJ/EDM entries
+            { id: 1, collection: "DJ/EDM", title: "🎧 Bass Drop Anthem", badge: "Best Seller", difficulty: 3, desc: "Lirik EDM dengan tema bass drop yang mengguncang. Cocok untuk festival dan klub malam.", suitableFor: ["Festival", "Club", "DJ Set"], colors: ["Neon Purple", "Electric Yellow", "Deep Black"], prompt: "Ciptakan lirik lagu DJ/EDM dengan energi tinggi. Tema malam hari, lampu strobo, dan bass yang menggetarkan. Gunakan metafora listrik dan dentuman. Gaya bahasa Inggris-Indonesia modern. 16:9 aspect ratio, siap untuk lirik karaoke.", negativePrompt: "lambat, sedih, akustik, tradisional", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 2, collection: "DJ/EDM", title: "🎧 Neon Lights Verse", badge: "Premium", difficulty: 2, desc: "Syair penuh energi tentang gemerlap lampu neon di lantai dansa.", suitableFor: ["Nightlife", "Party", "Dance"], colors: ["Hot Pink", "Cyan", "Silver"], prompt: "Bait lagu EDM tentang lampu neon yang berkilauan di tengah malam. Ritme cepat, repetisi catchy, drop yang eksplosif. Campuran bahasa Inggris dan Indonesia. Cocok untuk video lirik vertikal 16:9.", negativePrompt: "akustik, sendu, tradisional", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 3, collection: "DJ/EDM", title: "🎧 Techno Trance Flow", badge: "", difficulty: 4, desc: "Lirik techno trance dengan aliran hipnotis dan repetisi mendalam.", suitableFor: ["Techno", "Trance", "Rave"], colors: ["Deep Purple", "Acid Green", "Black"], prompt: "Lirik beraliran techno trance yang mengalun hipnotis. Pengulangan frase dengan intensitas meningkat. Suasana warehouse gelap dengan laser hijau. Bahasa Inggris dengan sedikit Indonesia. Format 16:9.", negativePrompt: "pop, akustik, cerah", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 4, collection: "DJ/EDM", title: "🎧 House Party Groove", badge: "Trending", difficulty: 2, desc: "Lirik house music yang bikin pengen bergerak. Groove khas rumah klub.", suitableFor: ["House", "Club", "Weekend"], colors: ["Gold", "Orange", "Warm White"], prompt: "Lirik house musik dengan feel good vibes. Tentang akhir pekan, dansa, dan kebersamaan. Melodi catchy, hook sederhana. Campuran bahasa Inggris-Indonesia. 16:9 format lirik.", negativePrompt: "gelap, sedih, agresif", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 5, collection: "DJ/EDM", title: "🎧 Dubstep War Cry", badge: "Best Seller", difficulty: 5, desc: "Lirik dubstep dengan growl bass dan suasana perang elektronik.", suitableFor: ["Dubstep", "Wonky", "Bass Music"], colors: ["Blood Red", "Neon Green", "Charcoal"], prompt: "Lirik bertema perang elektronik dengan bass growl yang agresif. Visual gelap dengan ledakan warna. Ketegangan meningkat sebelum drop besar. Bahasa Inggris dominan. 16:9.", negativePrompt: "lembut, santai, pop", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 6, collection: "DJ/EDM", title: "🎧 Festival Mainstage Anthem", badge: "Premium", difficulty: 3, desc: "Anthem utama festival EDM. Cocok untuk mainstage dengan crowd besar.", suitableFor: ["Festival", "Mainstage", "Crowd"], colors: ["Sky Blue", "White", "Gold"], prompt: "Lirik anthem festival yang membangkitkan semangat ribuan orang. Tema persatuan, euforia, dan momen magis. Build-up progresif menuju drop epik. 16:9.", negativePrompt: "sendiri, sedih, kecil", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 7, collection: "DJ/EDM", title: "🎧 Future Bass Dream", badge: "", difficulty: 3, desc: "Future bass dengan sentuhan melankolis dan drop yang manis.", suitableFor: ["Future Bass", "Chillstep", "Melodic"], colors: ["Pastel Pink", "Lavender", "Soft Blue"], prompt: "Lirik future bass yang melankolis-manis. Tentang kenangan dan harapan di bawah sinar sunset. Melodi sinth yang lembut. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "keras, agresif, gelap", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 8, collection: "DJ/EDM", title: "🎧 Hardstyle Power", badge: "Trending", difficulty: 5, desc: "Lirik hardstyle penuh kekuatan dengan kick drum berat.", suitableFor: ["Hardstyle", "Rawstyle", "Hardcore"], colors: ["Silver", "Red", "Black"], prompt: "Lirik hardstyle yang powerful dan menggebrak. Tema perjuangan, kekuatan, dan kemenangan. Kick roll yang cepat. Bahasa Inggris. 16:9.", negativePrompt: "lembut, lambat, pop", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 9, collection: "DJ/EDM", title: "🎧 Tropical House Sunset", badge: "Premium", difficulty: 2, desc: "Tropical house dengan nuansa pantai dan sunset yang santai.", suitableFor: ["Tropical", "Beach", "Sunset"], colors: ["Coral", "Turquoise", "Peach"], prompt: "Lirik tropical house yang santai dengan tema pantai, matahari terbenam, dan angin laut. Melodi ceria dan hook yang mudah diingat. Campuran Inggris-Indonesia. 16:9.", negativePrompt: "gelap, heavy, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 10, collection: "DJ/EDM", title: "🎧 Electro Swing Party", badge: "", difficulty: 3, desc: "Perpaduan elektro dengan swing jazz yang unik dan asyik.", suitableFor: ["Electro Swing", "Vintage", "Party"], colors: ["Retro Red", "Warm Yellow", "Brown"], prompt: "Lirik electro swing yang menggabungkan era 1920-an dengan modern. Tema pesta dansa klasik dengan sentuhan futuristik. Bahasa Inggris. 16:9.", negativePrompt: "modern murni, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Akustik entries
+            { id: 11, collection: "Akustik", title: "🎸 Senja di Tepi Danau", badge: "Best Seller", difficulty: 2, desc: "Lirik akustik tentang senja yang tenang di tepi danau. Cocok untuk bersantai.", suitableFor: ["Santai", "Alam", "Merenung"], colors: ["Warm Orange", "Soft Gold", "Forest Green"], prompt: "Ciptakan lirik lagu akustik tentang senja di tepi danau. Suasana tenang, angin sepoi, dan riak air. Petikan gitar fingerstyle. Bahasa Indonesia puitis. 16:9.", negativePrompt: "elektrik, keras, cepat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 12, collection: "Akustik", title: "🎸 Kopi Pagi Hari", badge: "Premium", difficulty: 1, desc: "Lirik sederhana tentang kenikmatan kopi pagi hari.", suitableFor: ["Pagi Hari", "Kopi", "Relaks"], colors: ["Brown", "Cream", "Soft Grey"], prompt: "Lirik lagu akustik tentang ritual kopi pagi hari. Suasana hangat dan nyaman. Petikan gitar lembut. Bahasa Indonesia santai. 16:9.", negativePrompt: "malam, gelap, keras", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 13, collection: "Akustik", title: "🎸 Jalan Setapak", badge: "", difficulty: 3, desc: "Lirik tentang perjalanan hidup melalui metafora jalan setapak.", suitableFor: ["Perjalanan", "Hidup", "Refleksi"], colors: ["Earthy Brown", "Olive", "Soft Yellow"], prompt: "Bait lagu akustik tentang perjalanan hidup. Metafora jalan setapak di hutan. Gitar akustik harmonis. Bahasa Indonesia. 16:9.", negativePrompt: "kota, bising, modern", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 14, collection: "Akustik", title: "🎸 Bintang Kecil", badge: "Trending", difficulty: 2, desc: "Lirik pengantar tidur yang manis tentang bintang di langit.", suitableFor: ["Lullaby", "Anak", "Malam"], colors: ["Navy Blue", "Silver", "Soft White"], prompt: "Lirik lagu pengantar tidur bernuansa akustik. Tema bintang yang berkelap-kelip di malam hari. Suara gitar lembut. Bahasa Indonesia. 16:9.", negativePrompt: "keras, cepat, distorsi", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 15, collection: "Akustik", title: "🎸 Pelangi Setelah Hujan", badge: "Best Seller", difficulty: 2, desc: "Lirik penuh harapan tentang pelangi setelah badai.", suitableFor: ["Harapan", "Motivasi", "Alam"], colors: ["Rainbow", "Sky Blue", "White"], prompt: "Lirik akustik penuh harapan tentang pelangi setelah hujan. Metafora kehidupan yang indah setelah masa sulit. Gitar akustik ceria. Bahasa Indonesia. 16:9.", negativePrompt: "sedih, kelam, berat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 16, collection: "Akustik", title: "🎸 Surat untuk Ibu", badge: "Premium", difficulty: 3, desc: "Lirik menyentuh hati tentang rasa sayang untuk ibu.", suitableFor: ["Keluarga", "Ibu", "Kasih Sayang"], colors: ["Soft Pink", "Warm Beige", "Gold"], prompt: "Lirik lagu akustik yang menyentuh tentang kasih sayang seorang ibu. Petikan gitar yang emosional. Bahasa Indonesia puitis. 16:9.", negativePrompt: "marah, keras, cepat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 17, collection: "Akustik", title: "🎸 Rinduku Padamu", badge: "", difficulty: 3, desc: "Lirik kerinduan yang dalam dengan iringan gitar akustik.", suitableFor: ["Rindu", "Cinta Jarak Jauh", "Emosi"], colors: ["Dusty Rose", "Grey", "Pale Blue"], prompt: "Lirik tentang kerinduan yang mendalam. Metafora jarak dan waktu. Gitar akustik sendu. Bahasa Indonesia. 16:9.", negativePrompt: "gembira, cepat, party", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 18, collection: "Akustik", title: "🎸 Tepi Pantai", badge: "Trending", difficulty: 1, desc: "Lirik santai tentang liburan di tepi pantai.", suitableFor: ["Liburan", "Pantai", "Santai"], colors: ["Turquoise", "Sand", "Sky Blue"], prompt: "Lirik lagu akustik yang ceria tentang liburan di pantai. Suasana santai, ombak, dan angin laut. Gitar strumming riang. Bahasa Indonesia. 16:9.", negativePrompt: "gelap, sedih, berat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 19, collection: "Akustik", title: "🎸 Doa di Senja", badge: "Premium", difficulty: 4, desc: "Lirik spiritual tentang doa yang dipanjatkan di waktu senja.", suitableFor: ["Spiritual", "Doa", "Syukur"], colors: ["Purple Dusk", "Gold", "Warm Grey"], prompt: "Lirik lagu religius bernuansa akustik. Suasana senja yang khusyuk. Petikan gitar yang khidmat. Bahasa Indonesia. 16:9.", negativePrompt: "riang, party, keras", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 20, collection: "Akustik", title: "🎸 Sahabat Sejati", badge: "", difficulty: 2, desc: "Lirik tentang persahabatan yang tulus dan abadi.", suitableFor: ["Sahabat", "Persahabatan", "Kenangan"], colors: ["Warm Yellow", "Soft Green", "White"], prompt: "Lirik lagu akustik tentang persahabatan sejati. Tema kenangan dan dukungan. Gitar akustik hangat. Bahasa Indonesia. 16:9.", negativePrompt: "sedih, sendiri, kelam", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Santai entries
+            { id: 21, collection: "Santai", title: "☕ Hujan di Akhir Pekan", badge: "Best Seller", difficulty: 1, desc: "Lirik santai tentang menikmati hujan di akhir pekan.", suitableFor: ["Hujan", "Santai", "Weekend"], colors: ["Steel Grey", "Warm Brown", "Cream"], prompt: "Lirik lo-fi santai tentang suara hujan di akhir pekan. Nuansa nyaman di dalam rumah dengan secangkir teh. Bahasa Indonesia. 16:9.", negativePrompt: "bising, cepat, cemas", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 22, collection: "Santai", title: "☕ Duduk di Beranda", badge: "Premium", difficulty: 1, desc: "Lirik sederhana tentang duduk santai di beranda rumah.", suitableFor: ["Rumah", "Santai", "Pedesaan"], colors: ["Wood Brown", "Leaf Green", "Sky Blue"], prompt: "Lirik lagu santai tentang duduk di beranda menikmati sore. Angin sepoi dan pemandangan hijau. Bahasa Indonesia. 16:9.", negativePrompt: "kota, bising, stress", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 23, collection: "Santai", title: "☕ Musik Pengantar Tidur", badge: "", difficulty: 1, desc: "Lirik lembut yang cocok didengar sebelum tidur.", suitableFor: ["Tidur", "Relaks", "Meditasi"], colors: ["Midnight Blue", "Soft Silver", "Lavender"], prompt: "Lirik lagu pengantar tidur yang menenangkan. Tema bintang dan bulan. Irama lambat dan lembut. Bahasa Indonesia. 16:9.", negativePrompt: "keras, cepat, mengganggu", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 24, collection: "Santai", title: "☕ Awan Melayang", badge: "Trending", difficulty: 2, desc: "Lirik melamun tentang awan yang melayang di langit.", suitableFor: ["Melamun", "Awan", "Langit"], colors: ["Cloud White", "Sky Blue", "Soft Grey"], prompt: "Bait lagu santai tentang awan yang melayang. Metafora kebebasan dan mimpi. Melodi dreamy. Bahasa Indonesia. 16:9.", negativePrompt: "berat, gelap, tertekan", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 25, collection: "Santai", title: "☕ Sore di Taman Kota", badge: "Best Seller", difficulty: 1, desc: "Lirik tentang sore yang damai di taman kota.", suitableFor: ["Taman", "Sore", "Alam Kota"], colors: ["Grass Green", "Path Grey", "Flower Pink"], prompt: "Lirik santai tentang suasana sore di taman kota. Anak-anak bermain, bunga bermekaran. Bahasa Indonesia. 16:9.", negativePrompt: "malam, hujan, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 26, collection: "Santai", title: "☕ Lentera Kecil", badge: "Premium", difficulty: 3, desc: "Lirik puitis tentang lentera kecil di kegelapan.", suitableFor: ["Malam", "Harapan", "Terang"], colors: ["Warm Amber", "Dark Blue", "Gold"], prompt: "Lirik lagu santai dengan metafora lentera kecil yang memberi terang di malam gelap. Nuansa hangat dan damai. Bahasa Indonesia. 16:9.", negativePrompt: "terang benderang, bising", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 27, collection: "Santai", title: "☕ Hamparan Sawah", badge: "", difficulty: 2, desc: "Lirik tentang keindahan hamparan sawah hijau.", suitableFor: ["Pedesaan", "Alam", "Hijau"], colors: ["Rice Green", "Mud Brown", "Sky Blue"], prompt: "Lirik lagu bernuansa pedesaan dengan hamparan sawah hijau. Suasana tenang dan alami. Bahasa Indonesia. 16:9.", negativePrompt: "kota, aspal, bising", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 28, collection: "Santai", title: "☕ Buku dan Kopi", badge: "Trending", difficulty: 1, desc: "Lirik tentang kenikmatan membaca buku sambil minum kopi.", suitableFor: ["Buku", "Kopi", "Relaksasi"], colors: ["Book Brown", "Coffee Dark", "Page Cream"], prompt: "Lirik santai tentang momen membaca buku sambil menikmati kopi. Suasana kafe atau rumah yang tenang. Bahasa Indonesia. 16:9.", negativePrompt: "ribut, gerak, cepat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 29, collection: "Santai", title: "☕ Pelukan Hangat", badge: "Premium", difficulty: 2, desc: "Lirik tentang kenyamanan pelukan orang tersayang.", suitableFor: ["Keluarga", "Cinta", "Hangat"], colors: ["Warm Beige", "Soft Red", "Gold"], prompt: "Lirik lagu santai tentang hangatnya pelukan. Tema kasih sayang dan rasa aman. Bahasa Indonesia. 16:9.", negativePrompt: "dingin, keras, sendiri", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 30, collection: "Santai", title: "☕ Mimpi Indah", badge: "", difficulty: 1, desc: "Lirik lembut tentang indahnya alam mimpi.", suitableFor: ["Mimpi", "Tidur", "Fantasi"], colors: ["Dreamy Purple", "Soft Pink", "Star Gold"], prompt: "Lirik lagu tentang alam mimpi yang indah. Imajinasi melayang bebas di dunia tidur. Bahasa Indonesia. 16:9.", negativePrompt: "nyata, keras, menakutkan", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Remix entries
+            { id: 31, collection: "Remix", title: "🔄 Classic Boogie Remix", badge: "Best Seller", difficulty: 3, desc: "Remix dari lagu klasik dengan sentuhan boogie modern.", suitableFor: ["Classic", "Dance", "Boogie"], colors: ["Retro Gold", "Disco Silver", "Black"], prompt: "Lirik remix dari lagu klasik era 80-an dengan sentuhan boogie modern. Perpaduan nostalgia dan kekinian. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "murni akustik, lambat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 32, collection: "Remix", title: "🔄 Dangdut Elektro Remix", badge: "Premium", difficulty: 4, desc: "Perpaduan unik dangdut dengan musik elektro modern.", suitableFor: ["Dangdut", "Elektro", "Fusion"], colors: ["Neon Red", "Gold", "Silver"], prompt: "Lirik remix dangdut dengan sentuhan elektro modern. Goyang dan bass berpadu. Bahasa Indonesia campur Inggris. 16:9.", negativePrompt: "murni tradisional, lambat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 33, collection: "Remix", title: "🔄 K-Pop Dance Remix", badge: "Trending", difficulty: 3, desc: "Remix lagu bergaya K-Pop dengan beat dance yang addictive.", suitableFor: ["K-Pop", "Dance", "Korean"], colors: ["Bubblegum Pink", "Icy Blue", "White"], prompt: "Lirik remix bergaya K-Pop dengan koreografi dance yang enerjik. Campuran Korea-Inggris-Indonesia. Beat catchy. 16:9.", negativePrompt: "sendu, klasik, tradisional", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 34, collection: "Remix", title: "🔄 Jazz Hip-Hop Remix", badge: "", difficulty: 5, desc: "Remix jazz dengan beat hip-hop yang smooth dan keren.", suitableFor: ["Jazz", "Hip-Hop", "Fusion"], colors: ["Velvet Blue", "Warm Brown", "Gold"], prompt: "Lirik remix yang menggabungkan jazz instrumental dengan beat hip-hop. Suasana lounge yang keren. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "murni jazz, murni hiphop", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 35, collection: "Remix", title: "🔄 Reggaeton Party Remix", badge: "Best Seller", difficulty: 2, desc: "Remix reggaeton yang bikin pinggul bergoyang.", suitableFor: ["Reggaeton", "Party", "Latin"], colors: ["Tropical Red", "Yellow", "Green"], prompt: "Lirik remix reggaeton dengan irama latin yang panas. Tema pesta dan tarian. Bahasa Spanyol-Inggris-Indonesia. 16:9.", negativePrompt: "dingin, lambat, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 36, collection: "Remix", title: "🔄 Rock EDM Fusion", badge: "Premium", difficulty: 4, desc: "Remix menggabungkan distorsi rock dengan drop EDM.", suitableFor: ["Rock", "EDM", "Fusion"], colors: ["Guitar Red", "Neon Blue", "Black"], prompt: "Lirik remix rock yang dipadukan dengan elemen EDM. Gitar distorsi bertemu synth bass. Ledakan energi. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "murni akustik, lembut", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 37, collection: "Remix", title: "🔄 Tradisional Futuristik", badge: "", difficulty: 5, desc: "Remix alat musik tradisional dengan sentuhan futuristik.", suitableFor: ["Tradisional", "Futuristik", "Ethnic"], colors: ["Batik Brown", "Neon Cyan", "Gold"], prompt: "Lirik remix yang menggabungkan alat musik tradisional dengan synth futuristik. Perpaduan masa lalu dan masa depan. Bahasa daerah-Indonesia. 16:9.", negativePrompt: "murni modern, murni tradisional", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 38, collection: "Remix", title: "🔄 Funk Disco Reboot", badge: "Trending", difficulty: 3, desc: "Remix funk disco era 70-an dengan produksi modern.", suitableFor: ["Funk", "Disco", "Groove"], colors: ["Disco Orange", "Purple", "Gold"], prompt: "Remix funk disco klasik dengan produksi modern. Groove yang bikin goyang. Bass slap dan horn section. Bahasa Inggris. 16:9.", negativePrompt: "sedih, lambat, minimalis", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 39, collection: "Remix", title: "🔄 Lo-Fi Hip Hop Remix", badge: "Premium", difficulty: 2, desc: "Remix lagu populer dalam versi lo-fi yang santai.", suitableFor: ["Lo-Fi", "Hip Hop", "Chill"], colors: ["Vintage Cream", "Dusty Pink", "Brown"], prompt: "Lirik remix lo-fi hip hop untuk belajar dan bersantai. Beat santai dengan sample vinyl crackle. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "keras, cepat, metal", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 40, collection: "Remix", title: "🔄 Afrobeat Global Mix", badge: "Best Seller", difficulty: 3, desc: "Remix afrobeat dengan sentuhan global yang eksotis.", suitableFor: ["Afrobeat", "World", "Dance"], colors: ["African Gold", "Earth Red", "Green"], prompt: "Lirik remix afrobeat dengan irama perkusi yang menular. Tema persatuan global melalui musik. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "dingin, monoton, minimal", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Pantai entries
+            { id: 41, collection: "Pantai", title: "🏖️ Ombak Berkejaran", badge: "Best Seller", difficulty: 1, desc: "Lirik riang tentang ombak yang berkejaran di pantai.", suitableFor: ["Pantai", "Alam", "Ceria"], colors: ["Ocean Blue", "Wave White", "Sand Beige"], prompt: "Lirik lagu ceria tentang ombak laut yang berkejaran. Suasana pantai yang menyenangkan. Bahasa Indonesia. 16:9.", negativePrompt: "sedih, gelap, kota", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 42, collection: "Pantai", title: "🏖️ Pasir Putih", badge: "Premium", difficulty: 1, desc: "Lirik tentang keindahan pasir putih di tepi laut.", suitableFor: ["Pasir", "Pantai", "Tropis"], colors: ["White Sand", "Crystal Blue", "Coconut Green"], prompt: "Lirik lagu tentang pasir putih yang lembut di tepi laut biru. Nuansa tropis yang menenangkan. Bahasa Indonesia. 16:9.", negativePrompt: "kota, kotor, gelap", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 43, collection: "Pantai", title: "🏖️ Matahari Terbenam", badge: "Trending", difficulty: 2, desc: "Lirik romantis tentang matahari terbenam di pantai.", suitableFor: ["Romantis", "Sunset", "Pantai"], colors: ["Sunset Orange", "Crimson", "Purple"], prompt: "Lirik lagu romantis tentang matahari terbenam di cakrawala pantai. Suasana magis dan penuh cinta. Bahasa Indonesia. 16:9.", negativePrompt: "pagi, siang, terang", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 44, collection: "Pantai", title: "🏖️ Pesan dalam Botol", badge: "", difficulty: 3, desc: "Lirik misterius tentang pesan dalam botol di tepi pantai.", suitableFor: ["Misteri", "Harapan", "Laut"], colors: ["Bottle Green", "Sea Foam", "Brown"], prompt: "Lirik lagu tentang pesan dalam botol yang terdampar di pantai. Tema misteri dan harapan dari seberang lautan. Bahasa Indonesia. 16:9.", negativePrompt: "terang, ceria, sederhana", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 45, collection: "Pantai", title: "🏖️ Berlayar Bersama", badge: "Best Seller", difficulty: 2, desc: "Lirik semangat tentang berlayar mengarungi lautan.", suitableFor: ["Berlayar", "Petualangan", "Laut"], colors: ["Sail White", "Deep Blue", "Compass Gold"], prompt: "Lirik lagu penuh semangat tentang berlayar mengarungi samudra. Tema petualangan dan kebebasan. Bahasa Indonesia. 16:9.", negativePrompt: "takut, diam, stagnan", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 46, collection: "Pantai", title: "🏖️ Keong Laut", badge: "Premium", difficulty: 2, desc: "Lirik tentang keong laut yang menyimpan suara ombak.", suitableFor: ["Alam", "Suara Laut", "Kenangan"], colors: ["Shell Pink", "Pearl White", "Coral"], prompt: "Lirik lagu tentang keong laut yang bisa mendengar suara ombak. Metafora kenangan yang tersimpan. Bahasa Indonesia. 16:9.", negativePrompt: "bising, modern, kota", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 47, collection: "Pantai", title: "🏖️ Pelangi di Laut", badge: "", difficulty: 3, desc: "Lirik visual tentang pelangi yang memantul di permukaan laut.", suitableFor: ["Pelangi", "Keindahan", "Syukur"], colors: ["Rainbow", "Sea Blue", "White"], prompt: "Lirik lagu tentang pelangi yang indah memantul di permukaan laut. Keajaiban alam yang sempurna. Bahasa Indonesia. 16:9.", negativePrompt: "monokrom, gelap, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 48, collection: "Pantai", title: "🏖️ Angin Laut", badge: "Trending", difficulty: 1, desc: "Lirik tentang hembusan angin laut yang menyegarkan.", suitableFor: ["Angin", "Segar", "Alam"], colors: ["Breeze Blue", "Fresh White", "Soft Green"], prompt: "Lirik lagu tentang angin laut yang berhembus segar. Sensasi kebebasan dan kesegaran. Bahasa Indonesia. 16:9.", negativePrompt: "panas, pengap, kota", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 49, collection: "Pantai", title: "🏖️ Bintang Laut", badge: "Premium", difficulty: 2, desc: "Lirik tentang bintang laut yang bersinar di malam hari.", suitableFor: ["Malam", "Laut", "Bintang"], colors: ["Star Gold", "Navy", "Silver"], prompt: "Lirik lagu tentang bintang laut yang berkelap-kelip di malam hari. Keindahan langit malam di tepi pantai. Bahasa Indonesia. 16:9.", negativePrompt: "siang, terang, ramai", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 50, collection: "Pantai", title: "🏖️ Pulau Impian", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang pulau tropis impian yang indah.", suitableFor: ["Pulau", "Tropis", "Liburan"], colors: ["Island Green", "Turquoise", "White"], prompt: "Lirik lagu tentang pulau tropis impian dengan pantai berpasir putih dan air jernih. Liburan sempurna. Bahasa Indonesia. 16:9.", negativePrompt: "dingin, kota, sibuk", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Cinta entries
+            { id: 51, collection: "Cinta", title: "💕 Pertama Bertemu", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang momen pertama kali bertemu dengan cinta.", suitableFor: ["Cinta", "Romantis", "Awal"], colors: ["Blush Pink", "Soft Gold", "White"], prompt: "Lirik lagu romantis tentang pertama kali bertemu dengan seseorang yang spesial. Degup jantung dan senyuman. Bahasa Indonesia. 16:9.", negativePrompt: "marah, sedih, benci", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 52, collection: "Cinta", title: "💕 Janji Setia", badge: "Premium", difficulty: 3, desc: "Lirik tentang janji setia sehidup semati.", suitableFor: ["Janji", "Setia", "Pernikahan"], colors: ["White", "Gold", "Soft Pink"], prompt: "Lirik lagu tentang janji setia sepasang kekasih. Tema komitmen dan cinta abadi. Bahasa Indonesia. 16:9.", negativePrompt: "bohong, sementara, ragu", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 53, collection: "Cinta", title: "💕 Pelukan Pertama", badge: "Trending", difficulty: 2, desc: "Lirik tentang hangatnya pelukan pertama yang berkesan.", suitableFor: ["Pelukan", "Hangat", "Kenangan"], colors: ["Warm Peach", "Soft Red", "Cream"], prompt: "Lirik lagu tentang pelukan pertama yang terasa hangat dan menenangkan. Momen yang tak terlupakan. Bahasa Indonesia. 16:9.", negativePrompt: "dingin, kasar, jauh", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 54, collection: "Cinta", title: "💕 Cukup Kamu", badge: "", difficulty: 2, desc: "Lirik sederhana tentang merasa cukup hanya dengan dirinya.", suitableFor: ["Cukup", "Sederhana", "Bahagia"], colors: ["Simple Grey", "Warm Beige", "Soft Blue"], prompt: "Lirik lagu tentang merasa cukup hanya dengan kehadiran seseorang. Cinta yang sederhana tapi bermakna. Bahasa Indonesia. 16:9.", negativePrompt: "berlebihan, serakah, materialistis", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 55, collection: "Cinta", title: "💕 Di Setiap Langkah", badge: "Best Seller", difficulty: 3, desc: "Lirik tentang cinta yang setia menemani di setiap langkah.", suitableFor: ["Pendamping", "Setia", "Hidup"], colors: ["Forest Green", "Earthy Brown", "Gold"], prompt: "Lirik lagu tentang seseorang yang selalu setia menemani di setiap langkah kehidupan. Cinta yang kokoh. Bahasa Indonesia. 16:9.", negativePrompt: "sementara, pergi, sendiri", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 56, collection: "Cinta", title: "💕 Senyummu", badge: "Premium", difficulty: 1, desc: "Lirik tentang senyuman indah yang mencerahkan hari.", suitableFor: ["Senyum", "Ceria", "Bahagia"], colors: ["Sunny Yellow", "Light Pink", "White"], prompt: "Lirik lagu tentang senyuman seseorang yang bisa mencerahkan hari. Sederhana tapi bermakna dalam. Bahasa Indonesia. 16:9.", negativePrompt: "muram, marah, sedih", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 57, collection: "Cinta", title: "💕 Bunga dan Puisi", badge: "", difficulty: 3, desc: "Lirik puitis tentang bunga dan puisi sebagai ungkapan cinta.", suitableFor: ["Puisi", "Romantis", "Bunga"], colors: ["Rose Red", "Violet", "Green"], prompt: "Lirik lagu yang puitis tentang bunga dan puisi sebagai ungkapan rasa cinta. Metafora yang indah. Bahasa Indonesia. 16:9.", negativePrompt: "kasar, langsung, sederhana", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 58, collection: "Cinta", title: "💕 Rumah Kita", badge: "Trending", difficulty: 2, desc: "Lirik tentang membangun rumah tangga yang bahagia.", suitableFor: ["Rumah Tangga", "Keluarga", "Bahagia"], colors: ["Homey Warm", "Brick Red", "Cream"], prompt: "Lirik lagu tentang membangun rumah dan keluarga dengan orang tercinta. Kehangatan rumah tangga. Bahasa Indonesia. 16:9.", negativePrompt: "berantakan, sedih, sendiri", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 59, collection: "Cinta", title: "💕 Bintang Jatuh", badge: "Premium", difficulty: 3, desc: "Lirik romantis tentang bintang jatuh dan permohonan cinta.", suitableFor: ["Bintang", "Harapan", "Cinta"], colors: ["Shooting Star Silver", "Night Blue", "Gold"], prompt: "Lirik lagu romantis tentang permohonan cinta di bawah bintang jatuh. Malam yang magis dan penuh harapan. Bahasa Indonesia. 16:9.", negativePrompt: "siang, terang, biasa", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 60, collection: "Cinta", title: "💕 Selamanya", badge: "Best Seller", difficulty: 4, desc: "Lirik tentang cinta abadi yang tak pernah pudar.", suitableFor: ["Abadi", "Cinta", "Komitmen"], colors: ["Eternal Gold", "Deep Red", "White"], prompt: "Lirik lagu tentang cinta yang abadi dan tak pernah pudar dimakan waktu. Komitmen seumur hidup. Bahasa Indonesia. 16:9.", negativePrompt: "sementara, pudar, luntur", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Galau entries
+            { id: 61, collection: "Galau", title: "💔 Hujan Tanpa Payung", badge: "Best Seller", difficulty: 3, desc: "Lirik sendu tentang hujan yang mengingatkan pada mantan.", suitableFor: ["Hujan", "Sendu", "Kenangan"], colors: ["Grey", "Steel Blue", "Dark Grey"], prompt: "Lirik lagu galau tentang hujan yang mengingatkan pada mantan kekasih. Suasana sendu dan melankolis. Bahasa Indonesia. 16:9.", negativePrompt: "ceria, terang, bahagia", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 62, collection: "Galau", title: "💔 Patah Hati", badge: "Premium", difficulty: 2, desc: "Lirik tentang patah hati yang dalam.", suitableFor: ["Patah Hati", "Sedih", "Kecewa"], colors: ["Broken Grey", "Faded Blue", "Black"], prompt: "Lirik lagu tentang patah hati yang mendalam. Rasa kecewa dan kehilangan yang tertulis dalam bait. Bahasa Indonesia. 16:9.", negativePrompt: "senang, ceria, positif", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 63, collection: "Galau", title: "💔 Kenangan Manis", badge: "Trending", difficulty: 2, desc: "Lirik tentang kenangan manis yang kini hanya tinggal cerita.", suitableFor: ["Kenangan", "Nostalgia", "Mantan"], colors: ["Sepia", "Faded Rose", "Dusty Blue"], prompt: "Lirik lagu tentang kenangan manis bersama mantan yang kini tinggal cerita. Manis tapi pedih. Bahasa Indonesia. 16:9.", negativePrompt: "marah, benci, kasar", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 64, collection: "Galau", title: "💔 Sendiri Lagi", badge: "", difficulty: 1, desc: "Lirik tentang kesendirian setelah ditinggalkan.", suitableFor: ["Sendiri", "Sepi", "Menyendiri"], colors: ["Lonely Grey", "Pale Blue", "White"], prompt: "Lirik lagu tentang kesendirian setelah ditinggalkan. Kamar kosong dan hati yang hampa. Bahasa Indonesia. 16:9.", negativePrompt: "ramai, rame, bersama", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 65, collection: "Galau", title: "💔 Kembali Padamu", badge: "Best Seller", difficulty: 3, desc: "Lirik tentang keinginan kembali meski tahu tak mungkin.", suitableFor: ["Rindu", "Penyesalan", "Harapan"], colors: ["Twilight Blue", "Faded Pink", "Grey"], prompt: "Lirik lagu tentang ingin kembali pada mantan meski sadar tak mungkin. Perasaan campur aduk. Bahasa Indonesia. 16:9.", negativePrompt: "tegas, maju, move on", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 66, collection: "Galau", title: "💔 Foto Lama", badge: "Premium", difficulty: 2, desc: "Lirik tentang melihat foto lama yang membangkitkan kenangan.", suitableFor: ["Foto", "Kenangan", "Masa Lalu"], colors: ["Vintage Yellow", "Faded Brown", "Grey"], prompt: "Lirik lagu tentang membuka album foto lama yang penuh kenangan. Tawa dan tangis dalam bingkai. Bahasa Indonesia. 16:9.", negativePrompt: "baru, modern, digital", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 67, collection: "Galau", title: "💔 Perih yang Tersisa", badge: "", difficulty: 4, desc: "Lirik tentang rasa perih yang masih tersisa di hati.", suitableFor: ["Perih", "Sakit Hati", "Trauma"], colors: ["Blood Red", "Charcoal", "Black"], prompt: "Lirik lagu tentang rasa perih yang masih tersisa meski waktu telah berlalu. Luka yang belum sembuh. Bahasa Indonesia. 16:9.", negativePrompt: "sembuh, ceria, ringan", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 68, collection: "Galau", title: "💔 Air Mata", badge: "Trending", difficulty: 1, desc: "Lirik tentang air mata yang tak terbendung.", suitableFor: ["Air Mata", "Tangis", "Emosi"], colors: ["Teardrop Clear", "Sad Blue", "Grey"], prompt: "Lirik lagu tentang air mata yang jatuh tanpa bisa dibendung. Kesedihan yang jujur dan apa adanya. Bahasa Indonesia. 16:9.", negativePrompt: "tawa, senyum, bahagia", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 69, collection: "Galau", title: "💔 Jam Dinding", badge: "Premium", difficulty: 3, desc: "Lirik tentang waktu yang berjalan lambat saat patah hati.", suitableFor: ["Waktu", "Menunggu", "Sepi"], colors: ["Clock Brown", "Dark Grey", "Silver"], prompt: "Lirik lagu tentang jam dinding yang berdetak lambat. Waktu terasa berhenti saat hati terluka. Bahasa Indonesia. 16:9.", negativePrompt: "cepat, sibuk, bergerak", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 70, collection: "Galau", title: "💔 Luka yang Kurawat", badge: "Best Seller", difficulty: 4, desc: "Lirik tentang luka yang sengaja dirawat karena tak mau move on.", suitableFor: ["Luka", "Cinta", "Pertahanan"], colors: ["Deep Maroon", "Dark Grey", "Black"], prompt: "Lirik lagu tentang luka yang sengaja dipelihara karena belum bisa move on. Cinta yang sakit tapi dipertahankan. Bahasa Indonesia. 16:9.", negativePrompt: "sembuh, move on, bahagia", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Semangat entries
+            { id: 71, collection: "Semangat", title: "🔥 Bangkit Lagi", badge: "Best Seller", difficulty: 2, desc: "Lirik motivasi tentang bangkit setelah jatuh.", suitableFor: ["Motivasi", "Bangkit", "Semangat"], colors: ["Fire Red", "Orange", "Yellow"], prompt: "Lirik lagu penyemangat tentang bangkit kembali setelah kegagalan. Api semangat yang tak padam. Bahasa Indonesia. 16:9.", negativePrompt: "putus asa, lemah, menyerah", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 72, collection: "Semangat", title: "🔥 Tak Terhentikan", badge: "Premium", difficulty: 3, desc: "Lirik tentang tekad kuat yang tak bisa dihentikan.", suitableFor: ["Tekad", "Pantang Menyerah", "Kuat"], colors: ["Steel Grey", "Red", "Gold"], prompt: "Lirik lagu tentang tekad baja yang tak bisa dihentikan oleh apapun. Semangat juang yang membara. Bahasa Indonesia. 16:9.", negativePrompt: "lemah, ragu, takut", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 73, collection: "Semangat", title: "🔥 Mimpi Besar", badge: "Trending", difficulty: 2, desc: "Lirik tentang berani bermimpi besar dan mengejarnya.", suitableFor: ["Mimpi", "Ambisi", "Sukses"], colors: ["Sky Blue", "White", "Gold"], prompt: "Lirik lagu tentang keberanian bermimpi besar dan bekerja keras mewujudkannya. Nothing is impossible. Bahasa Indonesia. 16:9.", negativePrompt: "kecil, takut, ragu", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 74, collection: "Semangat", title: "🔥 Lari Lebih Cepat", badge: "", difficulty: 3, desc: "Lirik tentang berlari mengejar target.", suitableFor: ["Lari", "Target", "Olahraga"], colors: ["Athletic Blue", "Neon Green", "White"], prompt: "Lirik lagu semangat tentang berlari mengejar target dan tujuan. Irama cepat dan energik. Bahasa Indonesia. 16:9.", negativePrompt: "lambat, malas, berhenti", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 75, collection: "Semangat", title: "🔥 Baja dan Api", badge: "Best Seller", difficulty: 4, desc: "Lirik tentang ditempa menjadi kuat seperti baja.", suitableFor: ["Kuat", "Ujian", "Ketahanan"], colors: ["Metal Grey", "Flame Orange", "Black"], prompt: "Lirik lagu tentang ditempa oleh ujian menjadi pribadi yang kuat seperti baja. Api membara membentuk karakter. Bahasa Indonesia. 16:9.", negativePrompt: "lembek, lemah, rapuh", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 76, collection: "Semangat", title: "🔥 Bersama Kita Bisa", badge: "Premium", difficulty: 2, desc: "Lirik kebersamaan dan kekuatan tim.", suitableFor: ["Tim", "Kebersamaan", "Kolaborasi"], colors: ["Team Blue", "Unity White", "Red"], prompt: "Lirik lagu tentang kekuatan tim dan kebersamaan. Bersama kita bisa mencapai apa pun. Bahasa Indonesia. 16:9.", negativePrompt: "sendiri, egois, terpecah", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 77, collection: "Semangat", title: "🔥 Jangan Menyerah", badge: "", difficulty: 1, desc: "Lirik sederhana untuk terus berjuang.", suitableFor: ["Perjuangan", "Pantang", "Berjuang"], colors: ["Red", "White", "Blue"], prompt: "Lirik lagu motivasi sederhana untuk terus berjuang dan tidak menyerah. Pesan langsung dan kuat. Bahasa Indonesia. 16:9.", negativePrompt: "menyerah, mundur, gagal", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 78, collection: "Semangat", title: "🔥 Lampu Panggung", badge: "Trending", difficulty: 3, desc: "Lirik tentang bersinar di atas panggung.", suitableFor: ["Panggung", "Show", "Prestasi"], colors: ["Spotlight White", "Stage Red", "Gold"], prompt: "Lirik lagu tentang bersinar terang di atas panggung. Momen kejayaan setelah perjuangan panjang. Bahasa Indonesia. 16:9.", negativePrompt: "gagal, malu, bersembunyi", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 79, collection: "Semangat", title: "🔥 Puncak Gunung", badge: "Premium", difficulty: 3, desc: "Lirik tentang mendaki dan mencapai puncak.", suitableFor: ["Mendaki", "Puncak", "Prestasi"], colors: ["Mountain Grey", "Sky Blue", "White"], prompt: "Lirik lagu tentang perjuangan mendaki gunung untuk mencapai puncak tertinggi. Metafora pencapaian. Bahasa Indonesia. 16:9.", negativePrompt: "datar, mudah, menurun", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 80, collection: "Semangat", title: "🔥 Pahlawan Kecil", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang pahlawan kecil yang berjuang sehari-hari.", suitableFor: ["Pahlawan", "Sehari-hari", "Inspirasi"], colors: ["Cape Red", "Hope Blue", "Bright Yellow"], prompt: "Lirik lagu tentang pahlawan kecil dalam kehidupan sehari-hari. Mereka yang terus berjuang tanpa lelah. Bahasa Indonesia. 16:9.", negativePrompt: "besar, sombong, terkenal", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Party entries
+            { id: 81, collection: "Party", title: "🎉 Malam Minggu", badge: "Best Seller", difficulty: 1, desc: "Lirik tentang serunya malam minggu bersama teman.", suitableFor: ["Malam Minggu", "Teman", "Fun"], colors: ["Party Purple", "Neon Pink", "Silver"], prompt: "Lirik lagu party tentang serunya malam minggu. Bersama teman-teman, musik keras, dan tawa. Bahasa Indonesia campur Inggris. 16:9.", negativePrompt: "sendiri, sedih, sepi", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 82, collection: "Party", title: "🎉 Naikkan Gelas", badge: "Premium", difficulty: 2, desc: "Lirik toast untuk merayakan kehidupan.", suitableFor: ["Toast", "Rayakan", "Bersulang"], colors: ["Champagne Gold", "Wine Red", "White"], prompt: "Lirik lagu party tentang bersulang dan merayakan kehidupan. Naikkan gelas untuk momen bahagia. Bahasa Indonesia-Inggris. 16:9.", negativePrompt: "sedih, puasa, diam", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 83, collection: "Party", title: "🎉 Dansa Semalam", badge: "Trending", difficulty: 2, desc: "Lirik tentang berdansa semalaman tanpa henti.", suitableFor: ["Dansa", "Semalaman", "Energi"], colors: ["Disco Silver", "Neon Blue", "Red"], prompt: "Lirik lagu party tentang dansa semalaman sampai lupa waktu. Energi yang tak pernah habis. Bahasa Indonesia-Inggris. 16:9.", negativePrompt: "lelah, tidur, diam", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 84, collection: "Party", title: "🎉 Kembang Api", badge: "", difficulty: 3, desc: "Lirik tentang kembang api di malam pergantian tahun.", suitableFor: ["Tahun Baru", "Kembang Api", "Festival"], colors: ["Firework Gold", "Sky Blue", "Red"], prompt: "Lirik lagu party tentang kembang api di langit malam pergantian tahun. Euforia dan harapan baru. Bahasa Indonesia. 16:9.", negativePrompt: "suram, gelap, sepi", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 85, collection: "Party", title: "🎉 Euforia", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang euforia pesta yang tak terlupakan.", suitableFor: ["Euforia", "Pesta", "Bahagia"], colors: ["Euphoria Pink", "Gold", "White"], prompt: "Lirik lagu tentang euforia pesta yang membuncah. Kebahagiaan yang terasa di udara. Bahasa Indonesia-Inggris. 16:9.", negativePrompt: "datar, bosan, lesu", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 86, collection: "Party", title: "🎉 DJ di Atas Panggung", badge: "Premium", difficulty: 3, desc: "Lirik dari perspektif DJ yang memanggung.", suitableFor: ["DJ", "Panggung", "Show"], colors: ["Stage Purple", "Neon Green", "Black"], prompt: "Lirik lagu dari sudut pandang DJ yang menguasai panggung. Mengendalikan energi ribuan orang. Bahasa Inggris-Indonesia. 16:9.", negativePrompt: "penonton, pasif, diam", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 87, collection: "Party", title: "🎉 Karoke Malam", badge: "", difficulty: 1, desc: "Lirik tentang serunya karaoke bersama teman.", suitableFor: ["Karaoke", "Nyanyi", "Bersama"], colors: ["Mic Gold", "Stage Red", "Spotlight White"], prompt: "Lirik lagu tentang malam karaoke yang seru. Bergantian menyanyi tanpa beban. Bahasa Indonesia. 16:9.", negativePrompt: "malu, diam, sendirian", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 88, collection: "Party", title: "🎉 Ultah Ke-18", badge: "Trending", difficulty: 1, desc: "Lirik spesial untuk pesta ulang tahun ke-18.", suitableFor: ["Ulang Tahun", "Dewasa", "Spesial"], colors: ["Birthday Gold", "Confetti Rainbow", "White"], prompt: "Lirik lagu ulang tahun untuk perayaan 18 tahun. Spesial dan penuh semangat. Bahasa Indonesia. 16:9.", negativePrompt: "sedih, tua, lelah", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 89, collection: "Party", title: "🎉 Pantai Pesta", badge: "Premium", difficulty: 2, desc: "Lirik tentang pesta di pantai saat sunset.", suitableFor: ["Pantai", "Pesta", "Sunset"], colors: ["Sunset Orange", "Beach Blue", "Coral"], prompt: "Lirik lagu party di pantai saat matahari terbenam. Api unggun, musik, dan kebersamaan. Bahasa Indonesia-Inggris. 16:9.", negativePrompt: "hujan, dingin, sepi", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 90, collection: "Party", title: "🎉 Sampai Pagi", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang pesta yang berlangsung sampai pagi.", suitableFor: ["Pagi", "After Party", "Sunrise"], colors: ["Dawn Pink", "Soft Orange", "Sky Blue"], prompt: "Lirik lagu party yang berlangsung sampai matahari terbit. Transisi dari malam ke pagi. Bahasa Indonesia-Inggris. 16:9.", negativePrompt: "cepat selesai, singkat", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+
+            // Nostalgia entries
+            { id: 91, collection: "Nostalgia", title: "📼 Kenangan SD", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang kenangan masa SD yang indah.", suitableFor: ["SD", "Masa Kecil", "Kenangan"], colors: ["Vintage Yellow", "Brown", "Cream"], prompt: "Lirik lagu nostalgia tentang masa-masa SD. Seragam putih merah, bermain di lapangan, dan persahabatan pertama. Bahasa Indonesia. 16:9.", negativePrompt: "modern, dewasa, serius", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 92, collection: "Nostalgia", title: "📼 Kaset Pita", badge: "Premium", difficulty: 3, desc: "Lirik tentang kaset pita yang mengingatkan pada masa lalu.", suitableFor: ["Kaset", "90-an", "Musik Lama"], colors: ["Tape Brown", "Silver", "Faded Blue"], prompt: "Lirik lagu tentang kaset pita yang diputar ulang. Suara desis kaset dan kenangan lama. Bahasa Indonesia. 16:9.", negativePrompt: "digital, streaming, baru", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 93, collection: "Nostalgia", title: "📼 Rumah Nenek", badge: "Trending", difficulty: 2, desc: "Lirik tentang kenangan di rumah nenek di desa.", suitableFor: ["Nenek", "Desa", "Rindu"], colors: ["Wood Brown", "Garden Green", "Warm Yellow"], prompt: "Lirik lagu nostalgia tentang rumah nenek di desa. Suasana pedesaan, masakan nenek, dan liburan sekolah. Bahasa Indonesia. 16:9.", negativePrompt: "kota, modern, sibuk", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 94, collection: "Nostalgia", title: "📼 Main Layang-layang", badge: "", difficulty: 1, desc: "Lirik tentang bermain layang-layang di sore hari.", suitableFor: ["Layang-layang", "Masa Kecil", "Sore"], colors: ["Sky Blue", "Kite Red", "Grass Green"], prompt: "Lirik lagu tentang bermain layang-layang di sore hari. Angin, tawa, dan layang-layang yang terbang tinggi. Bahasa Indonesia. 16:9.", negativePrompt: "dewasa, serius, kantoran", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 95, collection: "Nostalgia", title: "📼 Sepeda Ontel", badge: "Best Seller", difficulty: 2, desc: "Lirik tentang bersepeda ontel keliling kampung.", suitableFor: ["Sepeda", "Kampung", "Santai"], colors: ["Bike Green", "Rust Orange", "Grey"], prompt: "Lirik lagu tentang bersepeda ontel keliling kampung halaman. Suasana sore yang damai. Bahasa Indonesia. 16:9.", negativePrompt: "cepat, motor, modern", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 96, collection: "Nostalgia", title: "📼 TV Tabung", badge: "Premium", difficulty: 2, desc: "Lirik tentang menonton TV tabung bersama keluarga.", suitableFor: ["TV", "Keluarga", "90-an"], colors: ["Grey", "Screen Blue", "Warm Orange"], prompt: "Lirik lagu tentang menonton televisi tabung bersama keluarga. Acara TV zaman dulu dan ikonik. Bahasa Indonesia. 16:9.", negativePrompt: "modern, HD, digital", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 97, collection: "Nostalgia", title: "📼 Buku Harian", badge: "", difficulty: 3, desc: "Lirik tentang buku harian yang menyimpan semua cerita.", suitableFor: ["Buku Harian", "Cerita", "Rahasia"], colors: ["Notebook White", "Ink Blue", "Faded Pink"], prompt: "Lirik lagu tentang buku harian yang menjadi saksi bisu semua cerita suka duka. Bahasa Indonesia. 16:9.", negativePrompt: "digital, hp, online", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 98, collection: "Nostalgia", title: "📼 Hujan Bulan Juni", badge: "Trending", difficulty: 3, desc: "Lirik puitis tentang hujan di bulan Juni.", suitableFor: ["Hujan", "Puisi", "Sastra"], colors: ["Rain Grey", "June Blue", "Leaf Green"], prompt: "Lirik lagu bernuansa sastra tentang hujan di bulan Juni. Inspirasi dari puisi terkenal. Puitis dan mendalam. Bahasa Indonesia. 16:9.", negativePrompt: "ramai, bising, pop", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 99, collection: "Nostalgia", title: "📼 Foto Kelas", badge: "Premium", difficulty: 2, desc: "Lirik tentang foto kelas yang membawa kenangan sekolah.", suitableFor: ["Sekolah", "Teman Kelas", "Kenangan"], colors: ["Photo Sepia", "Uniform White", "Blue"], prompt: "Lirik lagu tentang foto kelas yang ditemukan kembali. Wajah-wajah lama dan cerita di baliknya. Bahasa Indonesia. 16:9.", negativePrompt: "baru, asing, tidak dikenal", ratio: "16:9", size: "Lirik", dpi: "N/A" },
+            { id: 100, collection: "Nostalgia", title: "📼 Waktu Terbaik", badge: "Best Seller", difficulty: 4, desc: "Lirik tentang masa-masa terbaik yang tidak akan terulang.", suitableFor: ["Masa Muda", "Terbaik", "Kenangan"], colors: ["Golden Yellow", "Faded Blue", "Warm White"], prompt: "Lirik lagu tentang masa-masa terbaik dalam hidup yang tak akan terulang. Syukur dan haru. Bahasa Indonesia. 16:9.", negativePrompt: "penyesalan, sedih, buruk", ratio: "16:9", size: "Lirik", dpi: "N/A" }
+
+        ];
+
+        /**
+         * ==========================================================================
+         * LOGIKA APLIKASI (JAVASCRIPT)
+         * Menggunakan Vanilla JS. Aman dari framework bloat.
+         * ==========================================================================
+         */
+
+        const catalogGrid = document.getElementById('catalogGrid');
+        const statsCount = document.getElementById('statsCount');
+        const categoryTitle = document.getElementById('categoryTitle');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn:not(.sub-filter)');
+        const layoutBtns = document.querySelectorAll('.layout-btn');
+
+        // === LAYOUT TOGGLE ===
+        let currentLayout = 'vertical';
+        layoutBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                layoutBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLayout = btn.getAttribute('data-layout');
+                catalogGrid.classList.remove('vertical', 'horizontal');
+                catalogGrid.classList.add(currentLayout);
+            });
+        });
+
+        // === CATEGORY THEME ===
+        function setCategoryTheme(category) {
+            catalogGrid.setAttribute('data-category', category === 'all' ? '' : category);
+        }
+
+        // === KEAMANAN: Sanitasi input untuk mencegah XSS ===
+        function sanitize(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        // === Fungsi bintang rating ===
+        function renderStars(count) {
+            return '★'.repeat(Math.min(count, 5)) + '☆'.repeat(Math.max(0, 5 - count));
+        }
+
+        // === EMPTY STATE & LOADING ===
+        const emptyStateHTML = '<div class="empty-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+
+        const loadingHTML = '<div class="loading-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif"><p>Memuat lyric style...</p></div>';
+
+        // === RENDER CARDS (Optimized + Sanitized) ===
+        function renderCards(data) {
+            if (!data || data.length === 0) {
+                catalogGrid.innerHTML = emptyStateHTML;
+                statsCount.textContent = '0 Lyrics';
+                return;
+            }
+
+            statsCount.textContent = data.length + ' Lyrics';
+
+            const htmlString = data.map(item => {
+                let badgeHTML = '';
+                if(item.badge === "Best Seller") {
+                    badgeHTML = '<span class="badge bestseller">Best Seller</span>';
+                } else if(item.badge === "Trending") {
+                    badgeHTML = '<span class="badge trending">Trending</span>';
+                } else if(item.badge === "Premium") {
+                    badgeHTML = '<span class="badge premium">Premium</span>';
+                }
+
+                const tagsHTML = item.suitableFor.map(tag => '<span class="tag">' + sanitize(tag) + '</span>').join('');
+                const collUpper = sanitize(item.collection.toUpperCase().padEnd(10).substring(0,10));
+                const ratioLabel = item.ratio === '16:9' ? 'WIDE' : 'POSTER';
+
+                return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(item.prompt) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(item.negativePrompt) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
+            }).join('');
+
+            catalogGrid.classList.remove('fade-transition');
+            catalogGrid.innerHTML = htmlString;
+        }
+
+        // --- SISTEM FILTER & PENCARIAN ---
+
+        let currentFilter = 'all';
+        let currentOrientation = 'all';
+        let currentSubFilter = '';
+        let searchQuery = '';
+        const orientationBar = document.getElementById('orientationBar');
+        const orientationBtns = document.querySelectorAll('.orientation-btn');
+        const photoSubFilters = null;
+        const subFilterBtns = [];
+
+        // === DYNAMIC SPECIAL (not used in lyric context) ===
+        function getSpecialStyles() {
+            return [];
+        }
+
+        function applyFilters() {
+            let filteredData = lyricData;
+
+            if (currentFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.collection === currentFilter);
+            }
+
+            if (searchQuery.trim() !== '') {
+                const query = searchQuery.toLowerCase();
+                filteredData = filteredData.filter(item => {
+                    return item.title.toLowerCase().includes(query) || 
+                           item.desc.toLowerCase().includes(query) ||
+                           item.suitableFor.some(tag => tag.toLowerCase().includes(query)) ||
+                           item.colors.some(color => color.toLowerCase().includes(query));
+                });
+            }
+
+            // Filter by orientation
+            if (currentOrientation !== 'all') {
+                filteredData = filteredData.filter(item => item.ratio === currentOrientation);
+            }
+
+            // Update orientation counts
+            updateOrientationCounts(filteredData);
+
+            catalogGrid.classList.add('fade-transition');
+            setTimeout(() => renderCards(filteredData), 150);
+        }
+
+        // === ORIENTATION COUNTS ===
+        function updateOrientationCounts(data) {
+            const wide = data.filter(item => item.ratio === '16:9').length;
+            const all = data.length;
+            document.getElementById('orientAll').textContent = all;
+            document.getElementById('orientWide').textContent = wide;
+        }
+
+        // Event Listener untuk Tombol Kategori
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update UI tombol aktif
+                filterBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                currentFilter = e.target.getAttribute('data-filter');
+                const filterName = e.target.querySelector('span') ? e.target.querySelector('span').textContent : e.target.textContent;
+                categoryTitle.textContent = currentFilter === 'all' ? 'All Lyric Styles' : filterName;
+                setCategoryTheme(currentFilter);
+
+                // Show/hide orientation bar
+                currentOrientation = 'all';
+                orientationBtns.forEach(b => b.classList.remove('active'));
+                orientationBtns[0].classList.add('active');
+                orientationBar.classList.add('show');
+
+                currentSubFilter = '';
+                subFilterBtns.forEach(b => b.classList.remove('active'));
+
+                applyFilters();
+            });
+        });
+
+        // Event Listener untuk Orientation Filter
+        orientationBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                orientationBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentOrientation = e.currentTarget.getAttribute('data-orientation');
+                applyFilters();
+            });
+        });
+
+        // Event Listener untuk Kotak Pencarian ( dengan debounce 300ms)
+        searchInput.addEventListener('input', (e) => {
+            debounceSearch(() => {
+                searchQuery = e.target.value;
+                applyFilters();
+            }, 300);
+        });
+
+
+        // --- UTILITAS INTERAKSI UI ---
+
+        // Fungsi Accordion Expand/Collapse
+        window.togglePrompt = function(btnElement) {
+            const content = btnElement.nextElementSibling;
+            const arrow = btnElement.querySelector('span');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.textContent = '▼';
+            } else {
+                content.classList.add('active');
+                arrow.textContent = '▲';
+            }
+        };
+
+        // === KEAMANAN: Fungsi Sanitasi XSS ===
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // === KEAMANAN: Fungsi Copy Modern (Clipboard API + Fallback) ===
+        window.copyText = async function(elementId, btnElement) {
+            const textToCopy = document.getElementById(elementId).innerText.trim();
+            const originalText = btnElement.innerHTML;
+            
+            try {
+                // Modern Clipboard API (HTTPS/localhost only)
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    // Fallback: textarea method
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    textArea.style.cssText = "position:fixed;left:-9999px;top:-9999px;opacity:0";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                
+                btnElement.textContent = "✅ Berhasil Dicopy!";
+                btnElement.classList.add('success');
+                setTimeout(() => {
+                    btnElement.innerHTML = originalText;
+                    btnElement.classList.remove('success');
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Copy failed:', err);
+                // Fallback terakhir: select text dari elemen
+                const range = document.createRange();
+                range.selectNodeContents(document.getElementById(elementId));
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                alert("Tekan Ctrl+C untuk copy");
+            }
+        };
+
+        // === DEBOUNCE UNTUK SEARCH ===
+        let searchTimeout;
+        function debounceSearch(callback, delay) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(callback, delay);
+        }
+
+        // === INISIALISASI ===
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(lyricData);
+        });
+
+    </script>
+</body>
+</html>
