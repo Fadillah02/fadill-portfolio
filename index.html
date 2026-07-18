@@ -1935,6 +1935,14 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><circle cx="11" cy="11" r="2"/><path d="m21 3-5.5 5.5"/><path d="M21 3h-6"/><path d="M21 3v6"/></svg>
                 <span class="fab-label">Upscale AI</span>
             </a>
+            <a href="lyric.html" target="_blank" class="fab-item" title="Lyric Generator">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <span class="fab-label">Lyric AI 🎵</span>
+            </a>
+            <a href="video.html" target="_blank" class="fab-item" title="Video Prompt">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M10 8l5 3-5 3Z"/></svg>
+                <span class="fab-label">Video AI 🎬</span>
+            </a>
             <a href="https://github.com/Fadillah02" target="_blank" rel="noopener noreferrer" class="fab-item" title="GitHub">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                 <span class="fab-label">GitHub</span>
@@ -1962,15 +1970,15 @@
     </div>
     <div class="vinyl-player" id="vinylPlayer">
         <div class="vp-header">
-            <h3>NOW PLAYING</h3>
+            <h3>🎧 LAGU WAJIB</h3>
             <button class="vp-close" id="vpClose">✕</button>
         </div>
         <div class="vp-vinyl-wrap">
             <div class="vp-album">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop" alt="Album" id="vpAlbumArt">
                 <div class="vp-album-info">
-                    <div class="vp-album-artist" id="vpArtist">Good_B_Music</div>
-                    <div class="vp-album-title" id="vpTitle">My Life (Main)</div>
+                    <div class="vp-album-artist" id="vpArtist">Si Kucing Tetangga</div>
+                    <div class="vp-album-title" id="vpTitle">Ngoding Sambil Galau 🐱</div>
                 </div>
             </div>
             <div class="vp-vinyl" id="vpVinyl">
@@ -2033,6 +2041,15 @@
                     <a href="#projects" class="nav-link">Projects</a>
                     <a href="#notes" class="nav-link">Notes</a>
                     <a href="#workbench" class="nav-link">Workbench</a>
+                    <div class="nav-tools">
+                        <a href="#" class="nav-link tools-toggle">TOOLS ▾</a>
+                        <div class="tools-dropdown">
+                            <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                            <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+                            <a href="video.html" class="nav-link">🎬 Video</a>
+                            <a href="upscale.html" class="nav-link">🔍 Upscale</a>
+                        </div>
+                    </div>
                 </nav>
 
                 <div class="header-right">
@@ -2042,7 +2059,7 @@
 
                     <div class="status-badge">
                         <div class="status-dot"></div>
-                        <span>status: building</span>
+                        <span>🔥 currently on fire (but it's fine)</span>
                     </div>
 
                     <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
@@ -2062,6 +2079,11 @@
         <a href="#notes" class="nav-link" onclick="closeMobile()">Notes</a>
         <a href="#workbench" class="nav-link" onclick="closeMobile()">Workbench</a>
         <a href="#connect" class="nav-link" onclick="closeMobile()">Connect</a>
+        <div style="padding:8px 16px;font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.1em">━ TOOLS ━</div>
+        <a href="Poster-fitur.html" class="nav-link" onclick="closeMobile()">🖼️ Poster</a>
+        <a href="lyric.html" class="nav-link" onclick="closeMobile()">🎵 Lyric</a>
+        <a href="video.html" class="nav-link" onclick="closeMobile()">🎬 Video</a>
+        <a href="upscale.html" class="nav-link" onclick="closeMobile()">🔍 Upscale</a>
     </div>
 
     <!-- HERO SECTION -->
@@ -2100,8 +2122,8 @@
                         <div class="info-line"><span class="info-key">Role</span> <span class="info-val">Spesialis 失業 (Unemployment Specialist)</span></div>
                         <div class="info-line"><span class="info-key">Campus</span> <span class="info-val">Universitas Nahdlatul Ulama Surabaya</span></div>
                         <div class="info-line"><span class="info-key">GitHub</span> <span class="info-val">@Fadillah02</span></div>
-                        <div class="info-line"><span class="info-key">Skill</span> <span class="info-val">弁護士（様々な意味での失業者）</span></div>
-                        <div class="info-line"><span class="info-key">Status</span> <span class="info-val typing-cursor" id="typingText">compiling motivation...</span></div>
+                        <div class="info-line"><span class="info-key">Skill</span> <span class="info-val">mengetik 4000 kata/detik tapi error mulu 😎</span></div>
+                        <div class="info-line"><span class="info-key">Status</span> <span class="info-val typing-cursor" id="typingText">currently accepting snack donations...</span></div>
                     </div>
 
                     <div class="hero-socials">
@@ -2201,8 +2223,8 @@
 
                 <div class="workbench-footer">
                     <span class="prompt">❯</span>
-                    <span class="typing-cursor">git status --all</span>
-                    <span class="hint">press enter to run</span>
+                    <span class="typing-cursor">sudo make-me-coffee --urgent</span>
+                    <span class="hint">press enter to run (jk, it won't work)</span>
                 </div>
             </div>
         </div>
@@ -2285,6 +2307,82 @@
         @media (min-width: 480px) and (max-width: 767px) {
             .hero-grid { gap: 40px; }
             .terminal-ascii { font-size: 0.55rem; }
+        }
+
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-links .nav-tools {
+            position: relative;
+        }
+        .nav-links .nav-tools::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            z-index: 1201;
+        }
+        .nav-links .tools-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .nav-links .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(12, 18, 28, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 6px;
+            min-width: 150px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 1200;
+        }
+        .nav-links .tools-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: rgba(12, 18, 28, 0.95);
+            border-left: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            transform: rotate(45deg);
+        }
+        .nav-links .nav-tools:hover .tools-dropdown,
+        .nav-links .nav-tools.show .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .nav-links .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav-links .tools-dropdown .nav-link:hover {
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
         }
     </style>
 
@@ -2541,7 +2639,7 @@
     // ═══════════════════════════════════════════════════
     // TYPEWRITER EFFECT
     // ═══════════════════════════════════════════════════
-    const roles = ["compiling motivation...", "debugging life...", "waiting for merge...", "404: job not found", "hacking the system"];
+    const roles = ["currently accepting snack donations...", "hired by my cat 🐱", "debugging my life...", "404: job not found", "compiling memes...", "produktif tapi gak jelas 📈"];
     let roleIndex = 0, charIndex = 0, isDeleting = false;
 
     function typeWriter() {
@@ -2853,6 +2951,19 @@
         resizeCanvas();
         columns = Math.floor(canvas.width / fontSize);
         drops = Array.from({ length: columns }, () => Math.random() * (canvas.height / fontSize));
+    });
+
+    // === TOOLS DROPDOWN CLICK ===
+    document.addEventListener('click', function(e) {
+        const toggle = e.target.closest('.tools-toggle');
+        const tools = e.target.closest('.nav-tools');
+        document.querySelectorAll('.nav-tools.show').forEach(function(el) {
+            if (el !== tools) el.classList.remove('show');
+        });
+        if (toggle) {
+            e.preventDefault();
+            tools.classList.toggle('show');
+        }
     });
     </script>
 </body>
