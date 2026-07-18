@@ -889,6 +889,8 @@
         .catalog-grid[data-category="Photography"] { --cat-accent: #64748b; --cat-glow: rgba(100, 116, 139, 0.2); }
         .catalog-grid[data-category="Special"] { --cat-accent: #fbbf24; --cat-glow: rgba(251, 191, 36, 0.3); }
         .catalog-grid[data-category="Hyper Realistic"] { --cat-accent: #e11d48; --cat-glow: rgba(225, 29, 72, 0.3); }
+        .catalog-grid[data-category="Photo Restore"] { --cat-accent: #f5a623; --cat-glow: rgba(245, 166, 35, 0.3); }
+        .catalog-grid[data-category="Family Add"] { --cat-accent: #f5a0b1; --cat-glow: rgba(245, 160, 177, 0.2); }
 
         .catalog-grid .card::before {
             background: linear-gradient(90deg, transparent, var(--cat-accent, var(--accent-primary)), transparent);
@@ -1138,6 +1140,14 @@
                 <button class="filter-btn" data-filter="Hyper Realistic">
                     <span>📷 Hyper Realistic</span>
                     <span class="filter-count">25</span>
+                </button>
+                <button class="filter-btn" data-filter="Photo Restore">
+                    <span>🖼️ Photo Restore</span>
+                    <span class="filter-count">10</span>
+                </button>
+                <button class="filter-btn" data-filter="Family Add">
+                    <span>👨‍👩‍👧‍👦 Family Add</span>
+                    <span class="filter-count">8</span>
                 </button>
             </div>
         </div>
@@ -10778,6 +10788,164 @@
               prompt: "Use the uploaded image as the main subject. Transform into a street portrait taken on Kodak Tri-X 400 film with Leica M6. Portrait orientation (2:3 ratio). Apply STREET FILM REALISM: authentic Tri-X grain structure, realistic B&W tonal range, natural street lighting, authentic skin texture in monochrome, realistic environmental context, genuine street atmosphere, natural candid expression, realistic clothing and personal style details. Camera: Leica M6, 35mm Summicron, Tri-X pushed to 800. Must look like a real street photograph on film. 300 DPI. No text, no logo.",
               negativePrompt: "AI generated, digital, clean, illustration,CGI, artificial, perfect, studio, modern, color",
               ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+
+            // ==========================================================================
+            // 🖼️ PHOTO RESTORE — Restorasi Foto Keluarga Jadi Realistik
+            // ==========================================================================
+            { id: 3001, collection: "Photo Restore", title: "🖼️ Old Family Portrait Restore", badge: "Premium", difficulty: 4,
+              desc: "Restorasi foto keluarga lawas yang buram, pudar, atau rusak jadi jernih & realistik seperti diambil kamera modern.",
+              colors: ["Natural Skin", "Warm Tone", "HD Clear"],
+              prompt: "Use the uploaded image as the main subject. Restore and enhance this old family photo to look like it was taken with a modern digital camera. Portrait orientation (2:3 ratio). Apply PHOTO RESTORE: remove dust, scratches, and fading. Enhance natural skin textures, sharpen facial features authentically. Output must look like a real photograph taken with a Sony A7 IV camera with natural lighting. 300 DPI, photorealistic quality. No text, no watermark.",
+              negativePrompt: "AI generated, cartoon, painting, illustration, airbrushed, overprocessed, plastic skin, makeup, fake",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3002, collection: "Photo Restore", title: "🖼️ Blur to HD Realistic", badge: "", difficulty: 5,
+              desc: "Ubah foto blur/low quality jadi HD realistik. Cocok untuk foto CCTV, foto jadul, atau screenshot buram.",
+              suitableFor: ["Blur Photo", "Low Quality", "CCTV", "Screenshot"],
+              colors: ["HD Clear", "Natural Sharp", "Real Texture"],
+              prompt: "Use the uploaded image as the main subject. Remove blur and enhance to HD quality. Restore details and sharpness naturally. 300 DPI.",
+              negativePrompt: "AI generated, painting, cartoon, illustration, fake detail, oversharpened",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3003, collection: "Photo Restore", title: "🖼️ Damaged Photo Repair", badge: "Trending", difficulty: 5,
+              desc: "Perbaiki foto sobek, kusam, atau bernoda air. Hasil akhir bersih & realistik tanpa mengubah kenangan asli.",
+              suitableFor: ["Damaged Photo", "Torn", "Faded", "Water Stain"],
+              colors: ["Restored", "Clean", "Natural"],
+              prompt: "Use the uploaded image as the main subject. Repair and restore this damaged photo. Remove tears, stains, and fading naturally. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, fake restoration, overprocessed",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3004, collection: "Photo Restore", title: "🖼️ B&W to Color Realistic", badge: "Best Seller", difficulty: 4,
+              desc: "Warnai foto hitam putih jadi natural & realistik. Setiap tone kulit, pakaian, dan background diwarnai akurat.",
+              suitableFor: ["B&W Photo", "Colorize", "Vintage", "Heritage"],
+              colors: ["Natural Color", "Skin Tone", "Era Accurate"],
+              prompt: "Use the uploaded image as the main subject. Colorize this black and white photo with accurate, natural colors. Portrait orientation. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, inaccurate colors, oversaturated",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 3005, collection: "Photo Restore", title: "🖼️ 90s Camera Realistic", badge: "", difficulty: 3,
+              desc: "Bikin foto jadul 90-an keliatan real kayak diambil kamera modern. Pertahankan momen nostalgia tapi kualitas HD.",
+              suitableFor: ["90s Photo", "Nostalgia", "Retro", "Modern HD"],
+              colors: ["Retro Tone", "HD Clear", "Warm Memory"],
+              prompt: "Use the uploaded image as the main subject. Enhance this 90s-style photo to modern HD quality while preserving its nostalgic feel. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, fake nostalgia, overprocessed",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+
+            // ==========================================================================
+            // 🖼️ PHOTO RESTORE — Landscape (3:2) orientations
+            // ==========================================================================
+            { id: 3006, collection: "Photo Restore", title: "🖼️ Panorama Old Photo Restore", badge: "Premium", difficulty: 5,
+              desc: "Restorasi foto panorama/landscape lama jadi HD. Cocok untuk pemandangan, foto grup lebar, kenangan liburan.",
+              suitableFor: ["Panorama", "Landscape", "Wide Group", "Vacation"],
+              colors: ["Sky Blue", "Nature Green", "HD Wide"],
+              prompt: "Use the uploaded image as the main subject. Restore this panoramic/landscape photo to HD quality. Landscape orientation (3:2 ratio). 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, fake detail, oversharpened",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3007, collection: "Photo Restore", title: "🖼️ Wide Group Photo Repair", badge: "Best Seller", difficulty: 5,
+              desc: "Perbaiki foto grup lebar yang blur/rusak. Setiap wajah dijernihkan, pencahayaan disamakan.",
+              suitableFor: ["Wide Group", "Family Reunion", "Class Photo", "Team"],
+              colors: ["Group Tone", "Even Light", "HD Clear"],
+              prompt: "Use the uploaded image as the main subject. Restore this wide group photo, enhancing each face clearly. Landscape orientation (3:2). 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, fake faces, overprocessed",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3008, collection: "Photo Restore", title: "🖼️ Vintage Landscape Colorize", badge: "Trending", difficulty: 4,
+              desc: "Warnai foto B&W landscape/pemandangan vintage jadi natural. Pohon, langit, air — semua akurat.",
+              suitableFor: ["Vintage Landscape", "B&W Nature", "Historical"],
+              colors: ["Natural Sky", "Earthy Tone", "Vintage Charm"],
+              prompt: "Use the uploaded image as the main subject. Colorize this vintage B&W landscape with natural, era-appropriate colors. Landscape orientation. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, fake colors, oversaturated",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3009, collection: "Photo Restore", title: "🖼️ Cinematic Wide Restore", badge: "Premium", difficulty: 5,
+              desc: "Restore foto lebar cinematic (21:9 crop) jadi realistik. Aspect ratio lebar, detail tepi tajam.",
+              suitableFor: ["Cinematic", "Wide Screen", "Letterbox", "Epic"],
+              colors: ["Cinematic Tone", "Wide Dynamic", "Film Look"],
+              prompt: "Use the uploaded image as the main subject. Restore this cinematic wide photo to HD quality. Landscape orientation. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, fake cinematic, oversharpened",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 3010, collection: "Photo Restore", title: "🖼️ Architecture Wide Restore", badge: "", difficulty: 4,
+              desc: "Restorasi foto arsitektur/bangunan lebar. Garis lurus, perspektif akurat, tekstur bata/beton real.",
+              suitableFor: ["Architecture", "Building", "Cityscape", "Real Estate"],
+              colors: ["Concrete Grey", "Sky Blue", "Clean Line"],
+              prompt: "Use the uploaded image as the main subject. Restore this architectural wide photo with accurate perspective and sharp details. 300 DPI.",
+              negativePrompt: "AI generated, cartoon, painting, distorted perspective, fake texture",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+
+            // ==========================================================================
+            // 👨‍👩‍👧‍👦 FAMILY ADD — Tambah Orang ke Foto Keluarga
+            // ==========================================================================
+            { id: 4001, collection: "Family Add", title: "👨‍👩‍👧‍👦 Add Person to Family Photo", badge: "Best Seller", difficulty: 5,
+              desc: "Masukkan wajah seseorang ke dalam foto keluarga dengan pencahayaan & posisi yang natural. Hasil real kayak foto beneran.",
+              colors: ["Natural Blend", "Consistent Lighting", "Real Skin"],
+              prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing family group photo. Portrait orientation (2:3 ratio). Apply FAMILY ADD: perfectly match the lighting, color grading, and perspective of the target family photo. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite, glitch, color mismatch",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 4002, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wedding Family Add", badge: "Premium", difficulty: 5,
+              desc: "Tambah anggota keluarga ke foto pernikahan yang sudah ada. Cocok untuk melengkapi foto keluarga besar.",
+              suitableFor: ["Wedding Photo", "Family Addition", "Group Edit"],
+              colors: ["Elegant Tone", "Wedding Gold", "Natural Warm"],
+              prompt: "Use the uploaded image as the main subject. Add this person to an existing wedding family photo naturally. Portrait orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+            { id: 4003, collection: "Family Add", title: "👨‍👩‍👧‍👦 Missing Family Member", badge: "Trending", difficulty: 4,
+              desc: "Lengkapi foto keluarga dengan anggota yang tidak sempat hadir saat pemotretan. Wajah konsisten & realistik.",
+              suitableFor: ["Missing Member", "Family Complete", "Group Add"],
+              colors: ["Natural Blend", "Consistent Tone", "Realistic"],
+              prompt: "Use the uploaded image as the main subject. Add this missing family member to the group photo naturally. Portrait orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
+            },
+
+            // ==========================================================================
+            // 👨‍👩‍👧‍👦 FAMILY ADD — Landscape (3:2) orientations
+            // ==========================================================================
+            { id: 4004, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wide Family Reunion Add", badge: "Best Seller", difficulty: 5,
+              desc: "Tambah orang ke foto reuni keluarga lebar. Posisi alami, pencahayaan konsisten di frame panoramik.",
+              suitableFor: ["Family Reunion", "Wide Group", "Panorama", "Generations"],
+              colors: ["Group Warm", "Natural Light", "Wide Blend"],
+              prompt: "Use the uploaded image as the main subject. Add this person to a wide family reunion photo naturally. Landscape orientation (3:2). 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4005, collection: "Family Add", title: "👨‍👩‍👧‍👦 Vacation Panorama Add", badge: "Premium", difficulty: 5,
+              desc: "Masukkan orang ke foto liburan panorama (pantai, gunung, kota). Background epic, pencahayaan matahari match.",
+              suitableFor: ["Vacation", "Travel", "Beach", "Mountain", "Cityscape"],
+              colors: ["Vacation Warm", "Sky Blue", "Nature Tone"],
+              prompt: "Use the uploaded image as the main subject. Add this person to a vacation panorama photo naturally. Landscape orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4006, collection: "Family Add", title: "👨‍👩‍👧‍👦 Generations Wide Portrait", badge: "Trending", difficulty: 4,
+              desc: "Foto 3-4 generasi lebar. Tambah kakek/nenek/cucu yg tdk hadir. Wajah konsisten, pose natural.",
+              suitableFor: ["Generations", "Legacy", "Heritage", "Family Tree"],
+              colors: ["Heritage Warm", "Natural Skin", "Timeless"],
+              prompt: "Use the uploaded image as the main subject. Add this person to a multi-generational wide portrait. Landscape orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4007, collection: "Family Add", title: "👨‍👩‍👧‍👦 Holiday Dinner Wide Add", badge: "Premium", difficulty: 5,
+              desc: "Tambah orang ke foto makan malam natal/lebaran lebar. Meja panjang, cerah hangat, interaksi natural.",
+              suitableFor: ["Holiday Dinner", "Christmas", "Eid", "Thanksgiving", "Feast"],
+              colors: ["Warm Feast", "Golden Light", "Happy Tone"],
+              prompt: "Use the uploaded image as the main subject. Add this person to a holiday dinner wide photo naturally. Landscape orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
+            },
+            { id: 4008, collection: "Family Add", title: "👨‍👩‍👧‍👦 Outdoor Picnic Wide Add", badge: "Best Seller", difficulty: 4,
+              desc: "Masukkan orang ke foto picnic outdoor lebar. Rumput, langit, bayangan matahari — semuanya match.",
+              suitableFor: ["Picnic", "Park", "Outdoor", "Casual", "Weekend"],
+              colors: ["Grass Green", "Sky Blue", "Sunny Warm"],
+              prompt: "Use the uploaded image as the main subject. Add this person to an outdoor picnic wide photo naturally. Landscape orientation. 300 DPI.",
+              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite",
+              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
             }
         ];
 
