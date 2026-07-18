@@ -1917,6 +1917,19 @@
             renderCards(lyricData);
         });
 
+        // === TOOLS DROPDOWN CLICK ===
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.tools-toggle');
+            const tools = e.target.closest('.nav-tools');
+            document.querySelectorAll('.nav-tools.show').forEach(function(el) {
+                if (el !== tools) el.classList.remove('show');
+            });
+            if (toggle) {
+                e.preventDefault();
+                tools.classList.toggle('show');
+            }
+        });
+
     </script>
 </body>
 </html>
