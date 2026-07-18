@@ -65,6 +65,59 @@
             line-height: 1.6;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 24px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+        }
+        .top-nav .nav-link:hover {
+            color: var(--text-main);
+            background: var(--bg-hover);
+        }
+        .top-nav .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(92,200,232,0.12);
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 0 12px; gap: 12px; }
+            .top-nav .nav-link { padding: 6px 10px; font-size: 0.8rem; }
         }
 
         /* Custom Scrollbar */
@@ -93,7 +146,8 @@
             display: flex;
             flex-direction: column;
             position: fixed;
-            height: 100vh;
+            top: 52px;
+            height: calc(100vh - 52px);
             overflow-y: auto;
             z-index: 100;
         }
@@ -248,6 +302,7 @@
         .main-content {
             flex: 1;
             margin-left: 300px;
+            margin-top: 52px;
             padding: 36px;
             max-width: 1600px;
         }
@@ -646,6 +701,7 @@
             }
             .main-content {
                 margin-left: 260px;
+                margin-top: 52px;
                 padding: 28px;
             }
         }
@@ -653,6 +709,7 @@
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
+                padding-top: 52px;
             }
             .sidebar {
                 position: static;
@@ -666,6 +723,7 @@
             }
             .main-content {
                 margin-left: 0;
+                margin-top: 0;
                 padding: 20px;
             }
             .catalog-grid {
@@ -891,6 +949,16 @@
 </head>
 <body>
 
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+            <a href="lyric.html" class="nav-link active">🎵 Lyric</a>
+            <a href="video.html" class="nav-link">🎬 Video</a>
+        </div>
+    </nav>
+
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="brand">🎵 Lyric Pro</div>
@@ -948,11 +1016,6 @@
                         <span class="filter-count">10</span>
                     </button>
             </div>
-        </div>
-        <div class="nav-links" style="margin-top:auto; border-top:2px solid #2a2a3a; padding-top:16px; display:flex; flex-direction:column; gap:4px;">
-            <a href="Poster-fitur.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🖼️ AI Poster</a>
-            <a href="lyric.html" class="nav-link active" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(92,200,232,0.18),rgba(126,216,255,0.12));border:2px solid var(--accent-primary);color:#5cc8e8;border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎵 Lyric Generator</a>
-            <a href="video.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎬 Video Prompt</a>
         </div>
     </aside>
 

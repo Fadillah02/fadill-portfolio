@@ -12,35 +12,35 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            --bg-base: #0d0d14;
-            --bg-card: #161622;
-            --bg-card-solid: #1e1e2e;
-            --bg-hover: #1f1f32;
-            --bg-glass: rgba(22, 22, 34, 0.9);
-            --text-main: #f0f0f5;
-            --text-muted: #8b8da8;
-            --text-dim: #5a5c73;
-            --accent-primary: #5cc8e8;
-            --accent-secondary: #7ed8ff;
-            --accent-glow: rgba(92, 200, 232, 0.25);
-            --accent-cyan: #4ac8d8;
-            --accent-emerald: #5ec9a0;
-            --accent-rose: #f49cb3;
-            --accent-amber: #f5a623;
-            --badge-premium: linear-gradient(135deg, #f5a623, #ff8c42);
-            --badge-bestseller: linear-gradient(135deg, #5cc8e8, #7ed8ff);
-            --badge-trending: linear-gradient(135deg, #f49cb3, #f7b8c7);
-            --border-color: rgba(255, 255, 255, 0.06);
-            --border-glow: rgba(92, 200, 232, 0.35);
+            --bg-base: #0a0a0f;
+            --bg-card: rgba(15, 15, 25, 0.8);
+            --bg-card-solid: #0f0f1a;
+            --bg-hover: rgba(25, 25, 40, 0.9);
+            --bg-glass: rgba(15, 15, 30, 0.6);
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --text-dim: #475569;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --accent-cyan: #22d3ee;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --badge-premium: linear-gradient(135deg, #f59e0b, #f97316);
+            --badge-bestseller: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --badge-trending: linear-gradient(135deg, #f43f5e, #ec4899);
+            --border-color: rgba(99, 102, 241, 0.15);
+            --border-glow: rgba(99, 102, 241, 0.3);
             --font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
-            --radius-sm: 14px;
-            --radius-md: 18px;
-            --radius-lg: 22px;
-            --radius-xl: 30px;
-            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25);
-            --shadow-lg: 0 6px 16px rgba(0,0,0,0.4), 0 12px 36px rgba(0,0,0,0.3);
-            --shadow-glow: 0 0 24px rgba(92, 200, 232, 0.18);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-fast: all 0.15s ease;
         }
@@ -58,26 +58,79 @@
         body {
             background: var(--bg-base);
             background-image: 
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(92, 200, 232, 0.08), transparent),
-                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(245, 166, 35, 0.05), transparent);
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.05), transparent);
             color: var(--text-main);
             font-family: var(--font-family);
             line-height: 1.6;
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 24px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+        }
+        .top-nav .nav-link:hover {
+            color: var(--text-main);
+            background: var(--bg-hover);
+        }
+        .top-nav .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(92,200,232,0.12);
+        }
+        @media (max-width: 768px) {
+            .top-nav { padding: 0 12px; gap: 12px; }
+            .top-nav .nav-link { padding: 6px 10px; font-size: 0.8rem; }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: var(--accent-primary);
-            border-radius: 20px;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-secondary);
@@ -86,14 +139,16 @@
         /* ===== SIDEBAR ===== */
         .sidebar {
             width: 300px;
-            background: #11111a;
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
-            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
             padding: 28px 20px;
             display: flex;
             flex-direction: column;
             position: fixed;
-            height: 100vh;
+            top: 52px;
+            height: calc(100vh - 52px);
             overflow-y: auto;
             z-index: 100;
         }
@@ -102,7 +157,7 @@
             font-size: 1.6rem;
             font-weight: 800;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #5cc8e8, #7ed8ff, #f5a623);
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -141,8 +196,8 @@
         .search-input {
             width: 100%;
             padding: 14px 16px 14px 42px;
-            background: #1a1a28;
-            border: 2px solid transparent;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: var(--radius-md);
             font-size: 0.9rem;
@@ -157,7 +212,7 @@
 
         .search-input:focus {
             border-color: var(--accent-primary);
-            box-shadow: 0 0 0 4px rgba(92, 200, 232, 0.15);
+            box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-glow);
         }
 
         .filter-section {
@@ -176,7 +231,7 @@
         .filter-group {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
         .filter-btn {
@@ -185,11 +240,11 @@
             gap: 10px;
             width: 100%;
             text-align: left;
-            padding: 11px 14px;
+            padding: 12px 14px;
             background: transparent;
-            border: 2px solid transparent;
+            border: 1px solid transparent;
             color: var(--text-muted);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             font-size: 0.88rem;
             font-family: var(--font-family);
@@ -212,18 +267,16 @@
         }
 
         .filter-btn:hover {
-            background: #1a1a28;
+            background: var(--bg-hover);
             color: var(--text-main);
-            border-color: #2a2a3a;
-            transform: translateX(4px);
+            border-color: var(--border-color);
         }
 
         .filter-btn.active {
-            background: linear-gradient(135deg, rgba(92, 200, 232, 0.18), rgba(126, 216, 255, 0.12));
-            color: #5cc8e8;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.1));
+            color: var(--text-main);
             border-color: var(--accent-primary);
-            box-shadow: 0 2px 8px rgba(92, 200, 232, 0.2);
-            transform: translateX(4px);
+            box-shadow: var(--shadow-glow);
         }
 
         .filter-btn.active::before {
@@ -233,7 +286,7 @@
         .filter-count {
             margin-left: auto;
             font-size: 0.7rem;
-            background: #1a1a28;
+            background: var(--bg-card-solid);
             padding: 2px 8px;
             border-radius: 10px;
             color: var(--text-muted);
@@ -241,13 +294,14 @@
 
         .filter-btn.active .filter-count {
             background: var(--accent-primary);
-            color: #0d1b22;
+            color: white;
         }
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
             flex: 1;
             margin-left: 300px;
+            margin-top: 52px;
             padding: 36px;
             max-width: 1600px;
         }
@@ -267,7 +321,9 @@
             font-size: 2.2rem;
             font-weight: 800;
             letter-spacing: -1px;
-            color: #f0f0f5;
+            background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .header-subtitle {
@@ -276,14 +332,14 @@
         }
 
         .stats-badge {
-            background: #161622;
-            box-shadow: var(--shadow-sm);
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             padding: 10px 20px;
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
-            color: #5cc8e8;
-            border: 2px solid #2a3a4a;
+            color: var(--accent-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.2);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -292,14 +348,14 @@
         .stats-dot {
             width: 8px;
             height: 8px;
-            background: #5cc8e8;
+            background: var(--accent-cyan);
             border-radius: 50%;
             animation: pulse 2s ease infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(92, 200, 232, 0.4); }
-            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(92, 200, 232, 0); }
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
+            50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
         }
 
         /* ===== CATALOG GRID ===== */
@@ -307,22 +363,18 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 28px;
-            transition: opacity 0.3s ease;
-        }
-        .catalog-grid.fade-transition {
-            opacity: 0;
         }
 
         .card {
-            background: #161622;
-            border: 2px solid #242436;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             transition: var(--transition);
             position: relative;
-            box-shadow: var(--shadow-sm);
         }
 
         .card::before {
@@ -331,17 +383,16 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 1px;
             background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
             opacity: 0;
             transition: var(--transition);
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
 
         .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: var(--shadow-md);
-            border-color: var(--accent-primary);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            border-color: var(--border-glow);
         }
 
         .card:hover::before {
@@ -350,11 +401,11 @@
 
         .card-preview {
             height: 200px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #1f1f32);
+            background: linear-gradient(135deg, #0f0f1a, #1a1a2e, #16213e);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 2px solid #242436;
+            border-bottom: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
         }
@@ -363,23 +414,23 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(92, 200, 232, 0.08), transparent 70%);
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05), transparent 70%);
         }
 
         .mockup-text {
             font-family: 'SF Mono', 'Fira Code', monospace;
             font-size: 0.65rem;
-            color: #5a5c73;
+            color: var(--text-dim);
             margin: 0;
             white-space: pre;
             line-height: 1.3;
-            opacity: 0.7;
+            opacity: 0.6;
             transition: var(--transition);
         }
 
         .card:hover .mockup-text {
             opacity: 1;
-            color: #8b8da8;
+            color: var(--text-muted);
         }
 
         .badge-container {
@@ -398,24 +449,25 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
+            backdrop-filter: blur(8px);
         }
 
         .badge.bestseller {
             background: var(--badge-bestseller);
             color: white;
-            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.4);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         .badge.trending {
             background: var(--badge-trending);
             color: white;
-            box-shadow: 0 4px 12px rgba(245, 160, 177, 0.4);
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.4);
         }
 
         .badge.premium {
             background: var(--badge-premium);
-            color: white;
-            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+            color: #000;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
 
         .card-content {
@@ -431,7 +483,6 @@
             margin-bottom: 10px;
             letter-spacing: -0.3px;
             line-height: 1.3;
-            color: #f0f0f5;
         }
 
         .card-meta {
@@ -444,14 +495,14 @@
         }
 
         .difficulty {
-            color: #f5a623;
+            color: var(--accent-amber);
             letter-spacing: 1px;
         }
 
         .meta-divider {
             width: 1px;
             height: 14px;
-            background: #2a2a3e;
+            background: var(--border-color);
         }
 
         .card-desc {
@@ -470,25 +521,25 @@
         }
 
         .tag {
-            background: #1a2a3a;
+            background: rgba(99, 102, 241, 0.1);
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.72rem;
             font-weight: 500;
-            color: #5cc8e8;
-            border: 1.5px solid #2a4a5a;
+            color: var(--accent-primary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
             transition: var(--transition-fast);
         }
 
         .tag:hover {
-            background: #2a4a5a;
-            border-color: #5cc8e8;
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--accent-primary);
         }
 
         .prompt-section {
-            background: #1a1a28;
+            background: var(--bg-card-solid);
             border-radius: var(--radius-md);
-            border: 2px solid #2a2a3e;
+            border: 1px solid var(--border-color);
             margin-top: auto;
             overflow: hidden;
         }
@@ -511,7 +562,7 @@
         }
 
         .prompt-toggle:hover {
-            background: #1f1f32;
+            background: var(--bg-hover);
         }
 
         .prompt-toggle span {
@@ -522,7 +573,7 @@
         .prompt-content {
             display: none;
             padding: 0 16px 16px;
-            border-top: 2px solid #2a2a3e;
+            border-top: 1px solid var(--border-color);
         }
 
         .prompt-content.active {
@@ -536,23 +587,23 @@
         }
 
         .prompt-box {
-            background: #0d1b2a;
+            background: #050508;
             padding: 14px;
             border-radius: var(--radius-sm);
             font-family: 'SF Mono', 'Fira Code', monospace;
             font-size: 0.78rem;
-            color: #5ec9a0;
+            color: var(--accent-emerald);
             margin-top: 12px;
             max-height: 120px;
             overflow-y: auto;
             word-wrap: break-word;
-            border: 2px solid #1a3a4a;
+            border: 1px solid rgba(16, 185, 129, 0.1);
             line-height: 1.6;
         }
 
         .prompt-box.negative {
-            color: #f5a0b3;
-            border-color: #3a1a2a;
+            color: var(--accent-rose);
+            border-color: rgba(244, 63, 94, 0.1);
         }
 
         .prompt-label {
@@ -568,10 +619,10 @@
         .btn-copy {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #7ec8e3, #a8d8ff);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             color: white;
             border: none;
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             margin-top: 12px;
             cursor: pointer;
             font-weight: 600;
@@ -584,14 +635,13 @@
             gap: 8px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(126, 200, 227, 0.3);
         }
 
         .btn-copy::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
             transform: translateX(-100%);
             transition: var(--transition);
         }
@@ -601,12 +651,12 @@
         }
 
         .btn-copy:hover {
-            box-shadow: 0 6px 20px rgba(126, 200, 227, 0.4);
+            box-shadow: 0 8px 24px var(--accent-glow);
             transform: translateY(-2px);
         }
 
         .btn-copy.success {
-            background: linear-gradient(135deg, #6bc5a0, #5bb894);
+            background: linear-gradient(135deg, var(--accent-emerald), #059669);
         }
 
         .tech-specs {
@@ -617,7 +667,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             padding-top: 12px;
-            border-top: 2px solid #2a2a3a;
+            border-top: 1px solid var(--border-color);
         }
 
         .tech-specs div {
@@ -642,10 +692,10 @@
         @media (max-width: 1024px) {
             .sidebar {
                 width: 260px;
-                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
             }
             .main-content {
                 margin-left: 260px;
+                margin-top: 52px;
                 padding: 28px;
             }
         }
@@ -653,19 +703,20 @@
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
+                padding-top: 52px;
             }
             .sidebar {
                 position: static;
                 width: 100%;
                 height: auto;
                 border-right: none;
-                border-bottom: 2px solid #2a2a3a;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                border-bottom: 1px solid var(--border-color);
                 padding: 20px;
                 max-height: none;
             }
             .main-content {
                 margin-left: 0;
+                margin-top: 0;
                 padding: 20px;
             }
             .catalog-grid {
@@ -725,10 +776,10 @@
         .layout-btn {
             width: 40px;
             height: 40px;
-            border: 2px solid #2a2a3a;
-            background: #1a1a28;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-solid);
             color: var(--text-muted);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -745,23 +796,21 @@
         .layout-btn.active {
             background: var(--accent-primary);
             border-color: var(--accent-primary);
-            color: #0d1b22;
+            color: white;
         }
 
         /* ===== CATEGORY THEMES ===== */
-        .catalog-grid[data-category="Movie"] { --cat-accent: #f5a0b1; --cat-glow: rgba(245, 160, 177, 0.2); }
-        .catalog-grid[data-category="Anime"] { --cat-accent: #f7b8c7; --cat-glow: rgba(247, 184, 199, 0.2); }
-        .catalog-grid[data-category="Japanese"] { --cat-accent: #e88a8a; --cat-glow: rgba(232, 138, 138, 0.2); }
-        .catalog-grid[data-category="Fantasy"] { --cat-accent: #c4a8e0; --cat-glow: rgba(196, 168, 224, 0.2); }
-        .catalog-grid[data-category="Sci-Fi"] { --cat-accent: #5cc8e8; --cat-glow: rgba(92, 200, 232, 0.2); }
-        .catalog-grid[data-category="Luxury"] { --cat-accent: #f5a623; --cat-glow: rgba(245, 166, 35, 0.2); }
-        .catalog-grid[data-category="Art"] { --cat-accent: #6bc5a0; --cat-glow: rgba(107, 197, 160, 0.2); }
-        .catalog-grid[data-category="Trending"] { --cat-accent: #f5a623; --cat-glow: rgba(245, 166, 35, 0.2); }
-        .catalog-grid[data-category="Photography"] { --cat-accent: #8b8da8; --cat-glow: rgba(139, 141, 168, 0.2); }
-        .catalog-grid[data-category="Special"] { --cat-accent: #f5a623; --cat-glow: rgba(245, 166, 35, 0.3); }
-        .catalog-grid[data-category="Hyper Realistic"] { --cat-accent: #f5a0b1; --cat-glow: rgba(245, 160, 177, 0.3); }
-        .catalog-grid[data-category="Photo Restore"] { --cat-accent: #f5a623; --cat-glow: rgba(245, 166, 35, 0.3); }
-        .catalog-grid[data-category="Family Add"] { --cat-accent: #f5a0b1; --cat-glow: rgba(245, 160, 177, 0.2); }
+        .catalog-grid[data-category="Movie"] { --cat-accent: #f43f5e; --cat-glow: rgba(244, 63, 94, 0.2); }
+        .catalog-grid[data-category="Anime"] { --cat-accent: #ec4899; --cat-glow: rgba(236, 72, 153, 0.2); }
+        .catalog-grid[data-category="Japanese"] { --cat-accent: #ef4444; --cat-glow: rgba(239, 68, 68, 0.2); }
+        .catalog-grid[data-category="Fantasy"] { --cat-accent: #8b5cf6; --cat-glow: rgba(139, 92, 246, 0.2); }
+        .catalog-grid[data-category="Sci-Fi"] { --cat-accent: #06b6d4; --cat-glow: rgba(6, 182, 212, 0.2); }
+        .catalog-grid[data-category="Luxury"] { --cat-accent: #f59e0b; --cat-glow: rgba(245, 158, 11, 0.2); }
+        .catalog-grid[data-category="Art"] { --cat-accent: #10b981; --cat-glow: rgba(16, 185, 129, 0.2); }
+        .catalog-grid[data-category="Trending"] { --cat-accent: #f97316; --cat-glow: rgba(249, 115, 22, 0.2); }
+        .catalog-grid[data-category="Photography"] { --cat-accent: #64748b; --cat-glow: rgba(100, 116, 139, 0.2); }
+        .catalog-grid[data-category="Special"] { --cat-accent: #fbbf24; --cat-glow: rgba(251, 191, 36, 0.3); }
+        .catalog-grid[data-category="Hyper Realistic"] { --cat-accent: #e11d48; --cat-glow: rgba(225, 29, 72, 0.3); }
 
         .catalog-grid .card::before {
             background: linear-gradient(90deg, transparent, var(--cat-accent, var(--accent-primary)), transparent);
@@ -769,7 +818,7 @@
 
         .catalog-grid .card:hover {
             border-color: var(--cat-accent, var(--border-glow));
-            box-shadow: var(--shadow-md), 0 4px 20px var(--cat-glow, var(--accent-glow));
+            box-shadow: var(--shadow-lg), 0 0 30px var(--cat-glow, var(--accent-glow));
         }
 
         .catalog-grid .card .badge.bestseller {
@@ -792,7 +841,7 @@
             height: 200px;
             min-width: 200px;
             border-bottom: none;
-            border-right: 2px solid #2a2a3a;
+            border-right: 1px solid var(--border-color);
         }
 
         .catalog-grid.horizontal .card-content {
@@ -827,8 +876,8 @@
             align-items: center;
             margin-top: 16px;
             padding: 12px 16px;
-            background: #1a1a28;
-            border: 2px solid #2a2a3a;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
         }
 
@@ -844,10 +893,10 @@
 
         .orientation-btn {
             padding: 8px 16px;
-            border: 2px solid #2a2a3a;
-            background: #1a1a28;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-solid);
             color: var(--text-muted);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 500;
@@ -865,7 +914,7 @@
         .orientation-btn.active {
             background: var(--accent-primary);
             border-color: var(--accent-primary);
-            color: #0d1b22;
+            color: white;
         }
 
         .orientation-btn .count {
@@ -876,7 +925,7 @@
         }
 
         .orientation-btn:not(.active) .count {
-            background: #1a1a28;
+            background: var(--bg-tertiary);
         }
 
         /* ===== PHOTOGRAPHY SUB-FILTERS ===== */
@@ -896,7 +945,7 @@
             font-size: 0.75rem !important;
             padding: 4px 10px !important;
             width: auto !important;
-            border-radius: 14px !important;
+            border-radius: 12px !important;
         }
 
         .sub-filter:hover {
@@ -922,6 +971,16 @@
 </head>
 <body>
 
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <a href="Poster-fitur.html" class="nav-link active">🖼️ Poster</a>
+            <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+            <a href="video.html" class="nav-link">🎬 Video</a>
+        </div>
+    </nav>
+
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="brand">PosterAI Pro</div>
@@ -936,7 +995,7 @@
             <div class="filter-group">
                 <button class="filter-btn active" data-filter="all">
                     <span>All Styles</span>
-                    <span class="filter-count">487</span>
+                    <span class="filter-count">469</span>
                 </button>
                 <button class="filter-btn" data-filter="Special">
                     <span>Special Top 15</span>
@@ -996,20 +1055,7 @@
                     <span>📷 Hyper Realistic</span>
                     <span class="filter-count">25</span>
                 </button>
-                <button class="filter-btn" data-filter="Photo Restore">
-                    <span>🖼️ Photo Restore</span>
-                    <span class="filter-count">10</span>
-                </button>
-                <button class="filter-btn" data-filter="Family Add">
-                    <span>👨‍👩‍👧‍👦 Family Add</span>
-                    <span class="filter-count">8</span>
-                </button>
             </div>
-        </div>
-        <div class="nav-links" style="margin-top:auto;border-top:2px solid #2a2a3a;padding-top:16px;display:flex;flex-direction:column;gap:4px;">
-            <a href="Poster-fitur.html" class="nav-link active" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(92,200,232,0.18),rgba(126,216,255,0.12));border:2px solid var(--accent-primary);color:#5cc8e8;border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🖼️ AI Poster</a>
-            <a href="lyric.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎵 Lyric Generator</a>
-            <a href="video.html" class="nav-link" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:transparent;border:2px solid transparent;color:var(--text-muted);border-radius:var(--radius-md);text-decoration:none;font-size:0.88rem;font-weight:500;transition:all 0.15s ease;">🎬 Video Prompt</a>
         </div>
     </aside>
 
@@ -1038,12 +1084,11 @@
             </div>
         </div>
 
-<div id="catalogGrid" class="catalog-grid vertical">
+        <div id="catalogGrid" class="catalog-grid vertical">
             <div class="loading-state">
-<img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif">
-                <p>Memuat style...</p>
+                <img src="download.gif" alt="Loading..." class="loading-gif">
+                <p>Memuat 914 style...</p>
             </div>
-        </div>
         </div>
     </main>
 
@@ -10649,162 +10694,6 @@
               prompt: "Use the uploaded image as the main subject. Transform into a street portrait taken on Kodak Tri-X 400 film with Leica M6. Portrait orientation (2:3 ratio). Apply STREET FILM REALISM: authentic Tri-X grain structure, realistic B&W tonal range, natural street lighting, authentic skin texture in monochrome, realistic environmental context, genuine street atmosphere, natural candid expression, realistic clothing and personal style details. Camera: Leica M6, 35mm Summicron, Tri-X pushed to 800. Must look like a real street photograph on film. 300 DPI. No text, no logo.",
               negativePrompt: "AI generated, digital, clean, illustration,CGI, artificial, perfect, studio, modern, color",
               ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            // ==========================================================================
-            // 🖼️ PHOTO RESTORE — Restorasi Foto Keluarga Jadi Realistik
-            // ==========================================================================
-            { id: 3001, collection: "Photo Restore", title: "🖼️ Old Family Portrait Restore", badge: "Premium", difficulty: 4,
-              desc: "Restorasi foto keluarga lawas yang buram, pudar, atau rusak jadi jernih & realistik seperti diambil kamera modern.",
-              suitableFor: ["Old Photos", "Family Restoration", "Vintage"],
-              colors: ["Natural Skin", "Warm Tone", "HD Clear"],
-              prompt: "Use the uploaded image as the main subject. Restore and enhance this old family photo to look like it was taken with a modern digital camera. Portrait orientation (2:3 ratio). Apply PHOTO RESTORE: remove dust, scratches, and fading. Enhance natural skin textures, sharpen facial features authentically. Output must look like a real photograph taken with a Sony A7 IV camera with natural lighting. Do NOT change the original faces or expressions, only enhance clarity and realism. 300 DPI, photorealistic quality. No text, no watermark.",
-              negativePrompt: "AI generated, cartoon, painting, illustration, airbrushed, overprocessed, plastic skin, makeup, fake",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 3002, collection: "Photo Restore", title: "🖼️ Blur to HD Realistic", badge: "", difficulty: 5,
-              desc: "Ubah foto blur/low quality jadi高清 (HD) realistik. Cocok untuk foto CCTV, foto jadul, atau screenshot buram.",
-              suitableFor: ["Blur Photo", "Low Quality", "CCTV", "Screenshot"],
-              colors: ["Sharp Detail", "Natural Color", "HD Real"],
-              prompt: "Use the uploaded image as the main subject. Upscale and enhance this blurry or low-resolution photo to ultra-realistic HD quality. Portrait orientation (2:3 ratio). Apply BLUR TO HD: remove pixelation, add realistic detail to skin, eyes, and hair. Keep the original face structure identical. Output must look like a genuine high-resolution photograph. Natural skin texture, realistic lighting. 300 DPI, 8K clarity, print-ready. No text, no watermark.",
-              negativePrompt: "painting, illustration, cartoon, anime, CGI, artificial skin, changed identity, fantasy",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 3003, collection: "Photo Restore", title: "🖼️ Damaged Photo Repair", badge: "Trending", difficulty: 5,
-              desc: "Perbaiki foto sobek, kusam, atau bernoda air. Hasil akhir bersih & realistik tanpa mengubah kenangan asli.",
-              suitableFor: ["Torn Photo", "Water Damage", "Faded", "Scratched"],
-              colors: ["Restored Natural", "Warm Vintage", "Clean"],
-              prompt: "Use the uploaded image as the main subject. Professionally restore this damaged, torn, or water-stained old photograph. Portrait orientation (2:3 ratio). Apply ADVANCED REPAIR: reconstruct missing image areas, remove stains and creases, and restore original colors naturally. The final result must look like a pristine vintage photograph scanned at high resolution. Keep the original faces and memories intact. Warm, natural color grading reminiscent of old film but with modern clarity. 300 DPI, museum-grade restoration quality. No text, no watermark.",
-              negativePrompt: "cartoon, modern digital filter, heavy editing, AI artifacts, changed facial features, artificial",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 3004, collection: "Photo Restore", title: "🖼️ B&W to Color Realistic", badge: "Best Seller", difficulty: 4,
-              desc: "Warnai foto hitam putih jadi natural & realistik. Setiap tone kulit, pakaian, dan background diwarnai akurat.",
-              suitableFor: ["B&W Photo", "Colorization", "Historical"],
-              colors: ["Natural Color", "Skin Tone", "Period Accurate"],
-              prompt: "Use the uploaded image as the main subject. Colorize this black and white photograph with photorealistic accuracy. Portrait orientation (2:3 ratio). Apply B&W TO COLOR: add natural, realistic colors to skin tones, clothing, and background. Each element must be colored contextually (e.g., grass is green, skin is warm). Output must look like a genuine color photograph from the era. Keep original faces identical. 300 DPI, museum-grade colorization. No text, no watermark.",
-              negativePrompt: "cartoon, oversaturated, fake colors, painting, AI artifacts, changed identity, modern filters",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 3005, collection: "Photo Restore", title: "🖼️ 90s Camera Realistic", badge: "", difficulty: 3,
-              desc: "Bikin foto jadul 90-an keliatan real kayak diambil kamera modern. Pertahankan momen nostalgia tapi kualitas HD.",
-              suitableFor: ["90s Photo", "Childhood Memory", "Old Album"],
-              colors: ["Retro Tone", "Warm Memory", "HD"],
-              prompt: "Use the uploaded image as the main subject. Enhance and restore this 1990s photo to look like a modern digital photograph. Portrait orientation (2:3 ratio). Apply 90S RESTORE: preserve the nostalgic composition and mood but dramatically improve sharpness, color accuracy, and detail. Remove typical 90s camera flaws: grainy noise, discoloration, soft focus. Output must look like it was taken today with a DSLR. Natural results. 300 DPI. No text, no watermark.",
-              negativePrompt: "heavy vintage filter, painting, cartoon, artificial, plastic skin, identity change",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            // ==========================================================================
-            // 👨‍👩‍👧‍👦 FAMILY ADD — Tambah Orang ke Foto Keluarga
-            // ==========================================================================
-            { id: 4001, collection: "Family Add", title: "👨‍👩‍👧‍👦 Add Person to Family Photo", badge: "Best Seller", difficulty: 5,
-              desc: "Masukkan wajah seseorang ke dalam foto keluarga dengan pencahayaan & posisi yang natural. Hasil real kayak foto beneran.",
-              suitableFor: ["Group Photo", "Family Reunion", "Edit Photo"],
-              colors: ["Natural Blend", "Consistent Lighting", "Real Skin"],
-              prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing family group photo. Portrait orientation (2:3 ratio). Apply FAMILY ADD: perfectly match the lighting, color grading, and perspective of the target family photo. The person must appear as if they were originally present. Natural skin blending, consistent shadows, and realistic placement. Face must remain fully recognizable and consistent. Final output must be indistinguishable from a real family photograph taken with a Canon DSLR. 300 DPI. No text, no watermark.",
-              negativePrompt: "cutout, artificial, mismatched lighting, cartoon, obvious composite, glitch, color mismatch",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 4002, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wedding Family Add", badge: "Premium", difficulty: 5,
-              desc: "Tambah anggota keluarga ke foto pernikahan yang sudah ada. Cocok untuk melengkapi foto keluarga besar.",
-              suitableFor: ["Wedding Photo", "Family Addition", "Group Edit"],
-              colors: ["Elegant Tone", "Wedding Gold", "Natural Warm"],
-              prompt: "Use the uploaded image as the main subject. Add this person naturally into an existing wedding family photo. Portrait orientation (2:3 ratio). Apply WEDDING ADD: match the elegant wedding color palette (gold, ivory, soft green), lighting condition, and formal posing style. The inserted person should look like they were part of the original wedding photography session. Consistent skin tones, proper shadow angles, and realistic group positioning. Professional photo editing quality. 300 DPI. No text, no watermark.",
-              negativePrompt: "casual clothing mismatch, bad lighting, cutout, composite visible, cartoon, glitch",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            { id: 4003, collection: "Family Add", title: "👨‍👩‍👧‍👦 Missing Family Member", badge: "Trending", difficulty: 4,
-              desc: "Lengkapi foto keluarga dengan anggota yang tidak sempat hadir saat pemotretan. Wajah konsisten & realistik.",
-              suitableFor: ["Missing Person", "Family Complete", "Photo Edit"],
-              colors: ["Natural Match", "Consistent Tone", "Real"],
-              prompt: "Use the uploaded image as the main subject. Compositing a missing family member into an existing group photo naturally. Portrait orientation (2:3 ratio). Apply MISSING ADD: carefully match the pose direction, height perspective, and spatial arrangement. The person must look like they genuinely belong in the original photo. Match skin undertones, lighting direction, and depth of field precisely. Professional composite with zero visible seams. 300 DPI. No text, no watermark.",
-              negativePrompt: "bad composite, lighting mismatch, wrong scale, cartoon, visible edge, color clash",
-              ratio: "2:3", size: "15.5 x 23.5 cm", dpi: "300"
-            },
-            // ==========================================================================
-            // 🖼️ PHOTO RESTORE — Landscape (3:2) orientations
-            // ==========================================================================
-            { id: 3006, collection: "Photo Restore", title: "🖼️ Panorama Old Photo Restore", badge: "Premium", difficulty: 5,
-              desc: "Restorasi foto panorama/landscape lama jadi HD. Cocok untuk pemandangan, foto grup lebar, kenangan liburan.",
-              suitableFor: ["Panorama", "Landscape", "Wide Group", "Vacation"],
-              colors: ["Wide Natural", "Panoramic Tone", "HD Clear"],
-              prompt: "Use the uploaded image as the main subject. Restore this old panoramic/landscape photo to ultra-realistic HD quality. Landscape orientation (3:2 ratio). Apply PANORAMA RESTORE: remove dust, scratches, fading across wide frame. Enhance natural textures across entire scene — sky, foliage, water, architecture. Keep original composition intact. Output must look like a modern wide-angle photograph (Sony A7R IV, 24mm). Natural lighting, authentic colors. 300 DPI, print-ready panoramic. No text, no watermark.",
-              negativePrompt: "portrait orientation, cropped, AI artifacts, painting, illustration, oversharpened, fake HDR",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 3007, collection: "Photo Restore", title: "🖼️ Wide Group Photo Repair", badge: "Best Seller", difficulty: 5,
-              desc: "Perbaiki foto grup lebar yang blur/rusak. Setiap wajah dijernihkan, pencahayaan disamakan.",
-              suitableFor: ["Wide Group", "Family Reunion", "Class Photo", "Team"],
-              colors: ["Group Natural", "Balanced Light", "HD Faces"],
-              prompt: "Use the uploaded image as the main subject. Restore and enhance this wide group photo to photorealistic clarity. Landscape orientation (3:2 ratio). Apply WIDE GROUP RESTORE: sharpen every face individually, balance exposure across frame, remove artifacts. Each person must look naturally lit and sharp as if photographed with modern camera. Preserve original expressions and positions. 300 DPI, professional group photo quality. No text, no watermark.",
-              negativePrompt: "portrait crop, blurry faces, uneven lighting, cartoon, painting, AI distortion, identity change",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 3008, collection: "Photo Restore", title: "🖼️ Vintage Landscape Colorize", badge: "Trending", difficulty: 4,
-              desc: "Warnai foto B&W landscape/pemandangan vintage jadi natural. Pohon, langit, air — semua akurat.",
-              suitableFor: ["Vintage Landscape", "B&W Nature", "Historical"],
-              colors: ["Nature Accurate", "Period Tone", "Vibrant Real"],
-              prompt: "Use the uploaded image as the main subject. Colorize this black and white vintage landscape photograph with photorealistic accuracy. Landscape orientation (3:2 ratio). Apply VINTAGE COLORIZE: natural foliage greens, sky blues, water tones, earth colors. Each element colored contextually to its era and geography. Output must look like a genuine color photograph from that time period. 300 DPI, museum-grade colorization. No text, no watermark.",
-              negativePrompt: "cartoon, oversaturated, fake colors, painting, modern filters, AI artifacts, wrong era colors",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 3009, collection: "Photo Restore", title: "🖼️ Cinematic Wide Restore", badge: "Premium", difficulty: 5,
-              desc: "Restore foto lebar cinematic (21:9 crop) jadi realistik. Aspect ratio lebar, detail tepi tajam.",
-              suitableFor: ["Cinematic", "Wide Screen", "Letterbox", "Epic"],
-              colors: ["Cinematic Grade", "Letterbox Real", "Epic Detail"],
-              prompt: "Use the uploaded image as the main subject. Restore this ultra-wide cinematic photograph to stunning realism. Landscape orientation (3:2 ratio, letterbox composition). Apply CINEMATIC RESTORE: enhance dynamic range, recover highlight/shadow detail, add film-like texture but digital sharpness. Anamorphic lens character preserved. Color grading: teal-orange cinematic or natural. 300 DPI, cinema print quality. No text, no watermark.",
-              negativePrompt: "standard 4:3, cropped, video screenshot, low quality, digital artifacts, oversharpened",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 3010, collection: "Photo Restore", title: "🖼️ Architecture Wide Restore", badge: "", difficulty: 4,
-              desc: "Restorasi foto arsitektur/bangunan lebar. Garis lurus, perspektif akurat, tekstur bata/beton real.",
-              suitableFor: ["Architecture", "Building", "Cityscape", "Real Estate"],
-              colors: ["Structural Real", "Perspective True", "Material HD"],
-              prompt: "Use the uploaded image as the main subject. Restore this architectural wide photograph to technical perfection. Landscape orientation (3:2 ratio). Apply ARCHITECTURE RESTORE: correct perspective distortion, sharpen structural lines, enhance material textures (brick, concrete, glass, steel). Balanced interior/exterior exposure. Output indistinguishable from modern architectural photography. 300 DPI. No text, no watermark.",
-              negativePrompt: "perspective distortion, warped lines, blurry textures, painting, illustration, fisheye",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            // ==========================================================================
-            // 👨‍👩‍👧‍👦 FAMILY ADD — Landscape (3:2) orientations
-            // ==========================================================================
-            { id: 4004, collection: "Family Add", title: "👨‍👩‍👧‍👦 Wide Family Reunion Add", badge: "Best Seller", difficulty: 5,
-              desc: "Tambah orang ke foto reuni keluarga lebar. Posisi alami, pencahayaan konsisten di frame panoramik.",
-              suitableFor: ["Family Reunion", "Wide Group", "Panorama", "Generations"],
-              colors: ["Reunion Warm", "Group Natural", "Panoramic Real"],
-              prompt: "Use the uploaded image as the main subject. Seamlessly composite this person into an existing wide family reunion photo. Landscape orientation (3:2 ratio). Apply WIDE REUNION ADD: match the panoramic perspective, consistent lighting across wide frame, natural positioning in group. The added person must belong in the scene — correct scale, shadows, color temperature. Professional group composite quality. 300 DPI. No text, no watermark.",
-              negativePrompt: "portrait crop, mismatched lighting, wrong scale, obvious composite, cartoon, floating",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 4005, collection: "Family Add", title: "👨‍👩‍👧‍👦 Vacation Panorama Add", badge: "Premium", difficulty: 5,
-              desc: "Masukkan orang ke foto liburan panorama (pantai, gunung, kota). Background epic, pencahayaan matahari match.",
-              suitableFor: ["Vacation", "Travel", "Beach", "Mountain", "Cityscape"],
-              colors: ["Sunlit Natural", "Scenic Real", "Golden Hour"],
-              prompt: "Use the uploaded image as the main subject. Composite this person into an existing vacation panorama photo. Landscape orientation (3:2 ratio). Apply VACATION ADD: match dramatic landscape lighting (sunrise/sunset/golden hour), environmental shadows, atmospheric perspective. Person interacts naturally with scenic background — correct scale against mountains/ocean/cityscape. Photorealistic travel photo result. 300 DPI. No text, no watermark.",
-              negativePrompt: "studio lighting, green screen look, wrong perspective, floating, cartoon, mismatched shadows",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 4006, collection: "Family Add", title: "👨‍👩‍👧‍👦 Generations Wide Portrait", badge: "Trending", difficulty: 4,
-              desc: "Foto 3-4 generasi lebar. Tambah kakek/nenek/cucu yg tdk hadir. Wajah konsisten, pose natural.",
-              suitableFor: ["Generations", "Legacy", "Heritage", "Family Tree"],
-              colors: ["Timeless Tone", "Generational Real", "Warm Legacy"],
-              prompt: "Use the uploaded image as the main subject. Add a missing family member to a multi-generation wide family portrait. Landscape orientation (3:2 ratio). Apply GENERATIONS ADD: seamless integration into formal or candid generational lineup. Match aging skin textures, posture, eye direction. Consistent lighting across generations. Emotional authenticity — looks like a real family moment captured on Hasselblad. 300 DPI. No text, no watermark.",
-              negativePrompt: "mismatched aging, stiff pose, lighting mismatch, cartoon, obvious edit, identity loss",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 4007, collection: "Family Add", title: "👨‍👩‍👧‍👦 Holiday Dinner Wide Add", badge: "Premium", difficulty: 5,
-              desc: "Tambah orang ke foto makan malam natal/lebaran lebar. Meja panjang, cerah hangat, interaksi natural.",
-              suitableFor: ["Holiday Dinner", "Christmas", "Eid", "Thanksgiving", "Feast"],
-              colors: ["Festive Warm", "Candlelit Real", "Cozy Natural"],
-              prompt: "Use the uploaded image as the main subject. Composite a person into an existing wide holiday dinner table scene. Landscape orientation (3:2 ratio). Apply HOLIDAY DINNER ADD: warm ambient lighting (candles, string lights, fireplace), table perspective, natural interaction with others (holding plate, laughing, pouring drink). Match cozy indoor color temperature. Feels like genuine family moment. 300 DPI. No text, no watermark.",
-              negativePrompt: "flash lighting, flat lighting, wrong table perspective, floating, cartoon, stiff pose",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
-            },
-            { id: 4008, collection: "Family Add", title: "👨‍👩‍👧‍👦 Outdoor Picnic Wide Add", badge: "Best Seller", difficulty: 4,
-              desc: "Masukkan orang ke foto picnic outdoor lebar. Rumput, langit, bayangan matahari — semuanya match.",
-              suitableFor: ["Picnic", "Park", "Outdoor", "Casual", "Weekend"],
-              colors: ["Sunlit Green", "Sky Blue", "Casual Real"],
-              prompt: "Use the uploaded image as the main subject. Add a person naturally into an existing wide outdoor family picnic photo. Landscape orientation (3:2 ratio). Apply PICNIC ADD: dappled sunlight through trees, grass texture, casual sitting/standing poses. Match outdoor color temperature, environmental shadows. Person grounded on grass, interacting with picnic elements. Authentic weekend family photo. 300 DPI. No text, no watermark.",
-              negativePrompt: "indoor lighting, studio backdrop, wrong grass perspective, floating, cartoon, green screen",
-              ratio: "3:2", size: "23.5 x 15.5 cm", dpi: "300"
             }
         ];
 
@@ -10851,9 +10740,9 @@
         }
 
         // === EMPTY STATE & LOADING ===
-        const emptyStateHTML = '<div class="empty-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
+        const emptyStateHTML = '<div class="empty-state"><img src="download.gif" alt="No results" class="empty-gif"><h3>Tidak ada style yang cocok</h3><p>Coba kata kunci lain atau pilih kategori berbeda</p></div>';
 
-        const loadingHTML = '<div class="loading-state"><img src="f5630ddc114edca5dfec76ae5996b152.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
+        const loadingHTML = '<div class="loading-state"><img src="download.gif" alt="Loading..." class="loading-gif"><p>Memuat style...</p></div>';
 
         // === RENDER CARDS (Optimized + Sanitized) ===
         function renderCards(data) {
@@ -10882,7 +10771,6 @@
                 return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(item.prompt) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(item.negativePrompt) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
             }).join('');
 
-            catalogGrid.classList.remove('fade-transition');
             catalogGrid.innerHTML = htmlString;
         }
 
@@ -10959,8 +10847,7 @@
             // Update orientation counts
             updateOrientationCounts(filteredData);
 
-            catalogGrid.classList.add('fade-transition');
-            setTimeout(() => renderCards(filteredData), 150);
+            renderCards(filteredData);
         }
 
         // === ORIENTATION COUNTS ===
