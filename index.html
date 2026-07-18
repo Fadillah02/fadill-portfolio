@@ -2041,9 +2041,15 @@
                     <a href="#projects" class="nav-link">Projects</a>
                     <a href="#notes" class="nav-link">Notes</a>
                     <a href="#workbench" class="nav-link">Workbench</a>
-                    <a href="Poster-fitur.html" class="nav-link">Poster 🖼️</a>
-                    <a href="lyric.html" class="nav-link">Lyric 🎵</a>
-                    <a href="video.html" class="nav-link">Video 🎬</a>
+                    <div class="nav-tools">
+                        <a href="#" class="nav-link tools-toggle">TOOLS ▾</a>
+                        <div class="tools-dropdown">
+                            <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                            <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+                            <a href="video.html" class="nav-link">🎬 Video</a>
+                            <a href="upscale.html" class="nav-link">🔍 Upscale</a>
+                        </div>
+                    </div>
                 </nav>
 
                 <div class="header-right">
@@ -2073,9 +2079,11 @@
         <a href="#notes" class="nav-link" onclick="closeMobile()">Notes</a>
         <a href="#workbench" class="nav-link" onclick="closeMobile()">Workbench</a>
         <a href="#connect" class="nav-link" onclick="closeMobile()">Connect</a>
+        <div style="padding:8px 16px;font-size:0.65rem;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.1em">━ TOOLS ━</div>
         <a href="Poster-fitur.html" class="nav-link" onclick="closeMobile()">🖼️ Poster</a>
         <a href="lyric.html" class="nav-link" onclick="closeMobile()">🎵 Lyric</a>
         <a href="video.html" class="nav-link" onclick="closeMobile()">🎬 Video</a>
+        <a href="upscale.html" class="nav-link" onclick="closeMobile()">🔍 Upscale</a>
     </div>
 
     <!-- HERO SECTION -->
@@ -2299,6 +2307,73 @@
         @media (min-width: 480px) and (max-width: 767px) {
             .hero-grid { gap: 40px; }
             .terminal-ascii { font-size: 0.55rem; }
+        }
+
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-links .nav-tools {
+            position: relative;
+        }
+        .nav-links .tools-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .nav-links .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(12, 18, 28, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 6px;
+            min-width: 150px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 1200;
+        }
+        .nav-links .tools-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: rgba(12, 18, 28, 0.95);
+            border-left: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            transform: rotate(45deg);
+        }
+        .nav-links .nav-tools:hover .tools-dropdown,
+        .nav-links .nav-tools.show .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .nav-links .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav-links .tools-dropdown .nav-link:hover {
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-dim);
         }
     </style>
 

@@ -120,6 +120,75 @@
             .top-nav .nav-link { padding: 6px 10px; font-size: 0.8rem; }
         }
 
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-tools {
+            position: relative;
+        }
+        .tools-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px;
+            min-width: 150px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+        }
+        .tools-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: var(--bg-glass);
+            border-left: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            transform: rotate(45deg);
+        }
+        .nav-tools:hover .tools-dropdown,
+        .nav-tools.show .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+        .tools-dropdown .nav-link:hover {
+            color: var(--text-main);
+            background: var(--bg-hover);
+        }
+        .tools-dropdown .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(92,200,232,0.12);
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -953,9 +1022,15 @@
     <nav class="top-nav">
         <a href="index.html" class="nav-brand">🏠 Home</a>
         <div class="nav-links">
-            <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
-            <a href="lyric.html" class="nav-link active">🎵 Lyric</a>
-            <a href="video.html" class="nav-link">🎬 Video</a>
+            <div class="nav-tools">
+                <a href="#" class="nav-link tools-toggle">TOOLS ▾</a>
+                <div class="tools-dropdown">
+                    <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                    <a href="lyric.html" class="nav-link active">🎵 Lyric</a>
+                    <a href="video.html" class="nav-link">🎬 Video</a>
+                    <a href="upscale.html" class="nav-link">🔍 Upscale</a>
+                </div>
+            </div>
         </div>
     </nav>
 
