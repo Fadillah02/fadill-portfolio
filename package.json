@@ -1,0 +1,20 @@
+{
+  "name": "fadill-portfolio-gas",
+  "version": "1.0.0",
+  "description": "GitHub Pages + Google Apps Script Backend",
+  "scripts": {
+    "login": "clasp login",
+    "create": "clasp create --title 'AI Prompt Backend' --type standalone",
+    "push": "clasp push --force",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "deploy": "clasp deploy --description 'Production'",
+    "logs": "clasp logs"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.7.0"
+  },
+  "keywords": ["gas", "google-apps-script", "github-pages", "backend"],
+  "author": "Fadillah",
+  "license": "MIT"
+}

@@ -259,40 +259,100 @@ function searchPrompts(query) {
 
 // ============ STATS ============
 function getStats() {
-  const sheet = getSheet(CONFIG.SHEET_NAME);
-  const data = sheet.getDataRange().getValues();
-  const headers = data.shift();
-  
-  const categoryCol = headers.indexOf('category');
-  const likesCol = headers.indexOf('likes');
-  const dateCol = headers.indexOf('date');
-  
-  const totalPrompts = data.length;
-  const totalLikes = data.reduce((sum, row) => sum + (row[likesCol] || 0), 0);
-  const categories = [...new Set(data.map(row => row[categoryCol]))].length;
-  
+  const promptSheet = getSheet(CONFIG.SHEET_NAME);
+  const promptData = promptSheet.getDataRange().getValues();
+  const promptHeaders = promptData.shift();
+
+  const categoryCol = promptHeaders.indexOf('category');
+  const likesCol = promptHeaders.indexOf('likes');
+  const dateCol = promptHeaders.indexOf('date');
+
+  const totalPrompts = promptData.length;
+  const totalLikes = promptData.reduce((sum, row) => sum + (row[likesCol] || 0), 0);
+  const categories = [...new Set(promptData.map(row => row[categoryCol]))].length;
+
   // Prompts this week
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const thisWeek = data.filter(row => new Date(row[dateCol]) > oneWeekAgo).length;
-  
+  const thisWeekPrompts = promptData.filter(row => new Date(row[dateCol]) > oneWeekAgo).length;
+
   // Top category
   const categoryCounts = {};
-  data.forEach(row => {
+  promptData.forEach(row => {
     const cat = row[categoryCol];
     categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
   });
   const topCategory = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0];
-  
+
+  // Stats sheet (visits)
+  const statsSheet = getSheet(CONFIG.STATS_SHEET);
+  const statsData = statsSheet.getDataRange().getValues();
+  const statsHeaders = statsData.shift();
+  const totalVisits = statsData.length;
+  const oneWeekAgoTimestamp = oneWeekAgo.getTime();
+  const thisWeekVisits = statsData.filter(row => new Date(row[0]).getTime() > oneWeekAgoTimestamp).length;
+
+  // Submissions
+  let totalSubmissions = 0;
+  try {
+    const subSheet = getSheet('Submissions');
+    const subData = subSheet.getDataRange().getValues();
+    subData.shift();
+    totalSubmissions = subData.length;
+  } catch (e) {}
+
+  // Hook Analyses
+  let totalHookAnalyses = 0;
+  try {
+    const hookSheet = getSheet('HookAnalyses');
+    const hookData = hookSheet.getDataRange().getValues();
+    hookData.shift();
+    totalHookAnalyses = hookData.length;
+  } catch (e) {}
+
+  // Repurposed Content
+  let totalRepurposed = 0;
+  try {
+    const repoSheet = getSheet('RepurposedContent');
+    const repoData = repoSheet.getDataRange().getValues();
+    repoData.shift();
+    totalRepurposed = repoData.length;
+  } catch (e) {}
+
+  // Thumbnail Analyses
+  let totalThumbnails = 0;
+  try {
+    const thumbSheet = getSheet('ThumbnailAnalyses');
+    const thumbData = thumbSheet.getDataRange().getValues();
+    thumbData.shift();
+    totalThumbnails = thumbData.length;
+  } catch (e) {}
+
+  // Voice History
+  let totalVoiceHistory = 0;
+  try {
+    const voiceSheet = getSheet('VoiceHistory');
+    const voiceData = voiceSheet.getDataRange().getValues();
+    voiceData.shift();
+    totalVoiceHistory = voiceData.length;
+  } catch (e) {}
+
   return {
     success: true,
     data: {
       totalPrompts,
       totalLikes,
       categories,
-      thisWeek,
+      thisWeekPrompts: thisWeekPrompts,
       topCategory: topCategory ? topCategory[0] : 'N/A',
-      topCategoryCount: topCategory ? topCategory[1] : 0
+      topCategoryCount: topCategory ? topCategory[1] : 0,
+      totalVisits,
+      thisWeekVisits,
+      totalSubmissions,
+      totalHookAnalyses,
+      totalRepurposed,
+      totalThumbnails,
+      totalVoiceHistory
     }
   };
 }

@@ -1,0 +1,47 @@
+name: Deploy GAS Backend
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'gas-backend/**'
+      - '.clasp.json'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install clasp
+        run: npm install -g @google/clasp
+      
+      - name: Setup clasp credentials
+        run: |
+          mkdir -p ~/.clasp
+          echo '${{ secrets.CLASP_CREDENTIALS }}' > ~/.clasp/credentials.json
+      
+      - name: Verify credentials
+        run: clasp whoami
+      
+      - name: Deploy to Google Apps Script
+        working-directory: gas-backend
+        run: |
+          echo "Deploying GAS backend..."
+          clasp push --force
+          echo "Deploy complete!"
+      
+      - name: Deploy as Web App (first time only)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: gas-backend
+        run: |
+          echo "Creating web app deployment..."
+          clasp deploy --description "GitHub Actions auto-deploy"
