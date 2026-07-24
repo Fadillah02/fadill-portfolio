@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>🎯 AI Thumbnail Predictor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== INPUT SECTION ===== */
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+        }
+
+        /* ===== UPLOAD AREA ===== */
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .upload-area:hover {
+            border-color: #1a1a1a;
+            background: #f9fafb;
+        }
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .upload-area.has-image {
+            padding: 20px;
+            border-style: solid;
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        .upload-text {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        .upload-input {
+            display: none;
+        }
+
+        /* ===== PREVIEW IMAGE ===== */
+        .preview-container {
+            display: none;
+            position: relative;
+        }
+        .preview-container.show {
+            display: block;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin: 0 auto;
+            display: block;
+        }
+        .remove-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 32px;
+            height: 32px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== PLATFORM SELECTOR ===== */
+        .platform-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .platform-btn {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .platform-btn:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+        .platform-btn.active {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* ===== ANALYZE BUTTON ===== */
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .analyze-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== RESULTS SECTION ===== */
+        .results-section {
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SCORE CARD ===== */
+        .score-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 8px solid #e5e7eb;
+        }
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 8px solid transparent;
+            border-top-color: var(--accent-success);
+            border-right-color: var(--accent-success);
+            transform: rotate(-45deg);
+        }
+        .score-circle.excellent::after {
+            border-top-color: #22c55e;
+            border-right-color: #22c55e;
+        }
+        .score-circle.good::after {
+            border-top-color: #3b82f6;
+            border-right-color: #3b82f6;
+        }
+        .score-circle.average::after {
+            border-top-color: #f59e0b;
+            border-right-color: #f59e0b;
+        }
+        .score-circle.poor::after {
+            border-top-color: #ef4444;
+            border-right-color: #ef4444;
+        }
+        .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+        .score-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .score-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .score-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ===== ANALYSIS CARDS ===== */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .analysis-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+        .analysis-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .analysis-card ul {
+            list-style: none;
+        }
+        .analysis-card li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9rem;
+            color: #444;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .analysis-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== COLOR PALETTE ===== */
+        .color-palette {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .color-palette h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+        .color-item {
+            text-align: center;
+        }
+        .color-swatch {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .color-hex {
+            font-size: 0.75rem;
+            color: #666;
+            font-family: monospace;
+        }
+        .color-percent {
+            font-size: 0.7rem;
+            color: #999;
+        }
+
+        /* ===== RECOMMENDATIONS ===== */
+        .recommendations {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .recommendations h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rec-item {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            gap: 12px;
+        }
+        .rec-item:last-child {
+            margin-bottom: 0;
+        }
+        .rec-icon {
+            width: 36px;
+            height: 36px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .rec-content {
+            flex: 1;
+        }
+        .rec-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .rec-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .loading.show {
+            display: block;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #1a1a1a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .input-section, .score-card, .analysis-card, .color-palette, .recommendations {
+                padding: 20px;
+            }
+            .platform-selector {
+                flex-direction: column;
+            }
+            .platform-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <div class="nav-tools">
+                <a href="#" class="nav-link">TOOLS ▾</a>
+                <div class="tools-dropdown">
+                    <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                    <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+                    <a href="video.html" class="nav-link">🎬 Video</a>
+                    <a href="hook-predictor.html" class="nav-link">📈 Hook Predictor</a>
+                    <a href="repurposer.html" class="nav-link">🔄 Repurposer</a>
+                    <a href="thumbnail-predictor.html" class="nav-link active">🎯 Thumbnail Predictor</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <div class="header">
+            <h1>🎯 AI Thumbnail Predictor</h1>
+            <p>Prediksi CTR thumbnail kamu sebelum upload. Dapatkan analisis warna, komposisi, dan rekomendasi improvement.</p>
+        </div>
+
+        <!-- INPUT SECTION -->
+        <div class="input-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-text">Drop thumbnail kamu di sini atau klik untuk upload</div>
+                <div class="upload-hint">Format: JPG, PNG, WebP (Max 5MB)</div>
+                <input type="file" class="upload-input" id="fileInput" accept="image/*">
+            </div>
+
+            <div class="preview-container" id="previewContainer">
+                <button class="remove-btn" id="removeBtn">×</button>
+                <img src="" alt="Preview" class="preview-image" id="previewImage">
+            </div>
+
+            <div class="platform-selector">
+                <button class="platform-btn active" data-platform="youtube">▶️ YouTube</button>
+                <button class="platform-btn" data-platform="tiktok">🎵 TikTok</button>
+                <button class="platform-btn" data-platform="instagram">📸 Instagram</button>
+            </div>
+
+            <button class="analyze-btn" id="analyzeBtn" disabled>
+                <span>🔍</span>
+                <span>Analyze Thumbnail</span>
+            </button>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Menganalisis thumbnail kamu...</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="results-section" id="results">
+            <!-- Score Card -->
+            <div class="score-card">
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-label">/ 100</div>
+                </div>
+                <div class="score-title" id="scoreTitle">Loading...</div>
+                <div class="score-subtitle" id="scoreSubtitle">Menganalisis thumbnail kamu</div>
+            </div>
+
+            <!-- Analysis Grid -->
+            <div class="analysis-grid">
+                <!-- Strengths -->
+                <div class="analysis-card">
+                    <h3>✅ Kelebihan</h3>
+                    <ul id="strengthsList"></ul>
+                </div>
+
+                <!-- Weaknesses -->
+                <div class="analysis-card">
+                    <h3>⚠️ Perlu Diperbaiki</h3>
+                    <ul id="weaknessesList"></ul>
+                </div>
+            </div>
+
+            <!-- Color Palette -->
+            <div class="color-palette">
+                <h3>🎨 Analisis Warna</h3>
+                <div class="color-grid" id="colorGrid"></div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="recommendations">
+                <h3>💡 Rekomendasi Improvemen</h3>
+                <div id="recommendations"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        // ===== FILE UPLOAD =====
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const removeBtn = document.getElementById('removeBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        let uploadedFile = null;
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFile(file);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        // Handle file
+        function handleFile(file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File terlalu besar! Max 5MB.');
+                return;
+            }
+
+            uploadedFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                uploadArea.style.display = 'none';
+                previewContainer.classList.add('show');
+                analyzeBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove image
+        removeBtn.addEventListener('click', () => {
+            uploadedFile = null;
+            previewImage.src = '';
+            uploadArea.style.display = 'block';
+            previewContainer.classList.remove('show');
+            analyzeBtn.disabled = true;
+            fileInput.value = '';
+        });
+
+        // ===== PLATFORM SELECTOR =====
+        let selectedPlatform = 'youtube';
+        document.querySelectorAll('.platform-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedPlatform = btn.dataset.platform;
+            });
+        });
+
+        // ===== THUMBNAIL ANALYSIS ENGINE =====
+        const thumbnailAnalyzer = {
+            // Platform rules
+            platformRules: {
+                youtube: {
+                    idealRatio: '16:9',
+                    maxWidth: 1280,
+                    maxHeight: 720,
+                    idealFaceSize: '30-50%',
+                    maxTextLength: 5,
+                    preferredColors: ['red', 'yellow', 'blue']
+                },
+                tiktok: {
+                    idealRatio: '9:16',
+                    maxWidth: 1080,
+                    maxHeight: 1920,
+                    idealFaceSize: '40-60%',
+                    maxTextLength: 8,
+                    preferredColors: ['pink', 'cyan', 'purple']
+                },
+                instagram: {
+                    idealRatio: '1:1',
+                    maxWidth: 1080,
+                    maxHeight: 1080,
+                    idealFaceSize: '30-50%',
+                    maxTextLength: 6,
+                    preferredColors: ['pastel', 'warm', 'vintage']
+                }
+            },
+
+            // Analyze thumbnail
+            analyze(img, platform) {
+                // Get image data
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                ctx.drawImage(img, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+
+                // Calculate metrics
+                const brightness = this.calculateBrightness(pixels);
+                const contrast = this.calculateContrast(pixels);
+                const colors = this.extractColors(pixels);
+                const composition = this.analyzeComposition(canvas.width, canvas.height);
+                const faceDetected = this.detectFace(pixels, canvas.width, canvas.height);
+
+                // Score calculation
+                const score = this.calculateScore(brightness, contrast, colors, composition, faceDetected, platform);
+                
+                // Generate feedback
+                const strengths = this.getStrengths(brightness, contrast, colors, faceDetected, platform);
+                const weaknesses = this.getWeaknesses(brightness, contrast, colors, composition, faceDetected, platform);
+                const recommendations = this.getRecommendations(brightness, contrast, colors, composition, faceDetected, platform);
+
+                return {
+                    score,
+                    strengths,
+                    weaknesses,
+                    colors: colors.slice(0, 5),
+                    recommendations,
+                    metrics: {
+                        brightness,
+                        contrast,
+                        faceDetected,
+                        width: canvas.width,
+                        height: canvas.height
+                    }
+                };
+            },
+
+            // Calculate brightness (0-255)
+            calculateBrightness(pixels) {
+                let total = 0;
+                for (let i = 0; i < pixels.length; i += 4) {
+                    total += (pixels[i] * 0.299 + pixels[i+1] * 0.587 + pixels[i+2] * 0.114);
+                }
+                return Math.round(total / (pixels.length / 4));
+            },
+
+            // Calculate contrast (0-100)
+            calculateContrast(pixels) {
+                let min = 255, max = 0;
+                for (let i = 0; i < pixels.length; i += 4) {
+                    const brightness = pixels[i] * 0.299 + pixels[i+1] * 0.587 + pixels[i+2] * 0.114;
+                    if (brightness < min) min = brightness;
+                    if (brightness > max) max = brightness;
+                }
+                return Math.round(((max - min) / 255) * 100);
+            },
+
+            // Extract dominant colors
+            extractColors(pixels) {
+                const colorMap = {};
+                const step = 16; // Sample every 16th pixel for performance
+                
+                for (let i = 0; i < pixels.length; i += 4 * step) {
+                    const r = Math.round(pixels[i] / 32) * 32;
+                    const g = Math.round(pixels[i+1] / 32) * 32;
+                    const b = Math.round(pixels[i+2] / 32) * 32;
+                    const key = `${r},${g},${b}`;
+                    colorMap[key] = (colorMap[key] || 0) + 1;
+                }
+
+                const total = Object.values(colorMap).reduce((a, b) => a + b, 0);
+                const sorted = Object.entries(colorMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(([color, count]) => {
+                        const [r, g, b] = color.split(',').map(Number);
+                        return {
+                            hex: this.rgbToHex(r, g, b),
+                            percent: Math.round((count / total) * 100)
+                        };
+                    });
+
+                return sorted;
+            },
+
+            // RGB to Hex
+            rgbToHex(r, g, b) {
+                return '#' + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                }).join('');
+            },
+
+            // Analyze composition
+            analyzeComposition(width, height) {
+                const ratio = width / height;
+                const idealRatio = 16 / 9;
+                const ratioScore = 100 - Math.abs(ratio - idealRatio) * 50;
+                
+                return {
+                    ratioScore: Math.max(0, Math.min(100, ratioScore)),
+                    ratio: ratio.toFixed(2),
+                    isLandscape: ratio > 1
+                };
+            },
+
+            // Simple face detection (checks for skin tones in center)
+            detectFace(pixels, width, height) {
+                const centerX = Math.floor(width / 2);
+                const centerY = Math.floor(height / 2);
+                const regionSize = Math.min(width, height) / 3;
+                
+                let skinPixels = 0;
+                let totalPixels = 0;
+                
+                for (let y = centerY - regionSize; y < centerY + regionSize; y += 4) {
+                    for (let x = centerX - regionSize; x < centerX + regionSize; x += 4) {
+                        const i = (y * width + x) * 4;
+                        if (i >= 0 && i < pixels.length - 3) {
+                            const r = pixels[i];
+                            const g = pixels[i+1];
+                            const b = pixels[i+2];
+                            
+                            // Simple skin tone detection
+                            if (r > 95 && g > 40 && b > 20 &&
+                                r > g && r > b &&
+                                (r - g) > 15 &&
+                                Math.abs(r - g) > 15) {
+                                skinPixels++;
+                            }
+                            totalPixels++;
+                        }
+                    }
+                }
+                
+                return totalPixels > 0 && (skinPixels / totalPixels) > 0.15;
+            },
+
+            // Calculate score
+            calculateScore(brightness, contrast, colors, composition, hasFace, platform) {
+                let score = 50; // Base score
+
+                // Brightness (ideal: 100-180)
+                if (brightness >= 100 && brightness <= 180) score += 15;
+                else if (brightness >= 80 && brightness <= 200) score += 8;
+                else score -= 10;
+
+                // Contrast (higher is better)
+                if (contrast >= 60) score += 15;
+                else if (contrast >= 40) score += 8;
+                else score -= 5;
+
+                // Face detected
+                if (hasFace) score += 15;
+
+                // Composition
+                score += Math.round(composition.ratioScore * 0.1);
+
+                return Math.min(100, Math.max(0, score));
+            },
+
+            // Get strengths
+            getStrengths(brightness, contrast, colors, hasFace, platform) {
+                const strengths = [];
+                
+                if (brightness >= 100 && brightness <= 180) {
+                    strengths.push('Brightness optimal - tidak terlalu gelap atau terang');
+                }
+                if (contrast >= 60) {
+                    strengths.push('Kontras tinggi - elemen mudah dibedakan');
+                }
+                if (hasFace) {
+                    strengths.push('Wajah terdeteksi di center frame');
+                }
+                if (colors.length > 0 && colors[0].percent > 30) {
+                    strengths.push('Warna dominan konsisten');
+                }
+                
+                if (strengths.length === 0) {
+                    strengths.push('Thumbnail sudah cukup dasar');
+                }
+                
+                return strengths;
+            },
+
+            // Get weaknesses
+            getWeaknesses(brightness, contrast, colors, composition, hasFace, platform) {
+                const weaknesses = [];
+                
+                if (brightness < 80) {
+                    weaknesses.push('Terlalu gelap - tambah brightness');
+                } else if (brightness > 200) {
+                    weaknesses.push('Terlalu terang - kurangi brightness');
+                }
+                
+                if (contrast < 40) {
+                    weaknesses.push('Kontras rendah - elemen sulit dibedakan');
+                }
+                
+                if (!hasFace) {
+                    weaknesses.push('Tidak ada wajah di center frame');
+                }
+                
+                if (composition.ratioScore < 70) {
+                    weaknesses.push('Aspect ratio tidak ideal untuk ' + platform);
+                }
+                
+                if (weaknesses.length === 0) {
+                    weaknesses.push('Thumbnail sudah cukup kuat!');
+                }
+                
+                return weaknesses;
+            },
+
+            // Get recommendations
+            getRecommendations(brightness, contrast, colors, composition, hasFace, platform) {
+                const recs = [];
+                
+                if (!hasFace) {
+                    recs.push({
+                        icon: '👤',
+                        title: 'Tambahkan Wajah',
+                        desc: 'Wajah di center frame meningkatkan CTR hingga 30%'
+                    });
+                }
+                
+                if (contrast < 50) {
+                    recs.push({
+                        icon: '🎨',
+                        title: 'Tingkatkan Kontras',
+                        desc: 'Gunakan warna kontras untuk highlight elemen penting'
+                    });
+                }
+                
+                if (brightness < 100 || brightness > 180) {
+                    recs.push({
+                        icon: '☀️',
+                        title: 'Sesuaikan Brightness',
+                        desc: 'Ideal brightness antara 100-180 untuk visibility'
+                    });
+                }
+                
+                recs.push({
+                    icon: '📝',
+                    title: 'Gunakan Text Besar',
+                    desc: 'Max 3-5 kata dengan font bold dan kontras'
+                });
+                
+                recs.push({
+                    icon: '🔴',
+                    title: 'Warna Merah/Kuning',
+                    desc: 'Warna warm lebih menarik perhatian di feed'
+                });
+                
+                return recs;
+            }
+        };
+
+        // ===== MAIN ANALYSIS FUNCTION =====
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            if (!uploadedFile || !previewImage.src) {
+                alert('Upload thumbnail dulu!');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            analyzeBtn.disabled = true;
+
+            // Wait for image to load
+            const img = new Image();
+            img.src = previewImage.src;
+            
+            img.onload = () => {
+                setTimeout(() => {
+                    const result = thumbnailAnalyzer.analyze(img, selectedPlatform);
+                    
+                    // Update UI
+                    updateResults(result);
+                    
+                    // Hide loading, show results
+                    document.getElementById('loading').classList.remove('show');
+                    document.getElementById('results').classList.add('show');
+                    analyzeBtn.disabled = false;
+
+                    // Save to GAS
+                    if (typeof postToGAS === 'function') {
+                        postToGAS({
+                            action: 'saveThumbnailAnalysis',
+                            thumbnailUrl: previewImage.src.substring(0, 200),
+                            platform: selectedPlatform,
+                            score: result.score,
+                            feedback: [...result.strengths, ...result.weaknesses]
+                        });
+                    }
+                }, 1500);
+            };
+        });
+
+        // ===== UPDATE RESULTS UI =====
+        function updateResults(result) {
+            // Score
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreTitle = document.getElementById('scoreTitle');
+            const scoreSubtitle = document.getElementById('scoreSubtitle');
+
+            scoreNumber.textContent = result.score;
+
+            // Remove all classes
+            scoreCircle.classList.remove('excellent', 'good', 'average', 'poor');
+
+            if (result.score >= 80) {
+                scoreCircle.classList.add('excellent');
+                scoreTitle.textContent = '🔥 Thumbnail Luar Biasa!';
+                scoreSubtitle.textContent = 'Thumbnail kamu sangat menarik dan siap upload';
+            } else if (result.score >= 60) {
+                scoreCircle.classList.add('good');
+                scoreTitle.textContent = '👍 Thumbnail Bagus';
+                scoreSubtitle.textContent = 'Thumbnail kamu cukup menarik, ada beberapa yang bisa diperbaiki';
+            } else if (result.score >= 40) {
+                scoreCircle.classList.add('average');
+                scoreTitle.textContent = '⚠️ Thumbnail Cukup';
+                scoreSubtitle.textContent = 'Thumbnail kamu butuh beberapa improvisasi';
+            } else {
+                scoreCircle.classList.add('poor');
+                scoreTitle.textContent = '❌ Perlu Perbaikan';
+                scoreSubtitle.textContent = 'Thumbnail kamu perlu banyak perbaikan';
+            }
+
+            // Strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = result.strengths.map(s => 
+                `<li><span class="icon">✅</span><span>${s}</span></li>`
+            ).join('');
+
+            // Weaknesses
+            const weaknessesList = document.getElementById('weaknessesList');
+            weaknessesList.innerHTML = result.weaknesses.map(w => 
+                `<li><span class="icon">⚠️</span><span>${w}</span></li>`
+            ).join('');
+
+            // Color palette
+            const colorGrid = document.getElementById('colorGrid');
+            colorGrid.innerHTML = result.colors.map(c => `
+                <div class="color-item">
+                    <div class="color-swatch" style="background: ${c.hex}"></div>
+                    <div class="color-hex">${c.hex}</div>
+                    <div class="color-percent">${c.percent}%</div>
+                </div>
+            `).join('');
+
+            // Recommendations
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = result.recommendations.map(r => `
+                <div class="rec-item">
+                    <div class="rec-icon">${r.icon}</div>
+                    <div class="rec-content">
+                        <div class="rec-title">${r.title}</div>
+                        <div class="rec-desc">${r.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== TOOLS DROPDOWN CLICK =====
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>
