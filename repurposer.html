@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>🔄 Content Repurposer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(35, 35, 35, 0.88);
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== INPUT SECTION ===== */
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        .input-group textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            color: #1a1a1a;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+        .input-group textarea::placeholder {
+            color: #999;
+        }
+
+        /* ===== CONTENT TYPE SELECTOR ===== */
+        .content-type-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .content-type-btn {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .content-type-btn:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+        .content-type-btn.active {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* ===== REPURPOSE BUTTON ===== */
+        .repurpose-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .repurpose-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .repurpose-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== RESULTS SECTION ===== */
+        .results-section {
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESULTS GRID ===== */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        /* ===== RESULT CARD ===== */
+        .result-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .result-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .result-platform {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .platform-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .platform-icon.twitter { background: #1DA1F2; color: white; }
+        .platform-icon.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
+        .platform-icon.tiktok { background: #000000; color: white; }
+        .platform-icon.linkedin { background: #0A66C2; color: white; }
+        .platform-icon.blog { background: #22c55e; color: white; }
+        .platform-icon.newsletter { background: #f97316; color: white; }
+
+        .platform-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+        }
+        .platform-format {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        .result-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .result-btn {
+            padding: 6px 10px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .result-btn:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+
+        .result-content {
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .result-content p, .result-content li {
+            font-size: 0.9rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .result-content ul {
+            padding-left: 20px;
+        }
+        .result-content .slide {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #1a1a1a;
+        }
+        .result-content .slide-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        .result-content .hashtag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .loading.show {
+            display: block;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #1a1a1a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== EXPORT BAR ===== */
+        .export-bar {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .export-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .export-btn {
+            padding: 10px 16px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .export-btn:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+        .export-btn.primary {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+        .export-btn.primary:hover {
+            background: #333;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .input-section, .result-header, .result-content, .export-bar {
+                padding: 16px;
+            }
+            .content-type-selector {
+                flex-direction: column;
+            }
+            .content-type-btn {
+                justify-content: center;
+            }
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            .export-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <div class="nav-tools">
+                <a href="#" class="nav-link">TOOLS ▾</a>
+                <div class="tools-dropdown">
+                    <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                    <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+                    <a href="video.html" class="nav-link">🎬 Video</a>
+                    <a href="hook-predictor.html" class="nav-link">📈 Hook Predictor</a>
+                    <a href="repurposer.html" class="nav-link active">🔄 Repurposer</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <div class="header">
+            <h1>🔄 Content Repurposer</h1>
+            <p>Satu konten, otomatis jadi 10 format berbeda untuk semua platform. Hemat waktu, maximalkan reach.</p>
+        </div>
+
+        <!-- INPUT SECTION -->
+        <div class="input-section">
+            <div class="input-group">
+                <label>📝 Paste Konten Kamu (Script, Article, atau YouTube URL)</label>
+                <textarea id="contentInput" placeholder="Contoh: &#10;&#10;Hari ini gue mau bahas 5 kesalahan yang sering dilakukan YouTuber pemula. Pertama, tidak konsisten upload. Kedua, thumbnail jelek. Ketiga, judul tidak menarik. Keempat, tidak ada hook di awal video. Kelima, tidak promosi di media sosial."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>🎯 Target Platforms (Pilih beberapa)</label>
+                <div class="content-type-selector">
+                    <button class="content-type-btn active" data-platform="twitter">🐦 Twitter/X Thread</button>
+                    <button class="content-type-btn active" data-platform="instagram">📸 Instagram Carousel</button>
+                    <button class="content-type-btn active" data-platform="tiktok">🎵 TikTok Script</button>
+                    <button class="content-type-btn" data-platform="linkedin">💼 LinkedIn Post</button>
+                    <button class="content-type-btn" data-platform="blog">📝 Blog Post</button>
+                    <button class="content-type-btn" data-platform="newsletter">📧 Newsletter</button>
+                </div>
+            </div>
+
+            <button class="repurpose-btn" id="repurposeBtn">
+                <span>🔄</span>
+                <span>Repurpose Content</span>
+            </button>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Repurposing content kamu...</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="results-section" id="results">
+            <div class="results-grid" id="resultsGrid"></div>
+
+            <!-- Export Bar -->
+            <div class="export-bar">
+                <div class="export-info">
+                    <strong id="totalCount">0</strong> konten berhasil dibuat
+                </div>
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="copyAllContent()">📋 Copy All</button>
+                    <button class="export-btn primary" onclick="downloadAll()">💾 Download All (.txt)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        // ===== PLATFORM SELECTOR =====
+        let selectedPlatforms = ['twitter', 'instagram', 'tiktok'];
+        document.querySelectorAll('.content-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                selectedPlatforms = Array.from(document.querySelectorAll('.content-type-btn.active'))
+                    .map(b => b.dataset.platform);
+            });
+        });
+
+        // ===== CONTENT REPURPOSER ENGINE =====
+        const repurposer = {
+            // Platform templates
+            templates: {
+                twitter: {
+                    name: 'Twitter/X Thread',
+                    icon: '🐦',
+                    iconClass: 'twitter',
+                    format: 'Thread (7-10 tweets)',
+                    generate: (content) => this.generateTwitterThread(content)
+                },
+                instagram: {
+                    name: 'Instagram Carousel',
+                    icon: '📸',
+                    iconClass: 'instagram',
+                    format: 'Carousel (7-10 slides)',
+                    generate: (content) => this.generateInstagramCarousel(content)
+                },
+                tiktok: {
+                    name: 'TikTok Script',
+                    icon: '🎵',
+                    iconClass: 'tiktok',
+                    format: 'Script (30-60 detik)',
+                    generate: (content) => this.generateTikTokScript(content)
+                },
+                linkedin: {
+                    name: 'LinkedIn Post',
+                    icon: '💼',
+                    iconClass: 'linkedin',
+                    format: 'Professional Post',
+                    generate: (content) => this.generateLinkedInPost(content)
+                },
+                blog: {
+                    name: 'Blog Post',
+                    icon: '📝',
+                    iconClass: 'blog',
+                    format: 'Article (800-1200 words)',
+                    generate: (content) => this.generateBlogPost(content)
+                },
+                newsletter: {
+                    name: 'Newsletter',
+                    icon: '📧',
+                    iconClass: 'newsletter',
+                    format: 'Email Format',
+                    generate: (content) => this.generateNewsletter(content)
+                }
+            },
+
+            // Extract key points from content
+            extractKeyPoints(content) {
+                const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 10);
+                const keyPoints = [];
+                
+                // Look for numbered lists
+                const numberedPattern = /(?:pertama|kedua|ketiga|keempat|kelima|keenam|ketujuh|kedelapan|kesembilan|kesepuluh|\d+[\.\)]\s*)/gi;
+                const matches = content.match(numberedPattern);
+                
+                if (matches && matches.length >= 3) {
+                    // Has numbered list
+                    sentences.forEach(s => {
+                        if (/\d+[\.\)]\s*|pertama|kedua|ketiga|keempat|kelima/i.test(s)) {
+                            keyPoints.push(s.trim());
+                        }
+                    });
+                } else {
+                    // Take first 5 meaningful sentences
+                    sentences.slice(0, 5).forEach(s => {
+                        if (s.trim().length > 20) {
+                            keyPoints.push(s.trim());
+                        }
+                    });
+                }
+                
+                return keyPoints.slice(0, 5);
+            },
+
+            // Generate hashtags
+            generateHashtags(content, count = 5) {
+                const words = content.toLowerCase().split(/\s+/);
+                const stopWords = ['yang', 'dan', 'di', 'ini', 'itu', 'dengan', 'untuk', 'pada', 'adalah', 'dari', 'dalam', 'tidak', 'ada', 'juga', 'akan', 'bisa', 'sudah', 'lebih', 'harus', 'mau', 'gak', 'ga', 'sih', 'dong', 'nih', 'lah'];
+                
+                const wordFreq = {};
+                words.forEach(w => {
+                    const clean = w.replace(/[^a-z0-9]/g, '');
+                    if (clean.length > 3 && !stopWords.includes(clean)) {
+                        wordFreq[clean] = (wordFreq[clean] || 0) + 1;
+                    }
+                });
+                
+                const sorted = Object.entries(wordFreq)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, count)
+                    .map(([word]) => '#' + word.charAt(0).toUpperCase() + word.slice(1));
+                
+                return sorted.length >= count ? sorted : [...sorted, '#ContentCreator', '#Tips', '#Viral'];
+            },
+
+            // Twitter Thread Generator
+            generateTwitterThread(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                const hashtags = this.generateHashtags(content, 3);
+                
+                let thread = [];
+                
+                // Hook tweet
+                thread.push(`🧵 Thread: ${keyPoints[0] || content.substring(0, 100)}...`);
+                
+                // Key points
+                keyPoints.forEach((point, i) => {
+                    if (i > 0) {
+                        thread.push(`${i + 1}/ ${point}`);
+                    }
+                });
+                
+                // CTA tweet
+                thread.push(`\n💡 Save thread ini dan bagikan ke yang butuh!\n\n${hashtags.join(' ')}`);
+                
+                return thread.join('\n\n---\n\n');
+            },
+
+            // Instagram Carousel Generator
+            generateInstagramCarousel(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                const hashtags = this.generateHashtags(content, 10);
+                
+                let slides = [];
+                
+                // Slide 1: Hook
+                slides.push({
+                    label: 'Slide 1 - Hook',
+                    content: keyPoints[0] || 'Stop scroll! Ini penting banget...'
+                });
+                
+                // Slides 2-7: Key points
+                keyPoints.slice(1, 6).forEach((point, i) => {
+                    slides.push({
+                        label: `Slide ${i + 2}`,
+                        content: point
+                    });
+                });
+                
+                // Last slide: CTA
+                slides.push({
+                    label: 'Slide ' + (slides.length + 1) + ' - CTA',
+                    content: 'Save post ini & share ke teman yang butuh! 💪\n\nFollow untuk tips lainnya!'
+                });
+                
+                let output = slides.map(s => 
+                    `[${s.label}]\n${s.content}`
+                ).join('\n\n');
+                
+                output += '\n\n---\n\n📝 Caption:\n' + content.substring(0, 150) + '...\n\n' + hashtags.join(' ');
+                
+                return output;
+            },
+
+            // TikTok Script Generator
+            generateTikTokScript(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                
+                let script = `🎬 TIKTOK SCRIPT (30-60 detik)\n\n`;
+                
+                // Hook (first 3 seconds)
+                script += `🎤 HOOK (detik 0-3):\n"${keyPoints[0] || 'Tahu ga sih...'}"\n\n`;
+                
+                // Main content
+                script += `🎤 CONTENT:\n`;
+                keyPoints.slice(1, 4).forEach((point, i) => {
+                    script += `${point}\n`;
+                });
+                
+                // CTA
+                script += `\n🎤 CTA:\n"Follow untuk tips lainnya!"`;
+                
+                // Visual notes
+                script += `\n\n---\n\n🎨 VISUAL NOTES:\n`;
+                script += `- Gunakan text overlay besar\n`;
+                script += `- Background music trending\n`;
+                script += `- Transisi cepat setiap 3-5 detik`;
+                
+                return script;
+            },
+
+            // LinkedIn Post Generator
+            generateLinkedInPost(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                const hashtags = this.generateHashtags(content, 5);
+                
+                let post = '';
+                
+                // Hook
+                post += `${keyPoints[0] || content.substring(0, 100)}...\n\n`;
+                
+                // Key points with formatting
+                post += `Here's what I've learned:\n\n`;
+                keyPoints.slice(1, 5).forEach((point, i) => {
+                    post += `→ ${point}\n\n`;
+                });
+                
+                // CTA
+                post += `What's your experience? Drop a comment below 👇\n\n`;
+                post += hashtags.join(' ');
+                
+                return post;
+            },
+
+            // Blog Post Generator
+            generateBlogPost(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                
+                let post = '';
+                
+                // Title
+                post += `# ${keyPoints[0] || 'Topik Menarik'}\n\n`;
+                
+                // Introduction
+                post += `## Pendahuluan\n\n`;
+                post += `Dalam artikel ini, kita akan membahas tentang ${keyPoints[0] || 'topik ini'}. `;
+                post += `Simak sampai habis untuk mendapatkan insight lengkap.\n\n`;
+                
+                // Key points as sections
+                post += `## Poin-Poin Penting\n\n`;
+                keyPoints.forEach((point, i) => {
+                    post += `### ${i + 1}. ${point}\n\n`;
+                    post += `Penjelasan lengkap tentang poin ini sangat penting untuk dipahami. `;
+                    post += `Banyak orang belum menyadari betapa krusialnya hal ini.\n\n`;
+                });
+                
+                // Conclusion
+                post += `## Kesimpulan\n\n`;
+                post += `Dari semua poin di atas, dapat disimpulkan bahwa pemahaman yang baik akan `;
+                post += `membantu kamu mencapai hasil yang lebih optimal.\n\n`;
+                
+                // CTA
+                post += `---\n\n`;
+                post += `**Bagikan artikel ini jika bermanfaat!**\n\n`;
+                post += `*Tags: tips, tutorial, content creator*`;
+                
+                return post;
+            },
+
+            // Newsletter Generator
+            generateNewsletter(content) {
+                const keyPoints = this.extractKeyPoints(content);
+                
+                let newsletter = '';
+                
+                // Subject line
+                newsletter += `📧 SUBJECT LINE:\n"${keyPoints[0] || 'Tips Penting untuk Kamu'}"\n\n`;
+                newsletter += `---\n\n`;
+                
+                // Email body
+                newsletter += `Hi [Name],\n\n`;
+                newsletter += `Gimana kabarnya?\n\n`;
+                newsletter += `Hari ini gue mau share sesuatu yang penting banget:\n\n`;
+                
+                // Key points
+                keyPoints.forEach((point, i) => {
+                    newsletter += `✅ ${point}\n`;
+                });
+                
+                newsletter += `\nSemoga insight ini bermanfaat buat kamu!\n\n`;
+                newsletter += `Sampai ketemu di email berikutnya.\n\n`;
+                newsletter += `Best,\n[Your Name]\n\n`;
+                newsletter += `---\n\n`;
+                newsletter += `P.S. Jangan lupa share ke teman yang butuh!`;
+                
+                return newsletter;
+            }
+        };
+
+        // ===== MAIN REPURPOSE FUNCTION =====
+        document.getElementById('repurposeBtn').addEventListener('click', async () => {
+            const content = document.getElementById('contentInput').value.trim();
+            
+            if (!content) {
+                alert('Paste konten kamu dulu!');
+                return;
+            }
+
+            if (selectedPlatforms.length === 0) {
+                alert('Pilih minimal satu platform!');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('repurposeBtn').disabled = true;
+
+            // Simulate processing delay
+            setTimeout(() => {
+                const results = {};
+                
+                selectedPlatforms.forEach(platform => {
+                    if (repurposer.templates[platform]) {
+                        results[platform] = repurposer.templates[platform].generate(content);
+                    }
+                });
+
+                // Update UI
+                updateResults(results);
+
+                // Hide loading, show results
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('results').classList.add('show');
+                document.getElementById('repurposeBtn').disabled = false;
+
+                // Save to GAS
+                if (typeof saveRepurpose === 'function' || typeof postToGAS === 'function') {
+                    // Save each repurposed content
+                    Object.entries(results).forEach(([platform, content]) => {
+                        if (typeof postToGAS === 'function') {
+                            postToGAS({
+                                action: 'saveRepurpose',
+                                originalContent: document.getElementById('contentInput').value.substring(0, 500),
+                                platform: platform,
+                                repurposedContent: content.substring(0, 1000)
+                            });
+                        }
+                    });
+                }
+            }, 2000);
+        });
+
+        // ===== UPDATE RESULTS UI =====
+        function updateResults(results) {
+            const grid = document.getElementById('resultsGrid');
+            const totalCount = document.getElementById('totalCount');
+            
+            totalCount.textContent = Object.keys(results).length;
+            
+            grid.innerHTML = Object.entries(results).map(([platform, content]) => {
+                const template = repurposer.templates[platform];
+                return `
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-platform">
+                                <div class="platform-icon ${template.iconClass}">${template.icon}</div>
+                                <div>
+                                    <div class="platform-name">${template.name}</div>
+                                    <div class="platform-format">${template.format}</div>
+                                </div>
+                            </div>
+                            <div class="result-actions">
+                                <button class="result-btn" onclick="copyContent('${platform}')">📋 Copy</button>
+                            </div>
+                        </div>
+                        <div class="result-content" id="content-${platform}">
+                            <pre style="white-space: pre-wrap; font-family: var(--font-family); font-size: 0.9rem; color: #444;">${escapeHtml(content)}</pre>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyContent(platform) {
+            const content = document.querySelector(`#content-${platform} pre`).textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Content copied!');
+            });
+        }
+
+        function copyAllContent() {
+            const allContent = Object.entries(repurposer.templates)
+                .filter(([platform]) => selectedPlatforms.includes(platform))
+                .map(([platform, template]) => {
+                    const content = document.querySelector(`#content-${platform} pre`);
+                    return content ? `=== ${template.name} ===\n\n${content.textContent}` : '';
+                })
+                .filter(c => c)
+                .join('\n\n\n');
+            
+            navigator.clipboard.writeText(allContent).then(() => {
+                alert('All content copied!');
+            });
+        }
+
+        function downloadAll() {
+            const allContent = Object.entries(repurposer.templates)
+                .filter(([platform]) => selectedPlatforms.includes(platform))
+                .map(([platform, template]) => {
+                    const content = document.querySelector(`#content-${platform} pre`);
+                    return content ? `=== ${template.name} ===\n\n${content.textContent}` : '';
+                })
+                .filter(c => c)
+                .join('\n\n\n');
+            
+            const blob = new Blob([allContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'repurposed-content.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ===== TOOLS DROPDOWN CLICK =====
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>
