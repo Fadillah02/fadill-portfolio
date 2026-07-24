@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>📈 AI Hook Predictor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(35, 35, 35, 0.88);
+            --bg-sidebar: rgba(30, 30, 30, 0.92);
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== TOOLS DROPDOWN ===== */
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== INPUT SECTION ===== */
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        .input-group textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            color: #1a1a1a;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+        .input-group textarea::placeholder {
+            color: #999;
+        }
+
+        /* ===== PLATFORM SELECTOR ===== */
+        .platform-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .platform-btn {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .platform-btn:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+        .platform-btn.active {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* ===== ANALYZE BUTTON ===== */
+        .analyze-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .analyze-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== RESULTS SECTION ===== */
+        .results-section {
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SCORE CARD ===== */
+        .score-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 8px solid #e5e7eb;
+        }
+        .score-circle::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 8px solid transparent;
+            border-top-color: var(--accent-success);
+            border-right-color: var(--accent-success);
+            transform: rotate(-45deg);
+        }
+        .score-circle.excellent::after {
+            border-top-color: #22c55e;
+            border-right-color: #22c55e;
+        }
+        .score-circle.good::after {
+            border-top-color: #3b82f6;
+            border-right-color: #3b82f6;
+        }
+        .score-circle.average::after {
+            border-top-color: #f59e0b;
+            border-right-color: #f59e0b;
+        }
+        .score-circle.poor::after {
+            border-top-color: #ef4444;
+            border-right-color: #ef4444;
+        }
+        .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+        .score-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .score-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .score-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ===== ANALYSIS CARDS ===== */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .analysis-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+        .analysis-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .analysis-card ul {
+            list-style: none;
+        }
+        .analysis-card li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9rem;
+            color: #444;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .analysis-card li:last-child {
+            border-bottom: none;
+        }
+        .analysis-card li .icon {
+            flex-shrink: 0;
+        }
+
+        /* ===== FACTOR BARS ===== */
+        .factor-bar {
+            margin-bottom: 16px;
+        }
+        .factor-bar:last-child {
+            margin-bottom: 0;
+        }
+        .factor-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .factor-label span:first-child {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+        .factor-label span:last-child {
+            color: #666;
+        }
+        .factor-progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .factor-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        .factor-fill.excellent { background: #22c55e; }
+        .factor-fill.good { background: #3b82f6; }
+        .factor-fill.average { background: #f59e0b; }
+        .factor-fill.poor { background: #ef4444; }
+
+        /* ===== ALTERNATIVE HOOKS ===== */
+        .alt-hooks {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .alt-hooks h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hook-item {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+        }
+        .hook-item:last-child {
+            margin-bottom: 0;
+        }
+        .hook-item:hover {
+            border-color: #1a1a1a;
+            background: #f5f5f5;
+        }
+        .hook-text {
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .hook-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .hook-btn {
+            padding: 6px 12px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .hook-btn:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .loading.show {
+            display: block;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #1a1a1a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .input-section, .score-card, .analysis-card, .alt-hooks {
+                padding: 20px;
+            }
+            .platform-selector {
+                flex-direction: column;
+            }
+            .platform-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <div class="nav-tools">
+                <a href="#" class="nav-link">TOOLS ▾</a>
+                <div class="tools-dropdown">
+                    <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
+                    <a href="lyric.html" class="nav-link">🎵 Lyric</a>
+                    <a href="video.html" class="nav-link">🎬 Video</a>
+                    <a href="hook-predictor.html" class="nav-link active">📈 Hook Predictor</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <div class="header">
+            <h1>📈 AI Hook Predictor</h1>
+            <p>Prediksi kekuatan hook video kamu sebelum publish. Dapatkan score, analisis, dan rekomendasi untuk meningkatkan engagement.</p>
+        </div>
+
+        <!-- INPUT SECTION -->
+        <div class="input-section">
+            <div class="input-group">
+                <label>📝 Tulis Hook Video Kamu (3-5 detik pertama)</label>
+                <textarea id="hookInput" placeholder="Contoh: Kamu tau ga kenapa 90% YouTuber gagal di bulan pertama? Ada 3 kesalahan fatal yang harus kamu hindari..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>🎯 Platform Target</label>
+                <div class="platform-selector">
+                    <button class="platform-btn active" data-platform="youtube">▶️ YouTube</button>
+                    <button class="platform-btn" data-platform="tiktok">🎵 TikTok</button>
+                    <button class="platform-btn" data-platform="instagram">📸 Instagram</button>
+                    <button class="platform-btn" data-platform="twitter">🐦 Twitter/X</button>
+                </div>
+            </div>
+
+            <button class="analyze-btn" id="analyzeBtn">
+                <span>🔍</span>
+                <span>Analyze Hook</span>
+            </button>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Menganalisis hook kamu...</p>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="results-section" id="results">
+            <!-- Score Card -->
+            <div class="score-card">
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-label">/ 100</div>
+                </div>
+                <div class="score-title" id="scoreTitle">Loading...</div>
+                <div class="score-subtitle" id="scoreSubtitle">Menganalisis hook kamu</div>
+            </div>
+
+            <!-- Analysis Grid -->
+            <div class="analysis-grid">
+                <!-- Strengths -->
+                <div class="analysis-card">
+                    <h3>✅ Kelebihan</h3>
+                    <ul id="strengthsList"></ul>
+                </div>
+
+                <!-- Weaknesses -->
+                <div class="analysis-card">
+                    <h3>⚠️ Perlu Diperbaiki</h3>
+                    <ul id="weaknessesList"></ul>
+                </div>
+            </div>
+
+            <!-- Factor Analysis -->
+            <div class="analysis-card" style="margin-bottom: 24px;">
+                <h3>📊 Analisis Faktor</h3>
+                <div id="factorBars"></div>
+            </div>
+
+            <!-- Alternative Hooks -->
+            <div class="alt-hooks">
+                <h3>💡 Rekomendasi Hook Alternatif</h3>
+                <div id="altHooks"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        // ===== PLATFORM SELECTOR =====
+        let selectedPlatform = 'youtube';
+        document.querySelectorAll('.platform-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedPlatform = btn.dataset.platform;
+            });
+        });
+
+        // ===== HOOK ANALYSIS ENGINE =====
+        const hookAnalyzer = {
+            // Scoring weights
+            weights: {
+                curiosity: 0.25,
+                urgency: 0.20,
+                specificity: 0.20,
+                emotion: 0.20,
+                length: 0.15
+            },
+
+            // Curiosity keywords (bikin penasaran)
+            curiosityKeywords: [
+                'tau ga', 'ternyata', 'rahasia', 'alasannya', 'gimana caranya',
+                'kenapa', 'apa yang', 'siapa', 'dimana', 'kapan',
+                'bener ga sih', 'bener ga', 'fact', 'fakta',
+                'yang belum', 'yang jarang', 'yang tidak', 'terungkap',
+                'mengapa', 'gimana', 'how', 'why'
+            ],
+
+            // Urgency keywords
+            urgencyKeywords: [
+                'sekarang', 'hari ini', 'jangan', 'stop', 'wajib',
+                'harus', 'penting', 'urgent', 'segera', 'mending',
+                'ketinggalan', 'kelewatan', 'terlambat', 'last chance',
+                'before', 'sebelum', 'jangan sampai', 'kehabisan'
+            ],
+
+            // Emotion keywords
+            emotionKeywords: [
+                'gagal', 'sukses', 'kaya', 'miskin', 'hilang',
+                'menangis', 'tertawa', 'marah', 'takut', 'kaget',
+                'syok', 'ngeri', 'parah', 'gila', 'booming',
+                'viral', 'meledak', 'explosive', 'shocking'
+            ],
+
+            // Specificity indicators
+            specificityKeywords: [
+                /\d+%/,           // Percentages
+                /\d+ kali/,       // "X kali"
+                /\d+ tahun/,      // "X tahun"
+                /\d+ bulan/,      // "X bulan"
+                /\d+ hari/,       // "X hari"
+                /\d+ jam/,        // "X jam"
+                /\d+ menit/,      // "X menit"
+                /\d+ ways/,       // "X ways"
+                /\d+ cara/,       // "X cara"
+                /\d+ tips/,       // "X tips"
+                /\d+ trik/,       // "X trik"
+                /\d+ kesalahan/,  // "X kesalahan"
+                /\d+ langkah/,    // "X langkah"
+                /\d+ rahasia/     // "X rahasia"
+            ],
+
+            // Platform-specific rules
+            platformRules: {
+                youtube: { minWords: 8, maxWords: 20, idealWords: 12 },
+                tiktok: { minWords: 5, maxWords: 15, idealWords: 8 },
+                instagram: { minWords: 6, maxWords: 18, idealWords: 10 },
+                twitter: { minWords: 5, maxWords: 25, idealWords: 15 }
+            },
+
+            // Analyze the hook
+            analyze(hook, platform) {
+                const lowerHook = hook.toLowerCase();
+                const words = hook.split(/\s+/).length;
+
+                // Calculate scores
+                const curiosityScore = this.scoreCuriosity(lowerHook);
+                const urgencyScore = this.scoreUrgency(lowerHook);
+                const specificityScore = this.scoreSpecificity(hook);
+                const emotionScore = this.scoreEmotion(lowerHook);
+                const lengthScore = this.scoreLength(words, platform);
+
+                // Weighted total
+                const totalScore = Math.round(
+                    (curiosityScore * this.weights.curiosity) +
+                    (urgencyScore * this.weights.urgency) +
+                    (specificityScore * this.weights.specificity) +
+                    (emotionScore * this.weights.emotion) +
+                    (lengthScore * this.weights.length)
+                );
+
+                // Generate feedback
+                const strengths = this.getStrengths(curiosityScore, urgencyScore, specificityScore, emotionScore, lengthScore, lowerHook);
+                const weaknesses = this.getWeaknesses(curiosityScore, urgencyScore, specificityScore, emotionScore, lengthScore, words, platform);
+                const factors = [
+                    { name: 'Curiosity', score: curiosityScore },
+                    { name: 'Urgency', score: urgencyScore },
+                    { name: 'Specificity', score: specificityScore },
+                    { name: 'Emotion', score: emotionScore },
+                    { name: 'Length', score: lengthScore }
+                ];
+
+                return {
+                    score: Math.min(100, Math.max(0, totalScore)),
+                    strengths,
+                    weaknesses,
+                    factors
+                };
+            },
+
+            scoreCuriosity(text) {
+                let score = 30; // Base
+                this.curiosityKeywords.forEach(kw => {
+                    if (text.includes(kw)) score += 15;
+                });
+                // Question mark bonus
+                if (text.includes('?')) score += 10;
+                return Math.min(100, score);
+            },
+
+            scoreUrgency(text) {
+                let score = 20;
+                this.urgencyKeywords.forEach(kw => {
+                    if (text.includes(kw)) score += 18;
+                });
+                return Math.min(100, score);
+            },
+
+            scoreSpecificity(text) {
+                let score = 25;
+                this.specificityKeywords.forEach(regex => {
+                    if (regex.test(text)) score += 20;
+                });
+                return Math.min(100, score);
+            },
+
+            scoreEmotion(text) {
+                let score = 25;
+                this.emotionKeywords.forEach(kw => {
+                    if (text.includes(kw)) score += 15;
+                });
+                // Exclamation mark bonus
+                if (text.includes('!')) score += 5;
+                return Math.min(100, score);
+            },
+
+            scoreLength(words, platform) {
+                const rules = this.platformRules[platform];
+                if (words >= rules.minWords && words <= rules.maxWords) {
+                    const diff = Math.abs(words - rules.idealWords);
+                    return Math.max(60, 100 - (diff * 10));
+                }
+                return words < rules.minWords ? 40 : 50;
+            },
+
+            getStrengths(c, u, s, e, l, text) {
+                const strengths = [];
+                if (c >= 70) strengths.push('Hook bikin penasaran dengan baik');
+                if (u >= 70) strengths.push('Ada urgency yang kuat');
+                if (s >= 70) strengths.push('Menggunakan angka/fakta spesifik');
+                if (e >= 70) strengths.push('Trigger emosi yang tepat');
+                if (l >= 70) strengths.push('Panjang hook optimal');
+                if (text.includes('?')) strengths.push('Menggunakan pertanyaan retoris');
+                if (strengths.length === 0) strengths.push('Hook sudah cukup dasar');
+                return strengths;
+            },
+
+            getWeaknesses(c, u, s, e, l, words, platform) {
+                const weaknesses = [];
+                const rules = this.platformRules[platform];
+                if (c < 50) weaknesses.push('Kurang bikin penasaran - tambah pertanyaan atau teaser');
+                if (u < 50) weaknesses.push('Tidak ada urgency - tambah kata seperti "sekarang" atau "jangan"');
+                if (s < 50) weaknesses.push('Tidak ada angka spesifik - coba tambah "%" atau "X cara"');
+                if (e < 50) weaknesses.push('Kurang trigger emosi - tambah kata "rahasia", "gagal", "viral"');
+                if (words < rules.minWords) weaknesses.push('Terlalu pendek untuk ' + platform);
+                if (words > rules.maxWords) weaknesses.push('Terlalu panjang untuk ' + platform);
+                if (weaknesses.length === 0) weaknesses.push('Hook sudah cukup kuat!');
+                return weaknesses;
+            },
+
+            // Generate alternative hooks
+            generateAlternatives(originalHook, platform) {
+                const alternatives = [];
+                const lowerHook = originalHook.toLowerCase();
+
+                // Template-based alternatives
+                const templates = [
+                    'Jangan upload {content} lagi sampai baca ini...',
+                    'Gue kehilangan {number} subscriber gara-gara {reason}...',
+                    'Ini rahasia yang gue simpen {time} tahun...',
+                    '{number} kesalahan fatal yang bikin {result}...',
+                    'Ternyata ini yang bikin {result} berbeda...',
+                    'Kamu pasti belum tau tentang {topic}...',
+                    'Stop lakukan {action} sekarang juga!',
+                    '{number} cara {result} yang belum kamu tau...',
+                    'Akhirnya terungkap: {secret}...',
+                    'Ini yang terjadi kalau kamu {action}...'
+                ];
+
+                // Generate variations
+                alternatives.push(
+                    'Jangan upload video lagi sampai baca ini...',
+                    'Gue kehilangan 1000 subscriber gara-gara 1 kesalahan ini...',
+                    'Ini rahasia yang gue simpen 2 tahun...',
+                    '3 kesalahan fatal yang bikin video kamu sepi...',
+                    'Ternyata ini yang bikin konten viral berbeda...'
+                );
+
+                return alternatives.slice(0, 5);
+            }
+        };
+
+        // ===== MAIN ANALYSIS FUNCTION =====
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            const hook = document.getElementById('hookInput').value.trim();
+            
+            if (!hook) {
+                alert('Tulis hook video kamu dulu!');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('analyzeBtn').disabled = true;
+
+            // Simulate analysis delay
+            setTimeout(() => {
+                const result = hookAnalyzer.analyze(hook, selectedPlatform);
+                const alternatives = hookAnalyzer.generateAlternatives(hook, selectedPlatform);
+
+                // Update UI
+                updateResults(result, alternatives);
+
+                // Hide loading, show results
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('results').classList.add('show');
+                document.getElementById('analyzeBtn').disabled = false;
+
+                // Save to GAS
+                if (typeof savePrompt === 'function') {
+                    savePrompt({
+                        type: 'hook_analysis',
+                        hook: hook,
+                        platform: selectedPlatform,
+                        score: result.score
+                    });
+                }
+            }, 1500);
+        });
+
+        // ===== UPDATE RESULTS UI =====
+        function updateResults(result, alternatives) {
+            // Score
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreTitle = document.getElementById('scoreTitle');
+            const scoreSubtitle = document.getElementById('scoreSubtitle');
+
+            scoreNumber.textContent = result.score;
+
+            // Remove all classes
+            scoreCircle.classList.remove('excellent', 'good', 'average', 'poor');
+
+            if (result.score >= 80) {
+                scoreCircle.classList.add('excellent');
+                scoreTitle.textContent = '🔥 Hook Luar Biasa!';
+                scoreSubtitle.textContent = 'Hook kamu sangat kuat dan siap viral';
+            } else if (result.score >= 60) {
+                scoreCircle.classList.add('good');
+                scoreTitle.textContent = '👍 Hook Bagus';
+                scoreSubtitle.textContent = 'Hook kamu cukup kuat, ada beberapa yang bisa diperbaiki';
+            } else if (result.score >= 40) {
+                scoreCircle.classList.add('average');
+                scoreTitle.textContent = '⚠️ Hook Cukup';
+                scoreSubtitle.textContent = 'Hook kamu butuh beberapa improvisasi';
+            } else {
+                scoreCircle.classList.add('poor');
+                scoreTitle.textContent = '❌ Perlu Perbaikan';
+                scoreSubtitle.textContent = 'Hook kamu perlu banyak perbaikan';
+            }
+
+            // Strengths
+            const strengthsList = document.getElementById('strengthsList');
+            strengthsList.innerHTML = result.strengths.map(s => 
+                `<li><span class="icon">✅</span><span>${s}</span></li>`
+            ).join('');
+
+            // Weaknesses
+            const weaknessesList = document.getElementById('weaknessesList');
+            weaknessesList.innerHTML = result.weaknesses.map(w => 
+                `<li><span class="icon">⚠️</span><span>${w}</span></li>`
+            ).join('');
+
+            // Factor bars
+            const factorBars = document.getElementById('factorBars');
+            factorBars.innerHTML = result.factors.map(f => {
+                const level = f.score >= 70 ? 'excellent' : f.score >= 50 ? 'good' : f.score >= 30 ? 'average' : 'poor';
+                return `
+                    <div class="factor-bar">
+                        <div class="factor-label">
+                            <span>${f.name}</span>
+                            <span>${f.score}%</span>
+                        </div>
+                        <div class="factor-progress">
+                            <div class="factor-fill ${level}" style="width: ${f.score}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Alternative hooks
+            const altHooks = document.getElementById('altHooks');
+            altHooks.innerHTML = alternatives.map((hook, i) => `
+                <div class="hook-item">
+                    <div class="hook-text">${hook}</div>
+                    <div class="hook-actions">
+                        <button class="hook-btn" onclick="copyHook(this, '${hook.replace(/'/g, "\\'")}')">📋 Copy</button>
+                        <button class="hook-btn" onclick="useHook('${hook.replace(/'/g, "\\'")}')">✨ Use This</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== COPY HOOK =====
+        function copyHook(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => btn.textContent = originalText, 2000);
+            });
+        }
+
+        // ===== USE HOOK =====
+        function useHook(text) {
+            document.getElementById('hookInput').value = text;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== TOOLS DROPDOWN CLICK =====
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>

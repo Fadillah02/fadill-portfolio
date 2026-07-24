@@ -71,6 +71,15 @@ function doPost(e) {
       case 'submitPrompt':
         response = submitPrompt(body);
         break;
+      case 'saveHookAnalysis':
+        response = saveHookAnalysis(body);
+        break;
+      case 'saveRepurpose':
+        response = saveRepurpose(body);
+        break;
+      case 'saveThumbnailAnalysis':
+        response = saveThumbnailAnalysis(body);
+        break;
       default:
         response = { success: false, error: 'Invalid action' };
     }
@@ -353,6 +362,54 @@ function submitPrompt(data) {
   };
 }
 
+// ============ HOOK ANALYSIS ============
+function saveHookAnalysis(data) {
+  const sheet = getSheet('HookAnalyses');
+  
+  sheet.appendRow([
+    Utilities.getUuid(),
+    data.hook || '',
+    data.platform || 'youtube',
+    data.score || 0,
+    data.strengths ? data.strengths.join(', ') : '',
+    data.weaknesses ? data.weaknesses.join(', ') : '',
+    new Date()
+  ]);
+  
+  return { success: true };
+}
+
+// ============ CONTENT REPURPOSE ============
+function saveRepurpose(data) {
+  const sheet = getSheet('RepurposedContent');
+  
+  sheet.appendRow([
+    Utilities.getUuid(),
+    data.originalContent || '',
+    data.platform || '',
+    data.repuposedContent || '',
+    new Date()
+  ]);
+  
+  return { success: true };
+}
+
+// ============ THUMBNAIL ANALYSIS ============
+function saveThumbnailAnalysis(data) {
+  const sheet = getSheet('ThumbnailAnalyses');
+  
+  sheet.appendRow([
+    Utilities.getUuid(),
+    data.thumbnailUrl || '',
+    data.platform || 'youtube',
+    data.score || 0,
+    data.feedback ? data.feedback.join(', ') : '',
+    new Date()
+  ]);
+  
+  return { success: true };
+}
+
 // ============ HELPER FUNCTIONS ============
 function getSheet(name) {
   const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
@@ -382,6 +439,21 @@ function initializeSheet(sheet, name) {
     sheet.appendRow([
       'id', 'title', 'prompt', 'category', 'authorName',
       'authorEmail', 'dateSubmitted', 'status'
+    ]);
+  } else if (name === 'HookAnalyses') {
+    sheet.appendRow([
+      'id', 'hook', 'platform', 'score', 'strengths',
+      'weaknesses', 'dateAnalyzed'
+    ]);
+  } else if (name === 'RepurposedContent') {
+    sheet.appendRow([
+      'id', 'originalContent', 'platform', 'repurposedContent',
+      'dateCreated'
+    ]);
+  } else if (name === 'ThumbnailAnalyses') {
+    sheet.appendRow([
+      'id', 'thumbnailUrl', 'platform', 'score', 'feedback',
+      'dateAnalyzed'
     ]);
   }
 }
