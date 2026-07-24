@@ -77,10 +77,13 @@ function doPost(e) {
       case 'saveRepurpose':
         response = saveRepurpose(body);
         break;
-      case 'saveThumbnailAnalysis':
-        response = saveThumbnailAnalysis(body);
-        break;
-      default:
+       case 'saveThumbnailAnalysis':
+         response = saveThumbnailAnalysis(body);
+         break;
+       case 'saveVoiceHistory':
+         response = saveVoiceHistory(body);
+         break;
+       default:
         response = { success: false, error: 'Invalid action' };
     }
   } catch (err) {
@@ -410,6 +413,21 @@ function saveThumbnailAnalysis(data) {
   return { success: true };
 }
 
+// ============ VOICE HISTORY ============
+function saveVoiceHistory(data) {
+  const sheet = getSheet('VoiceHistory');
+  
+  sheet.appendRow([
+    Utilities.getUuid(),
+    data.type || '',
+    data.title || '',
+    data.meta || '',
+    new Date()
+  ]);
+  
+  return { success: true };
+}
+
 // ============ HELPER FUNCTIONS ============
 function getSheet(name) {
   const ss = SpreadsheetApp.openById(CONFIG.SHEET_ID);
@@ -454,6 +472,11 @@ function initializeSheet(sheet, name) {
     sheet.appendRow([
       'id', 'thumbnailUrl', 'platform', 'score', 'feedback',
       'dateAnalyzed'
+    ]);
+  } else if (name === 'VoiceHistory') {
+    sheet.appendRow([
+      'id', 'type', 'title', 'meta',
+      'dateCreated'
     ]);
   }
 }
