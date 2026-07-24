@@ -3,615 +3,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:;">
     <title>📊 Dashboard — AI Creator Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
         :root {
-            --bg-base: #808080;
-            --bg-card: #ffffff;
+            --bg-base: #f0f2f5;
+            --card-bg: #ffffff;
             --text-main: #1a1a1a;
-            --text-muted: #666666;
-            --text-on-dark: #ffffff;
-            --accent-primary: #1a1a1a;
-            --accent-success: #22c55e;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --accent-orange: #f97316;
-            --accent-cyan: #06b6d4;
-            --accent-red: #ef4444;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --font-family: 'Inter', -apple-system, sans-serif;
-            --radius-md: 16px;
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-muted: #6c757d;
+            --sidebar-bg: #1a1a2e;
+            --sidebar-text: rgba(255,255,255,0.6);
+            --sidebar-active: rgba(255,255,255,0.12);
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            background: #808080;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-base);
             color: var(--text-main);
-            font-family: var(--font-family);
             min-height: 100vh;
         }
 
-        /* ===== TOP NAV ===== */
-        .top-nav {
+        .sidebar {
             position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 52px;
-            background: rgba(35, 35, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 20px;
-            z-index: 200;
-        }
-        .top-nav .nav-brand {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #ffffff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .top-nav .nav-links {
-            display: flex;
-            gap: 4px;
-        }
-        .top-nav .nav-link {
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.6);
-            transition: var(--transition);
-        }
-        .top-nav .nav-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .top-nav .nav-link.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        /* ===== TOOLS DROPDOWN ===== */
-        .nav-tools {
-            position: relative;
-        }
-        .tools-dropdown {
-            position: absolute;
-            top: 100%;
+            top: 0;
             left: 0;
-            margin-top: 8px;
-            background: rgba(40, 40, 40, 0.95);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 6px;
-            min-width: 180px;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(8px);
-            transition: all 0.2s ease;
-            z-index: 300;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            width: 260px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 20px 0;
+            z-index: 100;
+            overflow-y: auto;
         }
-        .nav-tools:hover .tools-dropdown {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateY(0);
+
+        .sidebar-brand {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 20px;
         }
-        .tools-dropdown .nav-link {
+
+        .sidebar-brand a {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            padding: 0 12px;
+        }
+
+        .sidebar-nav .nav-link {
+            color: var(--sidebar-text);
+            padding: 10px 16px;
             border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.82rem;
-            color: rgba(255, 255, 255, 0.6);
-            transition: var(--transition);
-        }
-        .tools-dropdown .nav-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .tools-dropdown .nav-link.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.12);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
         }
 
-        /* ===== MAIN CONTAINER ===== */
-        .main-container {
-            margin-top: 52px;
-            padding: 40px 20px;
-            max-width: 1100px;
-            margin-left: auto;
-            margin-right: auto;
+        .sidebar-nav .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.06);
         }
 
-        /* ===== HEADER ===== */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
+        .sidebar-nav .nav-link.active {
+            color: #fff;
+            background: var(--accent);
         }
-        .header h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #1a1a1a;
+
+        .sidebar-nav .nav-section {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.3);
+            padding: 16px 16px 8px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 24px 32px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h4 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .top-bar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
             margin-bottom: 12px;
         }
-        .header p {
-            color: #666666;
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
 
-        /* ===== STATS GRID (4 KEY) ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        .stat-card {
-            background: #ffffff;
-            border-radius: var(--radius-md);
-            padding: 24px;
-            box-shadow: var(--shadow-md);
-            text-align: center;
-            transition: var(--transition);
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
+        .stat-icon.primary { background: #eef2ff; color: var(--accent); }
+        .stat-icon.success { background: #f0fdf4; color: var(--success); }
+        .stat-icon.warning { background: #fffbeb; color: var(--warning); }
+        .stat-icon.info { background: #eff6ff; color: var(--info); }
+        .stat-icon.danger { background: #fef2f2; color: var(--danger); }
+        .stat-icon.purple { background: #f5f3ff; color: #8b5cf6; }
+
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: #1a1a1a;
             line-height: 1;
             margin-bottom: 4px;
         }
+
         .stat-label {
             font-size: 0.8rem;
-            color: #666666;
+            color: var(--text-muted);
             font-weight: 500;
         }
 
-        /* ===== SECTION TITLE ===== */
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .stat-change.up { color: var(--success); }
+        .stat-change.down { color: var(--danger); }
+
         .section-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        /* ===== SEARCH BAR ===== */
+        .tool-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+        }
+
+        .tool-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .tool-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        .tool-card h6 {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .tool-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .badge-custom {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .badge-live { background: #dcfce7; color: #16a34a; }
+        .badge-new { background: #dbeafe; color: #2563eb; }
+        .badge-beta { background: #fef3c7; color: #d97706; }
+
         .search-bar {
             position: relative;
-            margin-bottom: 24px;
         }
+
         .search-bar input {
+            padding: 10px 16px 10px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #fff;
             width: 100%;
-            padding: 14px 44px 14px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-family: var(--font-family);
-            font-size: 0.95rem;
-            color: #1a1a1a;
-            outline: none;
-            transition: var(--transition);
-            background: #ffffff;
+            transition: all 0.2s ease;
         }
+
         .search-bar input:focus {
-            border-color: #1a1a1a;
-            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
+
         .search-bar .search-icon {
             position: absolute;
-            right: 16px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.1rem;
             color: #9ca3af;
         }
 
-        /* ===== CATEGORY TABS ===== */
+        .nav-pills-custom .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+        .nav-pills-custom .nav-link:hover {
+            color: var(--text-main);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .nav-pills-custom .nav-link.active {
+            color: #fff;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
         .category-tabs {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
-            background: #ffffff;
-            padding: 8px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
             flex-wrap: wrap;
         }
-        .category-tab {
-            flex: 1;
-            min-width: 120px;
-            padding: 10px 16px;
-            border: none;
-            background: transparent;
+
+        .cat-btn {
+            padding: 8px 16px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
             border-radius: 8px;
-            font-family: var(--font-family);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #666666;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .category-tab:hover {
-            background: #f3f4f6;
-            color: #1a1a1a;
-        }
-        .category-tab.active {
-            background: #1a1a1a;
-            color: #ffffff;
+            transition: all 0.2s ease;
         }
 
-        /* ===== TOOL CARDS GRID ===== */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+        .cat-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
-        .tool-card {
-            background: #ffffff;
-            border-radius: var(--radius-md);
-            padding: 28px;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
+
+        .cat-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
         }
-        .tool-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.18);
-        }
-        .tool-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .tool-card-icon {
-            font-size: 2rem;
-            width: 48px;
-            height: 48px;
-            background: #f3f4f6;
+
+        .detailed-panel {
+            background: #fff;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .tool-card h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-        .tool-card p {
-            font-size: 0.85rem;
-            color: #666666;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        .tool-card-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .badge-new { background: #dcfce7; color: #16a34a; }
-        .badge-live { background: #dbeafe; color: #2563eb; }
-
-        /* ===== DETAILED STATS (Collapsible) ===== */
-        .detailed-stats {
-            background: #ffffff;
-            border-radius: var(--radius-md);
             padding: 20px;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.04);
+            margin-bottom: 24px;
         }
-        .detailed-stats-header {
+
+        .detailed-panel-header {
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            user-select: none;
         }
-        .detailed-stats-header h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-        .detailed-stats-toggle {
-            font-size: 1.2rem;
-            color: #666666;
-            transition: var(--transition);
-        }
-        .detailed-stats-toggle.open {
-            color: #1a1a1a;
-        }
-        .detailed-stats-content {
+
+        .detailed-panel-body {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
-        .detailed-stats-content.open {
+
+        .detailed-panel-body.open {
             max-height: 500px;
         }
-        .detailed-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            padding-top: 20px;
-        }
-        .detail-stat {
+
+        .detail-stat-item {
             text-align: center;
-        }
-        .detail-stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-        .detail-stat-label {
-            font-size: 0.75rem;
-            color: #666666;
-            margin-top: 4px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
         }
 
-        /* ===== FOOTER ===== */
+        .detail-stat-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .detail-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
         .footer {
             text-align: center;
             padding: 32px 20px;
-            color: #888888;
+            color: #9ca3af;
             font-size: 0.8rem;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .main-container {
-                padding: 20px 16px;
+            .sidebar {
+                display: none;
             }
-            .header h1 {
-                font-size: 1.6rem;
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
             }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .detailed-stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
-            .category-tabs {
-                flex-direction: column;
-            }
-            .category-tab {
-                width: 100%;
+            .stat-value {
+                font-size: 1.4rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOP NAV -->
-    <nav class="top-nav">
-        <a href="index.html" class="nav-brand">🏠 Home</a>
-        <div class="nav-links">
-            <div class="nav-tools">
-                <a href="#" class="nav-link">TOOLS ▾</a>
-                <div class="tools-dropdown">
-                    <a href="Poster-fitur.html" class="nav-link">🖼️ Poster</a>
-                    <a href="lyric.html" class="nav-link">🎵 Lyric</a>
-                    <a href="video.html" class="nav-link">🎬 Video</a>
-                    <a href="hook-predictor.html" class="nav-link">📈 Hook Predictor</a>
-                    <a href="repurposer.html" class="nav-link">🔄 Repurposer</a>
-                    <a href="thumbnail-predictor.html" class="nav-link">🎯 Thumbnail Predictor</a>
-                    <a href="voice-studio.html" class="nav-link">🎤 Voice Studio</a>
-                    <a href="dashboard.html" class="nav-link active">📊 Dashboard</a>
-                </div>
-            </div>
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <a href="index.html">🏠 AI Creator Studio</a>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="dashboard.html" class="nav-link active">
+                <i class="bi bi-grid"></i> Dashboard
+            </a>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-house"></i> Home
+            </a>
+
+            <div class="nav-section">Tools</div>
+            <a href="Poster-fitur.html" class="nav-link">
+                <i class="bi bi-image"></i> AI Poster Generator
+            </a>
+            <a href="lyric.html" class="nav-link">
+                <i class="bi bi-music-note-list"></i> Lyric Generator
+            </a>
+            <a href="video.html" class="nav-link">
+                <i class="bi bi-camera-video"></i> Video Prompt Studio
+            </a>
+            <a href="voice-studio.html" class="nav-link">
+                <i class="bi bi-microphone"></i> Voice AI Studio
+            </a>
+            <a href="hook-predictor.html" class="nav-link">
+                <i class="bi bi-graph-up-arrow"></i> Hook Predictor
+            </a>
+            <a href="repurposer.html" class="nav-link">
+                <i class="bi bi-arrow-repeat"></i> Content Repurposer
+            </a>
+            <a href="thumbnail-predictor.html" class="nav-link">
+                <i class="bi bi-images"></i> Thumbnail Predictor
+            </a>
+            <a href="broll-suggester.html" class="nav-link">
+                <i class="bi bi-film"></i> B-Roll Suggester
+            </a>
+            <a href="sound-design.html" class="nav-link">
+                <i class="bi bi-sliders"></i> Sound Design
+            </a>
+            <a href="seo-optimizer.html" class="nav-link">
+                <i class="bi bi-search-heart"></i> SEO Optimizer
+            </a>
         </div>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <div class="main-container">
-        <div class="header">
-            <h1>📊 Dashboard</h1>
-            <p>Overview of your AI Creator Studio activity and quick access to all tools.</p>
+    <div class="main-content">
+        <div class="top-bar">
+            <h4><i class="bi bi-grid"></i> Dashboard</h4>
+            <div class="user-info">
+                <span>AI Creator Studio</span>
+            </div>
         </div>
 
-        <!-- KEY STATS (4 CARDS) -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="stat-icon">📝</div>
-                <div class="stat-value" id="statTotalPrompts">0</div>
-                <div class="stat-label">Total Prompts</div>
+        <!-- KEY STATS -->
+        <div class="row g-4 mb-4" id="statsRow">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card">
+                    <div class="stat-icon primary"><i class="bi bi-file-text"></i></div>
+                    <div class="stat-value" id="statTotalPrompts">0</div>
+                    <div class="stat-label">Total Prompts</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up"></i> Active</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">❤️</div>
-                <div class="stat-value" id="statTotalLikes">0</div>
-                <div class="stat-label">Total Likes</div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card">
+                    <div class="stat-icon success"><i class="bi bi-heart"></i></div>
+                    <div class="stat-value" id="statTotalLikes">0</div>
+                    <div class="stat-label">Total Likes</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up"></i> Engagement</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">📅</div>
-                <div class="stat-value" id="statThisWeek">0</div>
-                <div class="stat-label">This Week</div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card">
+                    <div class="stat-icon warning"><i class="bi bi-calendar3"></i></div>
+                    <div class="stat-value" id="statThisWeek">0</div>
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-change up">New this week</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">👁️</div>
-                <div class="stat-value" id="statVisits">0</div>
-                <div class="stat-label">Total Visits</div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card">
+                    <div class="stat-icon info"><i class="bi bi-eye"></i></div>
+                    <div class="stat-value" id="statVisits">0</div>
+                    <div class="stat-label">Total Visits</div>
+                    <div class="stat-change up">All time</div>
+                </div>
             </div>
         </div>
 
         <!-- DETAILED STATS (Collapsible) -->
-        <div class="detailed-stats">
-            <div class="detailed-stats-header" id="detailedStatsHeader">
-                <h3>📊 Detailed Statistics</h3>
-                <span class="detailed-stats-toggle" id="detailedStatsToggle">▼</span>
+        <div class="detailed-panel mb-4">
+            <div class="detailed-panel-header" id="detailedToggle">
+                <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Detailed Statistics</h6>
+                <i class="bi bi-chevron-down" id="detailedIcon"></i>
             </div>
-            <div class="detailed-stats-content" id="detailedStatsContent">
-                <div class="detailed-stats-grid">
-                    <div class="detail-stat">
-                        <div class="detail-stat-value" id="detailSubmissions">0</div>
-                        <div class="detail-stat-label">Submissions</div>
+            <div class="detailed-panel-body" id="detailedBody">
+                <div class="row g-3 mt-2">
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailSubmissions">0</div>
+                            <div class="detail-stat-label">Submissions</div>
+                        </div>
                     </div>
-                    <div class="detail-stat">
-                        <div class="detail-stat-value" id="detailHookAnalyses">0</div>
-                        <div class="detail-stat-label">Hook Analyses</div>
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailHookAnalyses">0</div>
+                            <div class="detail-stat-label">Hook Analyses</div>
+                        </div>
                     </div>
-                    <div class="detail-stat">
-                        <div class="detail-stat-value" id="detailRepurposed">0</div>
-                        <div class="detail-stat-label">Repurposed</div>
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailRepurposed">0</div>
+                            <div class="detail-stat-label">Repurposed</div>
+                        </div>
                     </div>
-                    <div class="detail-stat">
-                        <div class="detail-stat-value" id="detailThumbnails">0</div>
-                        <div class="detail-stat-label">Thumbnail Analyses</div>
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailThumbnails">0</div>
+                            <div class="detail-stat-label">Thumbnails</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailVoice">0</div>
+                            <div class="detail-stat-label">Voice History</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="detail-stat-item">
+                            <div class="detail-stat-value" id="detailCategories">0</div>
+                            <div class="detail-stat-label">Categories</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SEARCH BAR -->
-        <div class="search-bar">
-            <input type="text" id="toolSearch" placeholder="Cari tool... (mis: poster, lyric, voice, broll, sound, seo)" autocomplete="off">
-            <span class="search-icon">🔍</span>
+        <!-- SEARCH -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="search-bar">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="toolSearch" placeholder="Search tools... (e.g. poster, lyric, video, voice, broll, sound, seo)">
+                </div>
+            </div>
         </div>
 
         <!-- CATEGORY TABS -->
-        <div class="category-tabs">
-            <button class="category-tab active" data-category="all">🌐 Semua</button>
-            <button class="category-tab" data-category="generator">🎨 Generator</button>
-            <button class="category-tab" data-category="analytics">📈 Analytics</button>
-            <button class="category-tab" data-category="utility">🔄 Utility</button>
+        <div class="category-tabs mb-4" id="categoryTabs">
+            <button class="cat-btn active" data-category="all">🌐 All</button>
+            <button class="cat-btn" data-category="generator">🎨 Generator</button>
+            <button class="cat-btn" data-category="analytics">📈 Analytics</button>
+            <button class="cat-btn" data-category="utility">🔄 Utility</button>
         </div>
 
         <!-- TOOLS GRID -->
-        <div class="tools-grid" id="toolsGrid">
-            <a href="Poster-fitur.html" class="tool-card" data-category="generator" data-name="poster">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🖼️</div>
-                    <h3>AI Poster Generator</h3>
-                </div>
-                <p>Generate stunning poster prompts with AI. Choose from multiple styles and orientations.</p>
-                <span class="tool-card-badge badge-live">Live</span>
-            </a>
-            <a href="lyric.html" class="tool-card" data-category="generator" data-name="lyric">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🎵</div>
-                    <h3>Lyric Generator</h3>
-                </div>
-                <p>Create custom song lyrics with AI powered by multiple music styles and themes.</p>
-                <span class="tool-card-badge badge-live">Live</span>
-            </a>
-            <a href="video.html" class="tool-card" data-category="generator" data-name="video">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🎬</div>
-                    <h3>Video Prompt Studio</h3>
-                </div>
-                <p>Generate AI video prompts with customizable parameters and style options.</p>
-                <span class="tool-card-badge badge-live">Live</span>
-            </a>
-            <a href="hook-predictor.html" class="tool-card" data-category="analytics" data-name="hook">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">📈</div>
-                    <h3>AI Hook Predictor</h3>
-                </div>
-                <p>Score and optimize your video hooks for higher engagement and click-through rates.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="repurposer.html" class="tool-card" data-category="utility" data-name="repurposer">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🔄</div>
-                    <h3>Content Repurposer</h3>
-                </div>
-                <p>Convert any content into platform-specific formats — Twitter, IG, TikTok, LinkedIn, and more.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="thumbnail-predictor.html" class="tool-card" data-category="analytics" data-name="thumbnail">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🎯</div>
-                    <h3>AI Thumbnail Predictor</h3>
-                </div>
-                <p>Upload your thumbnail and get AI-powered analysis with improvement recommendations.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="voice-studio.html" class="tool-card" data-category="utility" data-name="voice">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🎤</div>
-                    <h3>Voice AI Studio</h3>
-                </div>
-                <p>Text-to-speech generation and voice changer with 8 creative effects.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="broll-suggester.html" class="tool-card" data-category="generator" data-name="broll">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🎞️</div>
-                    <h3>B-Roll Suggester</h3>
-                </div>
-                <p>Get smart B-roll footage suggestions based on your video topic and style.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="sound-design.html" class="tool-card" data-category="utility" data-name="sound">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">🔊</div>
-                    <h3>Sound Design Prompt</h3>
-                </div>
-                <p>Generate sound design prompts — ambient, SFX, music, textures, and percussion.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
-            <a href="seo-optimizer.html" class="tool-card" data-category="analytics" data-name="seo">
-                <div class="tool-card-header">
-                    <div class="tool-card-icon">📈</div>
-                    <h3>SEO Title Optimizer</h3>
-                </div>
-                <p>Generate and compare optimized titles for higher click-through rates.</p>
-                <span class="tool-card-badge badge-new">New</span>
-            </a>
+        <div class="row g-4 mb-4" id="toolsGrid">
+            <div class="col-md-4 col-sm-6" data-category="generator" data-name="poster">
+                <a href="Poster-fitur.html" class="tool-card">
+                    <div class="tool-card-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-image"></i></div>
+                    <h6>AI Poster Generator</h6>
+                    <p>Generate stunning poster prompts with AI. Multiple styles and orientations.</p>
+                    <span class="badge-custom badge-live">Live</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="generator" data-name="lyric">
+                <a href="lyric.html" class="tool-card">
+                    <div class="tool-card-icon bg-success bg-opacity-10 text-success"><i class="bi bi-music-note-list"></i></div>
+                    <h6>Lyric Generator</h6>
+                    <p>Custom song lyrics with AI powered by multiple music styles and themes.</p>
+                    <span class="badge-custom badge-live">Live</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="generator" data-name="video">
+                <a href="video.html" class="tool-card">
+                    <div class="tool-card-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-camera-video"></i></div>
+                    <h6>Video Prompt Studio</h6>
+                    <p>Generate AI video prompts with customizable parameters and styles.</p>
+                    <span class="badge-custom badge-live">Live</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="generator" data-name="broll">
+                <a href="broll-suggester.html" class="tool-card">
+                    <div class="tool-card-icon bg-info bg-opacity-10 text-info"><i class="bi bi-film"></i></div>
+                    <h6>B-Roll Suggester</h6>
+                    <p>Smart B-roll footage suggestions based on your video topic and style.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="generator" data-name="sound">
+                <a href="sound-design.html" class="tool-card">
+                    <div class="tool-card-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-sliders"></i></div>
+                    <h6>Sound Design Prompt</h6>
+                    <p>Generate sound design prompts — ambient, SFX, music, textures, percussion.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="utility" data-name="voice">
+                <a href="voice-studio.html" class="tool-card">
+                    <div class="tool-card-icon bg-purple bg-opacity-10 text-purple" style="background:#f5f3ff;color:#8b5cf6;"><i class="bi bi-microphone"></i></div>
+                    <h6>Voice AI Studio</h6>
+                    <p>Text-to-speech generation and voice changer with 8 creative effects.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="analytics" data-name="hook">
+                <a href="hook-predictor.html" class="tool-card">
+                    <div class="tool-card-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h6>AI Hook Predictor</h6>
+                    <p>Score and optimize video hooks for higher engagement rates.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="analytics" data-name="thumbnail">
+                <a href="thumbnail-predictor.html" class="tool-card">
+                    <div class="tool-card-icon bg-success bg-opacity-10 text-success"><i class="bi bi-images"></i></div>
+                    <h6>Thumbnail Predictor</h6>
+                    <p>AI-powered thumbnail analysis with improvement recommendations.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="analytics" data-name="seo">
+                <a href="seo-optimizer.html" class="tool-card">
+                    <div class="tool-card-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-search-heart"></i></div>
+                    <h6>SEO Title Optimizer</h6>
+                    <p>Generate and compare optimized titles for higher click-through rates.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6" data-category="utility" data-name="repo">
+                <a href="repurposer.html" class="tool-card">
+                    <div class="tool-card-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-arrow-repeat"></i></div>
+                    <h6>Content Repurposer</h6>
+                    <p>Convert any content into platform-specific formats for max reach.</p>
+                    <span class="badge-custom badge-new">New</span>
+                </a>
+            </div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
-            <p>AI Creator Studio — Built with ❤️ by Fadillah</p>
+            <p>AI Creator Studio — Built with ❤️ by Fadillah &middot; Powered by Google Apps Script</p>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/gas-connector.js"></script>
     <script>
-        // ===== LOAD STATS =====
         async function loadStats() {
             try {
                 const result = await fetchStats();
@@ -625,6 +658,8 @@
                     animateValue('detailHookAnalyses', d.totalHookAnalyses || 0);
                     animateValue('detailRepurposed', d.totalRepurposed || 0);
                     animateValue('detailThumbnails', d.totalThumbnails || 0);
+                    animateValue('detailVoice', d.totalVoiceHistory || 0);
+                    animateValue('detailCategories', d.categories || 0);
                 }
             } catch (err) {
                 console.error('Failed to load stats:', err);
@@ -651,7 +686,6 @@
             requestAnimationFrame(update);
         }
 
-        // ===== TRACK VISIT =====
         if (typeof postToGAS === 'function') {
             postToGAS({
                 action: 'trackVisit',
@@ -662,35 +696,27 @@
             });
         }
 
-        // ===== CATEGORY FILTER =====
-        document.querySelectorAll('.category-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const category = tab.dataset.category;
-                filterTools(category);
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const cat = btn.dataset.category;
+                document.querySelectorAll('#toolsGrid > div').forEach(card => {
+                    if (cat === 'all' || card.dataset.category === cat) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
         });
 
-        function filterTools(category) {
-            const cards = document.querySelectorAll('.tool-card');
-            cards.forEach(card => {
-                if (category === 'all' || card.dataset.category === category) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // ===== SEARCH FILTER =====
         document.getElementById('toolSearch').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.tool-card');
-            cards.forEach(card => {
+            const term = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('#toolsGrid > div').forEach(card => {
                 const name = card.dataset.name || '';
                 const text = card.textContent.toLowerCase();
-                if (searchTerm === '' || name.includes(searchTerm) || text.includes(searchTerm)) {
+                if (!term || name.includes(term) || text.includes(term)) {
                     card.style.display = '';
                 } else {
                     card.style.display = 'none';
@@ -698,26 +724,15 @@
             });
         });
 
-        // ===== DETAILED STATS TOGGLE =====
-        const toggleHeader = document.getElementById('detailedStatsHeader');
-        const toggleIcon = document.getElementById('detailedStatsToggle');
-        const toggleContent = document.getElementById('detailedStatsContent');
-
-        toggleHeader.addEventListener('click', () => {
-            toggleContent.classList.toggle('open');
-            toggleIcon.classList.toggle('open');
+        document.getElementById('detailedToggle').addEventListener('click', () => {
+            const body = document.getElementById('detailedBody');
+            const icon = document.getElementById('detailedIcon');
+            body.classList.toggle('open');
+            icon.classList.toggle('bi-chevron-down');
+            icon.classList.toggle('bi-chevron-up');
         });
 
-        // ===== INIT =====
         loadStats();
-
-        // ===== TOOLS DROPDOWN =====
-        document.addEventListener('click', function(e) {
-            const toggle = e.target.closest('.nav-tools');
-            if (!toggle) {
-                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
-            }
-        });
     </script>
 </body>
 </html>
