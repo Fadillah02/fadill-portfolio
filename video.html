@@ -1054,6 +1054,15 @@
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ===== LIKE BUTTON ===== */
+        .like-btn {
+            background: linear-gradient(135deg, #333333, #444444) !important;
+            color: #ffffff !important;
+        }
+        .like-btn:hover {
+            background: linear-gradient(135deg, #555555, #666666) !important;
+        }
     </style>
 </head>
 <body>
@@ -1171,6 +1180,7 @@
         </div>
     </main>
 
+    <script src="js/gas-connector.js"></script>
     <script>
         /**
          * ==========================================================================
@@ -1866,6 +1876,44 @@ const loadingHTML = '<div class="loading-state"><img src="loading.gif" alt="Load
                 tools.classList.toggle('show');
             }
         });
+
+        // === GAS BACKEND INTEGRATION ===
+        
+        // Track visitor on page load
+        if (typeof trackVisit === 'function') {
+            trackVisit('video');
+        }
+
+        // Add like buttons to cards
+        function addLikeButtons() {
+            document.querySelectorAll('.card').forEach(card => {
+                const title = card.querySelector('.card-title')?.textContent;
+                if (title && !card.querySelector('.like-btn')) {
+                    const likeBtn = document.createElement('button');
+                    likeBtn.className = 'btn-copy like-btn';
+                    likeBtn.style.cssText = 'width:auto;padding:8px 12px;margin-top:8px;font-size:0.75rem;background:#333';
+                    likeBtn.innerHTML = '❤️ Like';
+                    likeBtn.onclick = async function() {
+                        if (typeof likePrompt === 'function') {
+                            const result = await likePrompt(title);
+                            if (result && result.success) {
+                                this.innerHTML = '✅ Liked!';
+                                this.style.background = '#2d8a4e';
+                                setTimeout(() => { this.innerHTML = '❤️ Like'; this.style.background = '#333'; }, 2000);
+                            }
+                        }
+                    };
+                    card.querySelector('.prompt-section')?.appendChild(likeBtn);
+                }
+            });
+        }
+
+        // Run after render
+        const originalRender = window.renderCards;
+        window.renderCards = function(data) {
+            originalRender(data);
+            setTimeout(addLikeButtons, 100);
+        };
 
     </script>
 </body>
