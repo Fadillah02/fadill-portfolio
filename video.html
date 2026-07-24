@@ -1731,13 +1731,14 @@ const loadingHTML = '<div class="loading-state"><img src="loading.gif" alt="Load
                 orientationBtns[0].classList.add('active');
                 orientationBar.classList.add('show');
 
-                // Show/hide Photography sub-filters
-                if (currentFilter === 'Photography') {
-                    photoSubFilters.classList.add('show');
-                } else {
-                    photoSubFilters.classList.remove('show');
-                    currentSubFilter = '';
-                    subFilterBtns.forEach(b => b.classList.remove('active'));
+                if (photoSubFilters) {
+                    if (currentFilter === 'Photography') {
+                        photoSubFilters.classList.add('show');
+                    } else {
+                        photoSubFilters.classList.remove('show');
+                        currentSubFilter = '';
+                        subFilterBtns.forEach(b => b.classList.remove('active'));
+                    }
                 }
 
                 applyFilters();
