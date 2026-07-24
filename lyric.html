@@ -1941,6 +1941,61 @@
 
         /**
          * ==========================================================================
+         * DYNAMIC PROMPT GENERATOR (Nosatsi Voice Anchor Formula)
+         * [Category] + [Voice Anchor] + [Category-Specific Delivery] + [Category-Specific Emotion]
+         * ==========================================================================
+         */
+
+        const NOSATSI_VOICE_ANCHOR = "bright and slightly nasal young female vocalist, subtle robotic vocal-synth timbre";
+
+        const CATEGORY_MODIFIERS = {
+            "DJ/EDM": { delivery: "fast staccato delivery", emotion: "aggressive but detached tone", bpm: "130 BPM", extra: "driving synth bass" },
+            "Akustik": { delivery: "warm and natural phrasing", emotion: "sincere and heartfelt tone", bpm: "90 BPM", extra: "acoustic guitar fingerpicking" },
+            "Santai": { delivery: "breathy and relaxed phrasing", emotion: "melancholic and distant tone", bpm: "75 BPM", extra: "vinyl crackle, mellow Rhodes piano" },
+            "Remix": { delivery: "syncopated rhythmic delivery", emotion: "playful and energetic tone", bpm: "128 BPM", extra: "side-chained kicks" },
+            "Pantai": { delivery: "laid-back flowing phrasing", emotion: "carefree and breezy tone", bpm: "100 BPM", extra: "tropical percussion, steel drums" },
+            "Cinta": { delivery: "smooth legato delivery", emotion: "romantic and tender tone", bpm: "85 BPM", extra: "soft synth pads" },
+            "Galau": { delivery: "emotional dynamic phrasing", emotion: "vulnerable and expressive tone", bpm: "70 BPM", extra: "sparse piano and strings" },
+            "Semangat": { delivery: "powerful belting delivery", emotion: "uplifting and determined tone", bpm: "120 BPM", extra: "anthemic synth layers" },
+            "Party": { delivery: "energetic punchy delivery", emotion: "celebratory and hype tone", bpm: "126 BPM", extra: "heavy 808s, crowd noise" },
+            "Nostalgia": { delivery: "reflective slower phrasing", emotion: "wistful and sentimental tone", bpm: "80 BPM", extra: "retrowave arpeggios" },
+            "Chill": { delivery: "relaxed laid-back phrasing", emotion: "calm and meditative tone", bpm: "78 BPM", extra: "ambient textures, soft hi-hats" },
+            "EDM": { delivery: "high-energy rapid delivery", emotion: "intense and euphoric tone", bpm: "128 BPM", extra: "massive drop synths" },
+            "Ballad": { delivery: "soaring legato melodies with slight vibrato", emotion: "vulnerable and expressive tone", bpm: "60 BPM", extra: "sparse piano and strings" },
+            "J-Pop": { delivery: "hyper-energetic phrasing", emotion: "playfully sarcastic and upbeat tone", bpm: "160 BPM", extra: "shimmering synths, heavy sidechain" },
+            "Hip-Hop": { delivery: "rhythmic rap flow", emotion: "confident and swagger tone", bpm: "90 BPM", extra: "trap hi-hats, 808 bass" },
+            "Rock": { delivery: "powerful raspy delivery", emotion: "rebellious and intense tone", bpm: "140 BPM", extra: "distorted guitars, driving drums" },
+            "Pop": { delivery: "catchy melodic delivery", emotion: "bright and cheerful tone", bpm: "110 BPM", extra: "polished production, earworm hooks" },
+            "R&B": { delivery: "smooth soulful phrasing", emotion: "sensual and intimate tone", bpm: "85 BPM", extra: "smooth chords, subtle groove" },
+            "Jazz": { delivery: "improvised melodic phrasing", emotion: "sophisticated and cool tone", bpm: "100 BPM", extra: "walking bass, brushed drums" },
+            "Classical": { delivery: "orchestral operatic phrasing", emotion: "dramatic and grand tone", bpm: "72 BPM", extra: "full orchestra, cathedral reverb" }
+        };
+
+        function generateDynamicPrompt(item) {
+            const collection = item.collection;
+            const modifier = CATEGORY_MODIFIERS[collection] || CATEGORY_MODIFIERS["Chill"];
+            const theme = item.suitableFor.length > 0 ? item.suitableFor[0] : "music";
+
+            const prompt = `${collection}, ${NOSATSI_VOICE_ANCHOR}, ${modifier.delivery}, ${modifier.emotion}, ${modifier.extra}, ${modifier.bpm}. Lirik tentang ${theme}.`;
+
+            return prompt;
+        }
+
+        function generateDynamicNegativePrompt(item) {
+            const collection = item.collection;
+            const modifier = CATEGORY_MODIFIERS[collection] || CATEGORY_MODIFIERS["Chill"];
+
+            if (modifier.bpm.includes("130") || modifier.bpm.includes("128") || modifier.bpm.includes("140") || modifier.bpm.includes("160") || modifier.bpm.includes("126")) {
+                return "lambat, sedih, akustik";
+            } else if (modifier.bpm.includes("60") || modifier.bpm.includes("70") || modifier.bpm.includes("72") || modifier.bpm.includes("75") || modifier.bpm.includes("78")) {
+                return "cepat, energik, berisik";
+            } else {
+                return "lambat, sedih, akustik";
+            }
+        }
+
+        /**
+         * ==========================================================================
          * LOGIKA APLIKASI (JAVASCRIPT)
          * Menggunakan Vanilla JS. Aman dari framework bloat.
          * ==========================================================================
@@ -2011,7 +2066,7 @@ const loadingHTML = '<div class="loading-state"><img src="loading.gif" alt="Load
                 const collUpper = sanitize(item.collection.toUpperCase().padEnd(10).substring(0,10));
                 const ratioLabel = item.ratio === '16:9' ? 'WIDE' : 'POSTER';
 
-                return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(item.prompt) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(item.negativePrompt) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
+                return '<div class="card" style="animation-delay:' + (Math.random() * 0.2) + 's"><div class="card-preview"><div class="badge-container">' + badgeHTML + '</div><pre class="mockup-text">\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502               \u2502\n\u2502  ' + sanitize(item.ratio) + ' ' + ratioLabel + '  \u2502\n\u2502               \u2502\n\u2502   ' + collUpper + '  \u2502\n\u2502               \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</pre></div><div class="card-content"><h2 class="card-title">' + sanitize(item.title) + '</h2><div class="card-meta"><span class="difficulty">' + renderStars(item.difficulty) + '</span><span class="meta-divider"></span><span>' + sanitize(item.colors[0]) + '</span></div><p class="card-desc">' + sanitize(item.desc) + '</p><div class="tags-container">' + tagsHTML + '</div><div class="prompt-section"><button class="prompt-toggle" onclick="togglePrompt(this)">View Full Prompt <span>\u25BC</span></button><div class="prompt-content"><span class="prompt-label">Main Prompt</span><div class="prompt-box" id="prompt-' + item.id + '">' + sanitize(generateDynamicPrompt(item)) + '</div><button class="btn-copy" onclick="copyText(\'prompt-' + item.id + '\', this)">Copy Prompt</button><span class="prompt-label">Negative Prompt</span><div class="prompt-box negative" id="neg-' + item.id + '">' + sanitize(generateDynamicNegativePrompt(item)) + '</div><button class="btn-copy" onclick="copyText(\'neg-' + item.id + '\', this)" style="background:linear-gradient(135deg,#334155,#475569)">Copy Negative</button><div class="tech-specs"><div><strong>Ratio:</strong> ' + sanitize(item.ratio) + '</div><div><strong>DPI:</strong> ' + sanitize(item.dpi) + '</div><div style="grid-column:1/-1"><strong>Size:</strong> ' + sanitize(item.size) + '</div></div></div></div></div></div>';
             }).join('');
 
             catalogGrid.classList.remove('fade-transition');
