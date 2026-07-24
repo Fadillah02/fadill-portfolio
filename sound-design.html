@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>🔊 Sound Design Prompt — AI Creator Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-cyan: #06b6d4;
+            --accent-red: #ef4444;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        .input-group textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            color: #1a1a1a;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .filter-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            background: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-btn.primary {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .action-btn.primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+        .action-btn.secondary {
+            background: #f3f4f6;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+        }
+        .action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .results-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .results-count {
+            font-size: 0.85rem;
+            color: #666666;
+        }
+
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .sound-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+        }
+        .sound-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: var(--shadow-md);
+        }
+        .sound-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sound-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .type-ambient { background: #dbeafe; color: #2563eb; }
+        .type-sfx { background: #fce7f3; color: #db2777; }
+        .type-music { background: #dcfce7; color: #16a34a; }
+        .type-texture { background: #fef3c7; color: #d97706; }
+        .type-percussion { background: #ede9fe; color: #7c3aed; }
+        .type-weather { background: #e0f2fe; color: #0369a1; }
+
+        .sound-card .sound-desc {
+            font-size: 0.85rem;
+            color: #666666;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .sound-card .sound-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .sound-tag {
+            padding: 2px 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #666666;
+        }
+
+        .sound-prompt {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            position: relative;
+        }
+        .sound-prompt .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font-family);
+        }
+        .sound-prompt .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .platform-youtube { background: #ff0000; color: white; }
+        .platform-tiktok { background: #000000; color: white; }
+        .platform-instagram { background: #E4405F; color: white; }
+
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #888888;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            .sound-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link" style="font-weight:600;color:rgba(255,255,255,0.9)"><i class="bi bi-grid" style="margin-right:4px"></i> Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>🔊 Sound Design Prompt</h1>
+            <p>Generate sound design prompts for your video — ambient, SFX, music textures, and more.</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>📝 Describe Your Video Content</label>
+                <textarea id="topicInput" placeholder="Example: A dramatic scene in a rain-soaked city at night, a figure walking alone..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>🎵 Sound Category</label>
+                <div class="filter-grid">
+                    <select class="filter-select" id="soundCategory">
+                        <option value="all">All Categories</option>
+                        <option value="ambient">Ambient / Atmosphere</option>
+                        <option value="sfx">Sound Effects (SFX)</option>
+                        <option value="music">Music & Texture</option>
+                        <option value="texture">Sound Texture</option>
+                        <option value="percussion">Percussion</option>
+                        <option value="weather">Weather / Nature</option>
+                    </select>
+                    <select class="filter-select" id="soundMood">
+                        <option value="tense">Tense / Suspenseful</option>
+                        <option value="peaceful">Peaceful / Calm</option>
+                        <option value="epic">Epic / Dramatic</option>
+                        <option value="chill">Chill / Relaxed</option>
+                        <option value="dark">Dark / Ominous</option>
+                        <option value="bright">Bright / Cheerful</option>
+                    </select>
+                    <select class="filter-select" id="soundPlatform">
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="all">All Platforms</option>
+                    </select>
+                    <select class="filter-select" id="soundDuration">
+                        <option value="short">Short (1-5s SFX)</option>
+                        <option value="medium">Medium (5-15s)</option>
+                        <option value="long">Long / Background</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" id="suggestBtn">
+                    <span>🔊</span>
+                    <span>Generate Sound Prompts</span>
+                </button>
+                <button class="action-btn secondary" id="clearBtn">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>🔊 Sound Design Prompts</h2>
+                <span class="results-count" id="resultsCount"></span>
+            </div>
+            <div class="sound-grid" id="soundGrid"></div>
+        </div>
+
+        <div class="footer">
+            <p>AI Creator Studio — Built with ❤️ by Fadillah</p>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        const SOUND_DATABASE = {
+            "ambient": [
+                { type: "ambient", label: "Pad Synth Atmosphere", desc: "Soft, evolving synth pad that creates emotional depth and space.", tags: ["synth", "pad", "atmosphere"], platforms: ["youtube", "tiktok"], duration: "long" },
+                { type: "ambient", label: "Room Tone", desc: "Subtle room ambience — air conditioning, distant hum, space feel.", tags: ["room", "tone", "subtle"], platforms: ["youtube"] },
+                { type: "ambient", label: "Underwater Ambience", desc: "Bubbling, pressure, muffled sounds for underwater or dreamy scenes.", tags: ["underwater", "muffled", "dreamy"], platforms: ["youtube", "instagram"] },
+                { type: "ambient", label: "Forest Ambience", desc: "Birds, wind through leaves, distant nature sounds.", tags: ["nature", "forest", "birds"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "ambient", label: "City Night Ambience", desc: "Distant traffic, wind, occasional sirens, urban hum.", tags: ["city", "urban", "night"], platforms: ["youtube", "tiktok"] }
+            ],
+            "sfx": [
+                { type: "sfx", label: "Whoosh Transition", desc: "Fast sweeping sound for scene transitions or emphasis.", tags: ["whoosh", "transition", "fast"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "sfx", label: "Impact Hit", desc: "Deep cinematic impact with bass drop for dramatic moments.", tags: ["impact", "bass", "cinematic"], platforms: ["youtube", "tiktok"] },
+                { type: "sfx", label: "Glitch Effect", desc: "Digital distortion, stutter, bit-crushed sound for tech vibes.", tags: ["glitch", "digital", "tech"], platforms: ["youtube", "tiktok"] },
+                { type: "sfx", label: "Riser / Buildup", desc: "Tension-building ascending sound leading to a climax.", tags: ["riser", "tension", "buildup"], platforms: ["youtube"] },
+                { type: "sfx", label: "Record Scratch", desc: "Vinyl scratch for retro, DJ, or transition moments.", tags: ["vinyl", "scratch", "retro"], platforms: ["tiktok", "instagram"] },
+                { type: "sfx", label: "Camera Shutter", desc: "Camera click or shutter sound as rhythmic accent.", tags: ["camera", "click", "rhythm"], platforms: ["youtube", "instagram"] }
+            ],
+            "music": [
+                { type: "music", label: "Arpeggiated Synth", desc: "Quick arpeggiated synth pattern for energy and movement.", tags: ["synth", "arp", "energetic"], platforms: ["youtube", "tiktok"] },
+                { type: "music", label: "Piano Motif", desc: "Simple, memorable piano melody for emotional moments.", tags: ["piano", "melody", "emotional"], platforms: ["youtube", "instagram"] },
+                { type: "music", label: "Bass Loop", desc: "Deep, driving bass line for rhythm and low-end energy.", tags: ["bass", "loop", "rhythm"], platforms: ["youtube", "tiktok"] },
+                { type: "music", label: "Pluck Synth", desc: "Bright, plucky synth sounds for modern, clean production.", tags: ["pluck", "synth", "bright"], platforms: ["tiktok", "instagram"] }
+            ],
+            "texture": [
+                { type: "texture", label: "Vinyl Crackle", desc: "Warm vinyl texture for nostalgic and lo-fi aesthetics.", tags: ["vinyl", "crackle", "lofi"], platforms: ["youtube", "instagram"] },
+                { type: "texture", label: "Tape Hiss", desc: "Analog tape warmth and hiss for vintage feel.", tags: ["tape", "analog", "vintage"], platforms: ["youtube"] },
+                { type: "texture", label: "Wind Noise", desc: "Soft wind noise for outdoor or emotional transitions.", tags: ["wind", "outdoor", "soft"], platforms: ["youtube", "instagram"] },
+                { type: "texture", label: "Static / Noise", desc: "TV static or radio noise for retro or glitch aesthetics.", tags: ["static", "retro", "glitch"], platforms: ["tiktok", "instagram"] }
+            ],
+            "percussion": [
+                { type: "percussion", label: "808 Kick", desc: "Deep, powerful 808 kick for modern and trap vibes.", tags: ["808", "kick", "trap"], platforms: ["tiktok", "youtube"] },
+                { type: "percussion", label: "Clap Sequence", desc: "Layered claps for energy and rhythm in beats.", tags: ["clap", "rhythm", "beat"], platforms: ["tiktok", "youtube"] },
+                { type: "percussion", label: "Hi-Hat Pattern", desc: "Crisp hi-hat rolls and patterns for groove.", tags: ["hihat", "groove", "crisp"], platforms: ["tiktok", "instagram"] },
+                { type: "percussion", label: "Cinematic Taiko", desc: "Deep Japanese-style drums for epic and dramatic moments.", tags: ["taiko", "drums", "cinematic"], platforms: ["youtube"] }
+            ],
+            "weather": [
+                { type: "weather", label: "Rain Ambience", desc: "Rain on different surfaces — rooftop, window, street.", tags: ["rain", "water", "ambient"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "weather", label: "Thunder Crack", desc: "Distant or close thunder for dramatic tension.", tags: ["thunder", "drama", "tension"], platforms: ["youtube"] },
+                { type: "weather", label: "Wind Howl", desc: "Deep wind howl for eerie or powerful scenes.", tags: ["wind", "howl", "intense"], platforms: ["youtube", "tiktok"] },
+                { type: "weather", label: "Ocean Waves", desc: "Gentle or crashing waves for coastal or calming scenes.", tags: ["ocean", "waves", "calm"], platforms: ["youtube", "instagram"] }
+            ]
+        };
+
+        function getAllSounds() {
+            const result = [];
+            Object.entries(SOUND_DATABASE).forEach(([category, items]) => {
+                items.forEach(item => {
+                    result.push({ ...item, category });
+                });
+            });
+            return result;
+        }
+
+        function filterSounds(category, mood, platform, duration) {
+            let all = getAllSounds();
+
+            if (category && category !== 'all') {
+                all = all.filter(s => s.category.toLowerCase() === category.toLowerCase());
+            }
+
+            if (mood && mood !== 'all') {
+                all = all.filter(s => {
+                    const moodMap = {
+                        'tense': ['impact', 'riser', 'cinematic', 'taiko', 'deep', 'bass'],
+                        'peaceful': ['ambient', 'forest', 'rain', 'ocean', 'pluck', 'piano', 'pad'],
+                        'epic': ['cinematic', 'taiko', 'orchestral', 'drums', 'impact'],
+                        'chill': ['ambient', 'pluck', 'vinyl', 'crackle', 'birds', 'waves'],
+                        'dark': ['deep', 'bass', 'thunder', 'wind', 'static', 'orchestral'],
+                        'bright': ['pluck', 'piano', 'hihat', 'clap', 'arpeggio']
+                    };
+                    const keywords = moodMap[mood] || [];
+                    return keywords.some(k => s.label.toLowerCase().includes(k) || s.desc.toLowerCase().includes(k) || s.tags.some(t => t.includes(k)));
+                });
+            }
+
+            if (duration && duration !== 'all') {
+                all = all.filter(s => {
+                    if (duration === 'short') return s.duration === 'short' || s.tags.some(t => t.includes('s'));
+                    if (duration === 'medium') return s.duration === 'medium';
+                    return s.duration === 'long';
+                });
+            }
+
+            if (platform && platform !== 'all') {
+                all = all.filter(s => s.platforms.includes(platform.toLowerCase()));
+            }
+
+            return all.slice(0, 12);
+        }
+
+        function generateSoundPrompt(topic, soundItem) {
+            return `Sound design: ${soundItem.label} for "${topic}". ${soundItem.desc} Style: ${soundItem.category}, tags: ${soundItem.tags.join(', ')}. High quality, cinematic, 48kHz.`;
+        }
+
+        function renderResults(results) {
+            const grid = document.getElementById('soundGrid');
+            const count = document.getElementById('resultsCount');
+            const section = document.getElementById('resultsSection');
+
+            grid.innerHTML = results.map((s, i) => {
+                const platformBadges = s.platforms.map(p => {
+                    const cls = p === 'youtube' ? 'platform-youtube' : p === 'tiktok' ? 'platform-tiktok' : 'platform-instagram';
+                    return `<span class="platform-badge ${cls}">${p.toUpperCase()}</span>`;
+                }).join(' ');
+
+                const typeClass = `type-${s.type}`;
+
+                return `
+                    <div class="sound-card" style="animation-delay:${i * 0.05}s">
+                        <h3>
+                            <span>${s.type === 'ambient' ? '🌫️' : s.type === 'sfx' ? '💥' : s.type === 'music' ? '🎵' : s.type === 'texture' ? '🎚️' : s.type === 'percussion' ? '🥁' : '🌧️'}</span>
+                            ${s.label}
+                            <span class="sound-type ${typeClass}">${s.category}</span>
+                        </h3>
+                        <p class="sound-desc">${s.desc}</p>
+                        <div class="sound-tags">${s.tags.map(t => `<span class="sound-tag">#${t}</span>`).join('')}</div>
+                        <div style="margin-top:8px">${platformBadges}</div>
+                        <div class="sound-prompt">
+                            <button class="copy-btn" onclick="copySoundPrompt(this)">📋 Copy</button>
+                            ${generateSoundPrompt(document.getElementById('topicInput').value || 'your topic', s)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            count.textContent = `${results.length} prompts generated`;
+            section.classList.add('show');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copySoundPrompt(btn) {
+            const prompt = btn.parentElement.textContent.replace('📋 Copy', '').trim();
+            navigator.clipboard.writeText(prompt).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('suggestBtn').addEventListener('click', function() {
+                const topic = document.getElementById('topicInput').value.trim();
+                if (!topic) {
+                    alert('Masukkan topik video dulu!');
+                    return;
+                }
+
+                const category = document.getElementById('soundCategory').value;
+                const mood = document.getElementById('soundMood').value;
+                const platform = document.getElementById('soundPlatform').value;
+                const duration = document.getElementById('soundDuration').value;
+
+                const results = filterSounds(category, mood, platform, duration);
+                renderResults(results);
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                document.getElementById('topicInput').value = '';
+                document.getElementById('resultsSection').classList.remove('show');
+                document.getElementById('soundGrid').innerHTML = '';
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>🎬 B-Roll Suggester — AI Creator Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-cyan: #06b6d4;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        .input-group textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            color: #1a1a1a;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .filter-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            background: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-btn.primary {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .action-btn.primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+        .action-btn.secondary {
+            background: #f3f4f6;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+        }
+        .action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .results-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .results-count {
+            font-size: 0.85rem;
+            color: #666666;
+        }
+
+        .broll-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .broll-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+        }
+        .broll-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: var(--shadow-md);
+        }
+        .broll-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .broll-card .broll-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .type-wide { background: #dbeafe; color: #2563eb; }
+        .type-creative { background: #fce7f3; color: #db2777; }
+        .type-establishing { background: #d cfce7; color: #16a34a; }
+        .type-detail { background: #fef3c7; color: #d97706; }
+        .type-motion { background: #ede9fe; color: #7c3aed; }
+        .type-atmosphere { background: #e0f2fe; color: #0369a1; }
+
+        .broll-card p {
+            font-size: 0.85rem;
+            color: #666666;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .broll-card .broll-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .broll-tag {
+            padding: 2px 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #666666;
+        }
+
+        .broll-prompt {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            position: relative;
+        }
+        .broll-prompt .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font-family);
+        }
+        .broll-prompt .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .platform-youtube { background: #ff0000; color: white; }
+        .platform-tiktok { background: #000000; color: white; }
+        .platform-instagram { background: #E4405F; color: white; }
+
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #888888;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            .broll-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link" style="font-weight:600;color:rgba(255,255,255,0.9)"><i class="bi bi-grid" style="margin-right:4px"></i> Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>🎞️ B-Roll Suggester</h1>
+            <p>Get smart B-roll footage suggestions for your video based on topic, style, and platform.</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>📝 Describe Your Video Topic</label>
+                <textarea id="topicInput" placeholder="Example: A travel vlog about exploring Tokyo streets at night, neon lights, street food..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>🎬 Video Style</label>
+                <div class="filter-grid">
+                    <select class="filter-select" id="videoStyle">
+                        <option value="documentary">Documentary</option>
+                        <option value="vlog">Vlog</option>
+                        <option value="tutorial">Tutorial</option>
+                        <option value="cinematic">Cinematic</option>
+                        <option value="fast-paced">Fast-Paced</option>
+                        <option value="slow-motion">Slow Motion</option>
+                        <option value="aesthetic">Aesthetic / Mood</option>
+                        <option value="storytelling">Storytelling</option>
+                    </select>
+                    <select class="filter-select" id="videoMood">
+                        <option value="energetic">Energetic</option>
+                        <option value="calm">Calm</option>
+                        <option value="mysterious">Mysterious</option>
+                        <option value="uplifting">Uplifting</option>
+                        <option value="introspective">Introspective</option>
+                        <option value="dramatic">Dramatic</option>
+                    </select>
+                    <select class="filter-select" id="videoDuration">
+                        <option value="short">Short (1-3 min)</option>
+                        <option value="medium">Medium (3-10 min)</option>
+                        <option value="long">Long (10+ min)</option>
+                    </select>
+                    <select class="filter-select" id="videoPlatform">
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="all">All Platforms</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" id="suggestBtn">
+                    <span>🎬</span>
+                    <span>Suggest B-Roll</span>
+                </button>
+                <button class="action-btn secondary" id="clearBtn">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>🎞️ Suggested B-Roll Footage</h2>
+                <span class="results-count" id="resultsCount"></span>
+            </div>
+            <div class="broll-grid" id="brollGrid"></div>
+        </div>
+
+        <div class="footer">
+            <p>AI Creator Studio — Built with ❤️ by Fadillah</p>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        const BROLL_DATABASE = {
+            "documentary": [
+                { type: "establishing", label: "Establishing Shot", desc: "Wide shot of the subject location to set the scene and context.", tags: ["wide", "location", "setting"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "detail", label: "Detail Close-Up", desc: "Intimate close-up of textures, objects, or expressions that tell the story.", tags: ["close-up", "texture", "intimate"], platforms: ["youtube", "instagram"] },
+                { type: "atmosphere", label: "Atmospheric B-Roll", desc: "Ambient footage of the environment: weather, light, crowds, movement.", tags: ["ambient", "atmosphere", "mood"], platforms: ["youtube", "tiktok"] },
+                { type: "motion", label: "Slow Pan / Tilt", desc: "Slow camera movement across a scene to reveal information gradually.", tags: ["camera-movement", "slow", "cinematic"], platforms: ["youtube"] },
+                { type: "creative", label: "Cutaway Reaction", desc: "Reactions of people or environmental details that add perspective.", tags: ["reaction", "context", "storytelling"], platforms: ["youtube", "tiktok", "instagram"] }
+            ],
+            "vlog": [
+                { type: "establishing", label: "Location Establishing", desc: "Wide shot of where you are — café, street, park, studio.", tags: ["wide", "location", "vlog"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "detail", label: "Handheld Detail Shots", desc: "Casual close-ups of hands, drinks, food, props in your environment.", tags: ["handheld", "casual", "detail"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "motion", label: "Walk & Talk", desc: "Walking shot that transitions between locations or topics.", tags: ["walking", "transitional", "dynamic"], platforms: ["youtube", "tiktok"] },
+                { type: "atmosphere", label: "B-Roll Lifestyle", desc: "Everyday moments: coffee pouring, window views, city traffic.", tags: ["lifestyle", "ambient", "relatable"], platforms: ["youtube", "tiktok", "instagram"] },
+                { type: "creative", label: "Jump Cut B-Roll", desc: "Quick cuts between different angles of the same activity.", tags: ["jump-cut", "energetic", "fast"], platforms: ["tiktok", "instagram"] }
+            ],
+            "tutorial": [
+                { type: "detail", label: "Step-by-Step Close-Up", desc: "Extreme close-up of hands working — typing, cooking, drawing, editing.", tags: ["close-up", "hands", "instructional"], platforms: ["youtube", "tiktok"] },
+                { type: "wide", label: "Screen Recording", desc: "Screen capture for software tutorials or digital product demos.", tags: ["screen", "recording", "digital"], platforms: ["youtube"] },
+                { type: "establishing", label: "Before & After", desc: "Split or sequential shots showing transformation or result.", tags: ["before-after", "transformation", "result"], platforms: ["youtube", "instagram"] },
+                { type: "motion", label: "Overlay Graphics", desc: "Lower thirds, arrows, circles, and text overlays highlighting key areas.", tags: ["graphics", "overlay", "callout"], platforms: ["youtube"] },
+                { type: "atmosphere", label: "Workspace Reveal", desc: "Show your workspace, tools, and setup as context for the tutorial.", tags: ["workspace", "setup", "context"], platforms: ["youtube", "instagram"] }
+            ],
+            "cinematic": [
+                { type: "establishing", label: "Wide Establishing Shot", desc: "Grand wide shot — landscape, cityscape, or vast environment at golden hour.", tags: ["wide", "golden-hour", "grand"], platforms: ["youtube"] },
+                { type: "detail", label: "Macro Detail", desc: "Extreme close-up of small details: water droplets, fabric texture, light refraction.", tags: ["macro", "detail", "visual"], platforms: ["youtube", "instagram"] },
+                { type: "motion", label: "Dolly / Track Shot", desc: "Smooth camera movement forward, backward, or alongside the subject.", tags: ["dolly", "smooth", "cinematic"], platforms: ["youtube"] },
+                { type: "atmosphere", label: "Particles & Atmosphere", desc: "Dust in sunlight, fog, rain, smoke — adds texture and mood.", tags: ["particles", "mood", "atmospheric"], platforms: ["youtube", "instagram"] },
+                { type: "creative", label: "Anamorphic Lens Flare", desc: "Flares and bokeh from anamorphic lenses for cinematic feel.", tags: ["lens", "flare", "bokeh"], platforms: ["youtube"] }
+            ],
+            "fast-paced": [
+                { type: "motion", label: "Rapid Montage", desc: "Quick cuts (0.5-1s each) of related shots building energy.", tags: ["montage", "rapid", "energetic"], platforms: ["tiktok", "instagram", "youtube"] },
+                { type: "creative", label: "Whip Pan Transition", desc: "Fast camera whip between scenes for kinetic energy.", tags: ["whip-pan", "transition", "dynamic"], platforms: ["tiktok", "instagram"] },
+                { type: "detail", label: "Speed Ramp Detail", desc: "Slow motion into fast motion for emphasis on key moments.", tags: ["speed-ramp", "slowmo", "emphasis"], platforms: ["youtube", "tiktok"] },
+                { type: "motion", label: "Timelapse B-Roll", desc: "Time-lapse footage of clouds, traffic, crowds, or cooking.", tags: ["timelapse", "motion", "time"], platforms: ["youtube", "instagram"] },
+                { type: "establishing", label: "Quick Establishing Shots", desc: "Brief wide shots (1-2 seconds) to orient the viewer fast.", tags: ["quick", "wide", "orientation"], platforms: ["tiktok", "instagram", "youtube"] }
+            ],
+            "slow-motion": [
+                { type: "detail", label: "Water Splash Detail", desc: "Slow-mo water droplets, splashes, pouring liquid — visually mesmerizing.", tags: ["water", "splash", "slowmo"], platforms: ["tiktok", "instagram", "youtube"] },
+                { type: "motion", label: "Emotional Movement", desc: "Slow motion of gestures, hair movement, fabric flow for drama.", tags: ["gesture", "emotion", "flow"], platforms: ["youtube", "tiktok"] },
+                { type: "atmosphere", label: "Nature Slow-Mo", desc: "Butterflies, leaves falling, waves crashing, smoke drifting.", tags: ["nature", "ambient", "peaceful"], platforms: ["youtube", "instagram"] },
+                { type: "creative", label: "Impact Moment", desc: "Slow-mo capture of a key moment: touchdown, kiss, drop, punch.", tags: ["impact", "key-moment", "dramatic"], platforms: ["tiktok", "instagram"] },
+                { type: "detail", label: "Facial Expression Detail", desc: "Slow-mo close-up of facial expressions for emotional depth.", tags: ["face", "expression", "emotional"], platforms: ["youtube", "instagram"] }
+            ],
+            "aesthetic": [
+                { type: "atmosphere", label: "Golden Hour Glow", desc: "Warm, soft light during golden hour for dreamy nostalgic mood.", tags: ["golden-hour", "warm", "dreamy"], platforms: ["youtube", "instagram", "tiktok"] },
+                { type: "detail", label: "Texture & Pattern", desc: "Rust, wood grain, water ripples, fabric folds — visual texture.", tags: ["texture", "pattern", "visual"], platforms: ["instagram", "youtube"] },
+                { type: "motion", label: "Slow Drift", desc: "Very slow camera drift through a scene for meditative pacing.", tags: ["slow", "drift", "meditative"], platforms: ["youtube", "instagram"] },
+                { type: "creative", label: "Light Leaks & Flares", desc: "Sun flares, light leaks, lens reflections for artistic touch.", tags: ["light", "flare", "artistic"], platforms: ["instagram", "tiktok"] },
+                { type: "atmosphere", label: "Misty / Foggy Atmosphere", desc: "Haze, fog, mist for ethereal and mysterious mood.", tags: ["mist", "fog", "ethereal"], platforms: ["youtube", "instagram"] }
+            ],
+            "storytelling": [
+                { type: "establishing", label: "Scene Setter", desc: "Wide shot that establishes location, time of day, and mood immediately.", tags: ["wide", "scene", "context"], platforms: ["youtube", "tiktok"] },
+                { type: "creative", label: "Metaphorical B-Roll", desc: "Symbolic imagery that represents themes in your story.", tags: ["symbolic", "metaphor", "visual"], platforms: ["youtube"] },
+                { type: "detail", label: "Emotional Close-Up", desc: "Face or hands in close-up to convey emotion and connection.", tags: ["emotional", "intimate", "close"], platforms: ["youtube", "instagram"] },
+                { type: "motion", label: "Transitional Movement", desc: "Smooth movement between scenes to maintain narrative flow.", tags: ["transition", "flow", "narrative"], platforms: ["youtube"] },
+                { type: "atmosphere", label: "Symbolic Environment", desc: "Environmental details that reinforce the story theme.", tags: ["environment", "symbol", "context"], platforms: ["youtube", "instagram"] }
+            ]
+        };
+
+        function getAllBRoll() {
+            const result = [];
+            Object.entries(BROLL_DATABASE).forEach(([style, items]) => {
+                items.forEach(item => {
+                    result.push({ ...item, style });
+                });
+            });
+            return result;
+        }
+
+        function filterBRoll(style, mood, duration, platform) {
+            let all = getAllBRoll();
+
+            if (style && style !== 'all') {
+                all = all.filter(b => b.style.toLowerCase() === style.toLowerCase());
+            }
+
+            if (mood && mood !== 'all') {
+                all = all.filter(b => {
+                    const moodMap = {
+                        'energetic': ['fast-paced', 'motion', 'rapid'],
+                        'calm': ['slow-motion', 'aesthetic', 'atmosphere'],
+                        'mysterious': ['atmosphere', 'detail', 'aesthetic'],
+                        'uplifting': ['creative', 'atmosphere', 'establishing'],
+                        'introspective': ['detail', 'slow-motion', 'atmosphere'],
+                        'dramatic': ['motion', 'creative', 'slow-motion']
+                    };
+                    const keywords = moodMap[mood] || [];
+                    return keywords.some(k => b.type.toLowerCase().includes(k.toLowerCase()) || b.desc.toLowerCase().includes(mood.toLowerCase()));
+                });
+            }
+
+            if (duration === 'short') {
+                all = all.filter(b => b.type !== 'motion' || b.type === 'motion');
+            }
+
+            if (platform && platform !== 'all') {
+                all = all.filter(b => b.platforms.includes(platform.toLowerCase()));
+            }
+
+            return all.slice(0, 12);
+        }
+
+        function generateBRollPrompt(topic, brollItem) {
+            return `B-roll footage: ${brollItem.label} for "${topic}". ${brollItem.desc} Style: ${brollItem.style}, type: ${brollItem.type}. Cinematic, high quality, 4K.`;
+        }
+
+        function renderResults(results) {
+            const grid = document.getElementById('brollGrid');
+            const count = document.getElementById('resultsCount');
+            const section = document.getElementById('resultsSection');
+
+            grid.innerHTML = results.map((b, i) => {
+                const platformBadges = b.platforms.map(p => {
+                    const cls = p === 'youtube' ? 'platform-youtube' : p === 'tiktok' ? 'platform-tiktok' : 'platform-instagram';
+                    return `<span class="platform-badge ${cls}">${p.toUpperCase()}</span>`;
+                }).join(' ');
+
+                const typeClass = `type-${b.type}`;
+
+                return `
+                    <div class="broll-card" style="animation-delay:${i * 0.05}s">
+                        <h3>
+                            <span>${b.type === 'establishing' ? '🌅' : b.type === 'detail' ? '🔍' : b.type === 'atmosphere' ? '🌫️' : b.type === 'motion' ? '🎬' : b.type === 'creative' ? '✨' : '🎞️'}</span>
+                            ${b.label}
+                            <span class="broll-type ${typeClass}">${b.style}</span>
+                        </h3>
+                        <p>${b.desc}</p>
+                        <div class="broll-tags">${b.tags.map(t => `<span class="broll-tag">#${t}</span>`).join('')}</div>
+                        <div style="margin-top:8px">${platformBadges}</div>
+                        <div class="broll-prompt">
+                            <button class="copy-btn" onclick="copyBRollPrompt(this)">📋 Copy</button>
+                            ${generateBRollPrompt(document.getElementById('topicInput').value || 'your topic', b)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            count.textContent = `${results.length} suggestions found`;
+            section.classList.add('show');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyBRollPrompt(btn) {
+            const prompt = btn.parentElement.textContent.replace('📋 Copy', '').trim();
+            navigator.clipboard.writeText(prompt).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('suggestBtn').addEventListener('click', function() {
+                const topic = document.getElementById('topicInput').value.trim();
+                if (!topic) {
+                    alert('Masukkan topik video dulu!');
+                    return;
+                }
+
+                const style = document.getElementById('videoStyle').value;
+                const mood = document.getElementById('videoMood').value;
+                const duration = document.getElementById('videoDuration').value;
+                const platform = document.getElementById('videoPlatform').value;
+
+                const results = filterBRoll(style, mood, duration, platform);
+                renderResults(results);
+
+                if (typeof trackVisit === 'function') {
+                    trackVisit({ page: window.location.pathname });
+                }
+                if (typeof postToGAS === 'function') {
+                    postToGAS({ action: 'saveHookAnalysis', hook: topic, platform: 'youtube', score: 0, strengths: ['B-Roll suggestion'], weaknesses: [], dateAnalyzed: new Date() });
+                }
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                document.getElementById('topicInput').value = '';
+                document.getElementById('resultsSection').classList.remove('show');
+                document.getElementById('brollGrid').innerHTML = '';
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>

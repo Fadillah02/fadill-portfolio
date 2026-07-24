@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com; img-src 'self' data: blob:;">
+    <title>📈 SEO Title Optimizer — AI Creator Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: #808080;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-on-dark: #ffffff;
+            --accent-primary: #1a1a1a;
+            --accent-success: #22c55e;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-cyan: #06b6d4;
+            --accent-red: #ef4444;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Inter', -apple-system, sans-serif;
+            --radius-md: 16px;
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #808080;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 52px;
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+            z-index: 200;
+        }
+        .top-nav .nav-brand {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+        .top-nav .nav-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .top-nav .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .top-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-tools {
+            position: relative;
+        }
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 180px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 300;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+        .nav-tools:hover .tools-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .tools-dropdown .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+        }
+        .tools-dropdown .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .tools-dropdown .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .main-container {
+            margin-top: 52px;
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .header p {
+            color: #666666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        .input-group textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            color: #1a1a1a;
+            resize: vertical;
+            transition: var(--transition);
+        }
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .filter-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            background: #ffffff;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-btn.primary {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .action-btn.primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+        .action-btn.secondary {
+            background: #f3f4f6;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+        }
+        .action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .results-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .results-count {
+            font-size: 0.85rem;
+            color: #666666;
+        }
+
+        .title-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .title-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: var(--transition);
+            position: relative;
+        }
+        .title-card:hover {
+            border-color: #1a1a1a;
+            box-shadow: var(--shadow-md);
+        }
+        .title-card.best {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+        .title-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .title-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            flex: 1;
+        }
+        .title-score {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .score-high { background: #dcfce7; color: #16a34a; }
+        .score-mid { background: #fef3c7; color: #d97706; }
+        .score-low { background: #fee2e2; color: #dc2626; }
+
+        .title-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .title-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-good { background: #dcfce7; color: #16a34a; }
+        .badge-warn { background: #fef3c7; color: #d97706; }
+        .badge-bad { background: #fee2e2; color: #dc2626; }
+
+        .title-metrics {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: #666666;
+            margin-bottom: 10px;
+        }
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .metric-value {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .title-bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .title-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .fill-green { background: #22c55e; }
+        .fill-yellow { background: #f97316; }
+        .fill-red { background: #ef4444; }
+
+        .title-prompt {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 12px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            position: relative;
+        }
+        .title-prompt .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font-family);
+        }
+        .title-prompt .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .platform-youtube { background: #ff0000; color: white; }
+        .platform-tiktok { background: #000000; color: white; }
+        .platform-instagram { background: #E4405F; color: white; }
+
+        .compare-section {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            display: none;
+        }
+        .compare-section.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .compare-card {
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+        .compare-card.winner {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+        .compare-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .compare-score {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: #888888;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-brand">🏠 Home</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link" style="font-weight:600;color:rgba(255,255,255,0.9)"><i class="bi bi-grid" style="margin-right:4px"></i> Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>📈 SEO Title Optimizer</h1>
+            <p>Generate and compare optimized titles for higher click-through rates on YouTube, TikTok, and Instagram.</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label>📝 Enter Your Topic or Keyword</label>
+                <textarea id="topicInput" placeholder="Example: How to edit videos faster in Premiere Pro, or: Tokyo travel guide 2024"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>📺 Platform</label>
+                <div class="filter-grid">
+                    <select class="filter-select" id="platform">
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram</option>
+                    </select>
+                    <select class="filter-select" id="contentType">
+                        <option value="tutorial">Tutorial</option>
+                        <option value="review">Review</option>
+                        <option value="story">Story / Vlog</option>
+                        <option value="listicle">Listicle</option>
+                        <option value="howto">How-To</option>
+                        <option value="opinion">Opinion</option>
+                    </select>
+                    <select class="filter-select" id="titleStyle">
+                        <option value="clickbait">Clickbait / Curiosity</option>
+                        <option value="informative">Informative</option>
+                        <option value="list">Numbered List</option>
+                        <option value="question">Question Format</option>
+                        <option value="all">All Styles</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" id="generateBtn">
+                    <span>📈</span>
+                    <span>Generate Titles</span>
+                </button>
+                <button class="action-btn secondary" id="compareBtn" disabled>
+                    <span>⚖️</span>
+                    <span>Compare A/B</span>
+                </button>
+                <button class="action-btn secondary" id="clearBtn">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2>📈 Optimized Titles</h2>
+                <span class="results-count" id="resultsCount"></span>
+            </div>
+            <div class="title-list" id="titleList"></div>
+        </div>
+
+        <div class="compare-section" id="compareSection">
+            <div class="results-header">
+                <h2>⚖️ A/B Comparison</h2>
+                <span class="results-count" id="compareCount"></span>
+            </div>
+            <div class="compare-grid" id="compareGrid"></div>
+        </div>
+
+        <div class="footer">
+            <p>AI Creator Studio — Built with ❤️ by Fadillah</p>
+        </div>
+    </div>
+
+    <script src="js/gas-connector.js"></script>
+    <script>
+        const PLATFORM_LIMITS = {
+            youtube: { maxChars: 100, maxBytes: 150, idealRange: [50, 70] },
+            tiktok: { maxChars: 70, maxBytes: 100, idealRange: [30, 50] },
+            instagram: { maxChars: 80, maxBytes: 110, idealRange: [30, 60] }
+        };
+
+        const KEYWORD_BOOSTERS = {
+            youtube: ['how', 'best', 'top', 'guide', 'tutorial', '2024', '2025', 'secret', 'ultimate', 'proven'],
+            tiktok: ['hack', 'tip', 'secret', 'fyp', 'viral', 'dramatic', 'you won\'t believe', 'never'],
+            instagram: ['glow', 'aesthetic', 'vibes', 'mood', 'essentials', 'must-have', 'goals']
+        };
+
+        const TITLE_TEMPLATES = {
+            tutorial: {
+                clickbait: 'The {keyword} Tutorial That Will {change} Your Life',
+                informative: '{keyword}: A Complete Tutorial for Beginners',
+                list: '10 Steps to Master {keyword} Like a Pro',
+                question: 'How Do You {keyword} Like a Pro?',
+                howto: 'How to {keyword} — Step by Step Guide'
+            },
+            review: {
+                clickbait: 'I Tested {keyword} and the Results SHOCKED Me',
+                informative: '{keyword} Review: Is It Worth It?',
+                list: '5 Things I Learned from {keyword}',
+                question: 'Is {keyword} Really as Good as They Say?',
+                howto: 'Honest Review: {keyword} After 30 Days'
+            },
+            story: {
+                clickbait: 'What Happened When I Tried {keyword}',
+                informative: 'My Journey with {keyword} — Full Story',
+                list: '7 Lessons from My {keyword} Experience',
+                question: 'Can {keyword} Change Your Life?',
+                howto: 'How {keyword} Became My Biggest Journey'
+            },
+            listicle: {
+                clickbait: '{count} Mind-Blowing Facts About {keyword}',
+                informative: 'The {count} Best {keyword} Resources',
+                list: '{count} Ways to Level Up Your {keyword}',
+                question: 'What Are the Best {keyword} Tips?',
+                howto: 'Top {count} {keyword} Strategies That Actually Work'
+            },
+            howto: {
+                clickbait: 'You\'re Doing {keyword} WRONG — Here\'s How to Fix It',
+                informative: 'How to {keyword} — Simple Steps That Work',
+                list: '{count} Easy Ways to Level Up Your {keyword}',
+                question: 'How Do Beginners {keyword} the Right Way?',
+                howto: 'A Beginner\'s Guide to {keyword}'
+            },
+            opinion: {
+                clickbait: 'Why {keyword} Might Be Overrated',
+                informative: 'My Honest Opinion on {keyword}',
+                list: '{count} Reasons I Believe in {keyword}',
+                question: 'Is {keyword} Worth the Hype?',
+                howto: 'What Nobody Tells You About {keyword}'
+            }
+        };
+
+        function generateTitles(topic, platform, contentType, style) {
+            const words = topic.split(/\s+/).filter(w => w.length > 2);
+            const mainKeyword = words.slice(0, 3).join(' ');
+            const templates = TITLE_TEMPLATES[contentType] || TITLE_TEMPLATES.tutorial;
+            const limits = PLATFORM_LIMITS[platform] || PLATFORM_LIMITS.youtube;
+
+            const titles = [];
+            const used = new Set();
+
+            const styleKeys = style === 'all'
+                ? Object.keys(templates)
+                : [style];
+
+            styleKeys.forEach(styleKey => {
+                const template = templates[styleKey];
+                if (!template) return;
+
+                const variations = [
+                    template.replace('{keyword}', mainKeyword).replace('{count}', '5').replace('{change}', 'Transform'),
+                    template.replace('{keyword}', mainKeyword).replace('{count}', '10').replace('{change}', 'Completely Change'),
+                    template.replace('{keyword}', mainKeyword).replace('{count}', '3').replace('{change}', 'Drastically'),
+                    template.replace('{keyword}', mainKeyword).replace('{count}', '7').replace('{change}', 'Your'),
+                    `🔥 ${mainKeyword} — The {count} Things Nobody Talks About`.replace('{count}', '5'),
+                    `${mainKeyword}: What the Experts Don\'t Want You to Know`,
+                    `Stop Wasting Time on ${mainKeyword} — Do This Instead`,
+                    `${mainKeyword} in 60 Seconds: The Quick Guide`
+                ];
+
+                variations.forEach(v => {
+                    const clean = v.replace('{keyword}', mainKeyword).replace('{count}', '5').replace('{change}', 'Transform');
+                    if (!used.has(clean) && clean.length > 10) {
+                        used.add(clean);
+                        titles.push(clean);
+                    }
+                });
+            });
+
+            return titles.map(title => analyzeTitle(title, limits)).slice(0, 8);
+        }
+
+        function analyzeTitle(title, limits) {
+            const charCount = title.length;
+            const byteLength = new TextEncoder().encode(title).length;
+            const isWithinLimit = charCount <= limits.maxChars;
+            const idealStart = limits.idealRange[0];
+            const idealEnd = limits.idealRange[1];
+
+            let lengthScore = 0;
+            if (charCount >= idealStart && charCount <= idealEnd) {
+                lengthScore = 100;
+            } else if (charCount <= limits.maxChars) {
+                lengthScore = Math.round((1 - Math.abs(charCount - idealEnd) / idealEnd) * 100);
+            } else {
+                lengthScore = Math.round((1 - (charCount - limits.maxChars) / 50) * 100);
+            }
+            lengthScore = Math.max(0, Math.min(100, lengthScore));
+
+            const titleLower = title.toLowerCase();
+            let ctrBoost = 0;
+            KEYWORD_BOOSTERS[Object.keys(PLATFORM_LIMITS).find(k => titleLower.includes(k)) || 'youtube'].forEach(kw => {
+                if (titleLower.includes(kw)) ctrBoost += 10;
+            });
+
+            const hasNumbers = /\d/.test(title);
+            if (hasNumbers) ctrBoost += 5;
+
+            const hasPowerWords = /shocking|never|worst|best|secret|ultimate|proven|amazing|insane/.test(titleLower);
+            if (hasPowerWords) ctrBoost += 10;
+
+            const startsWithEmoji = /^[^\p{L}]/u.test(title);
+            if (startsWithEmoji) ctrBoost += 3;
+
+            const startsWithQuestion = title.trim().endsWith('?');
+            if (startsWithQuestion) ctrBoost += 5;
+
+            const totalScore = Math.min(100, Math.max(0, lengthScore + ctrBoost));
+
+            const metrics = [];
+            if (isWithinLimit) {
+                metrics.push({ label: 'Length', value: `${charCount} chars`, status: 'good' });
+            } else {
+                metrics.push({ label: 'Length', value: `${charCount} chars (${byteLength} bytes)`, status: 'bad' });
+            }
+            metrics.push({ label: 'CTR Score', value: `${totalScore}%`, status: totalScore >= 70 ? 'good' : totalScore >= 40 ? 'warn' : 'bad' });
+            metrics.push({ label: 'Emoji', value: hasEmoji(title) ? 'Yes' : 'No', status: 'good' });
+            metrics.push({ label: 'Question', value: startsWithQuestion ? 'Yes' : 'No', status: 'good' });
+
+            return { title, score: totalScore, metrics, charCount, byteLength, isWithinLimit };
+        }
+
+        function hasEmoji(str) {
+            return /[\p{Emoji}\p{Symbol}]/u.test(str);
+        }
+
+        function renderTitles(titles) {
+            const list = document.getElementById('titleList');
+            const count = document.getElementById('resultsCount');
+            const section = document.getElementById('resultsSection');
+            const compareBtn = document.getElementById('compareBtn');
+
+            const sorted = [...titles].sort((a, b) => b.score - a.score);
+
+            list.innerHTML = sorted.map((t, i) => {
+                const isBest = i === 0;
+                const fillClass = t.score >= 80 ? 'fill-green' : t.score >= 50 ? 'fill-yellow' : 'fill-red';
+                const scoreClass = t.score >= 80 ? 'score-high' : t.score >= 50 ? 'score-mid' : 'score-low';
+                const statusClass = t.score >= 80 ? 'badge-good' : t.score >= 50 ? 'badge-warn' : 'badge-bad';
+
+                return `
+                    <div class="title-card ${isBest ? 'best' : ''}" style="animation-delay:${i * 0.05}s">
+                        <div class="title-top">
+                            <span class="title-text">${t.title}</span>
+                            <div class="title-score ${scoreClass}">${t.score}</div>
+                        </div>
+                        <div class="title-badges">
+                            <span class="title-badge ${t.isWithinLimit ? 'badge-good' : 'badge-bad'}">${t.isWithinLimit ? '✅ Within Limit' : '⚠️ Too Long'}</span>
+                            <span class="title-badge ${statusClass}">${t.score >= 80 ? 'High CTR' : t.score >= 50 ? 'Medium CTR' : 'Low CTR'}</span>
+                            ${isBest ? '<span class="title-badge badge-good">🏆 Best</span>' : ''}
+                        </div>
+                        <div class="title-metrics">
+                            <div class="metric"><span>Length:</span> <span class="metric-value">${t.charCount} chars</span></div>
+                            <div class="metric"><span>Bytes:</span> <span class="metric-value">${t.byteLength}</span></div>
+                            ${t.metrics.map(m => `<span class="title-badge ${m.status === 'good' ? 'badge-good' : m.status === 'warn' ? 'badge-warn' : 'badge-bad'}">${m.label}: ${m.value}</span>`).join('')}
+                        </div>
+                        <div class="title-bar"><div class="title-bar-fill ${fillClass}" style="width:${t.score}%"></div></div>
+                        <div class="title-prompt">
+                            <button class="copy-btn" onclick="copyTitlePrompt(this)">📋 Copy</button>
+                            Title: ${t.title}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            count.textContent = `${titles.length} titles generated`;
+            section.classList.add('show');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            compareBtn.disabled = false;
+        }
+
+        function renderCompare(titles) {
+            const grid = document.getElementById('compareGrid');
+            const section = document.getElementById('compareSection');
+            const count = document.getElementById('compareCount');
+
+            const sorted = [...titles].sort((a, b) => b.score - a.score);
+            const winner = sorted[0];
+            const runnerUp = sorted[1];
+
+            if (!runnerUp) {
+                grid.innerHTML = '<p style="text-align:center;color:#666">Generate at least 2 titles to compare</p>';
+                section.classList.add('show');
+                return;
+            }
+
+            count.textContent = `Comparing top 2 titles`;
+
+            grid.innerHTML = `
+                <div class="compare-card winner">
+                    <h3>🏆 Winner</h3>
+                    <div class="compare-score score-high">${winner.score}%</div>
+                    <p style="text-align:center;font-weight:600;margin-bottom:8px">${winner.title}</p>
+                    <div class="title-metrics" style="justify-content:center;flex-wrap:wrap">
+                        <span class="title-badge badge-good">${winner.charCount} chars</span>
+                        <span class="title-badge badge-good">${winner.isWithinLimit ? '✅ Within Limit' : '⚠️'}</span>
+                    </div>
+                </div>
+                <div class="compare-card">
+                    <h3>Runner-Up</h3>
+                    <div class="compare-score score-mid">${runnerUp.score}%</div>
+                    <p style="text-align:center;font-weight:600;margin-bottom:8px">${runnerUp.title}</p>
+                    <div class="title-metrics" style="justify-content:center;flex-wrap:wrap">
+                        <span class="title-badge badge-good">${runnerUp.charCount} chars</span>
+                        <span class="title-badge ${runnerUp.isWithinLimit ? 'badge-good' : 'badge-bad'}">${runnerUp.isWithinLimit ? '✅ Within Limit' : '⚠️'}</span>
+                    </div>
+                </div>
+            `;
+
+            section.classList.add('show');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyTitlePrompt(btn) {
+            const prompt = btn.parentElement.textContent.replace('📋 Copy', '').trim();
+            navigator.clipboard.writeText(prompt).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                const topic = document.getElementById('topicInput').value.trim();
+                if (!topic) {
+                    alert('Masukkan topic/keyword dulu!');
+                    return;
+                }
+
+                const platform = document.getElementById('platform').value;
+                const contentType = document.getElementById('contentType').value;
+                const style = document.getElementById('titleStyle').value;
+
+                const titles = generateTitles(topic, platform, contentType, style);
+                renderTitles(titles);
+            });
+
+            document.getElementById('compareBtn').addEventListener('click', function() {
+                const cards = document.querySelectorAll('.title-card');
+                const titles = [];
+                cards.forEach(card => {
+                    const titleText = card.querySelector('.title-text')?.textContent || '';
+                    const scoreText = card.querySelector('.title-score')?.textContent || '0';
+                    const isWithin = card.querySelector('.badge-good')?.textContent?.includes('Within') || false;
+                    const charMatch = card.querySelector('.metric')?.textContent?.match(/(\d+) chars/);
+                    const charCount = charMatch ? parseInt(charMatch[1]) : 0;
+                    const byteMatch = card.querySelectorAll('.metric')[1]?.textContent?.match(/(\d+)/);
+                    const byteLength = byteMatch ? parseInt(byteMatch[1]) : 0;
+                    titles.push({ title: titleText, score: parseInt(scoreText), isWithinLimit: isWithin, charCount, byteLength });
+                });
+                if (titles.length >= 2) {
+                    renderCompare(titles);
+                }
+            });
+
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                document.getElementById('topicInput').value = '';
+                document.getElementById('resultsSection').classList.remove('show');
+                document.getElementById('compareSection').classList.remove('show');
+                document.getElementById('titleList').innerHTML = '';
+                document.getElementById('compareGrid').innerHTML = '';
+                document.getElementById('compareBtn').disabled = true;
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.nav-tools');
+            if (!toggle) {
+                document.querySelectorAll('.nav-tools').forEach(el => el.classList.remove('show'));
+            }
+        });
+    </script>
+</body>
+</html>
